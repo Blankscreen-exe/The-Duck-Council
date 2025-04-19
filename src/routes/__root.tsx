@@ -1,4 +1,9 @@
-import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  createRouter,
+  Link,
+  Outlet,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 export const Route = createRootRoute({
@@ -11,10 +16,18 @@ export const Route = createRootRoute({
         <Link to="/about" className="[&.active]:font-bold">
           About
         </Link>
+        <p className="bg-primary text-fg">helo</p>
       </div>
       <hr />
       <Outlet />
       <TanStackRouterDevtools />
     </>
   ),
+  notFoundComponent: () => {
+    return <div>not found page</div>;
+  },
+});
+
+export const router = createRouter({
+  notFoundMode: "root",
 });

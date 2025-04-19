@@ -6,3 +6,12 @@
 
 - (Chore) tanstack/react-router
 - (Feat) Setup router
+- (Feat) Not found page
+
+### Changed
+
+- (UI) update color primary, background and foreground
+
+### Fix
+
+- Miss configuration tailwind
