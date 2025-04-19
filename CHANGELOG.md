@@ -11,6 +11,7 @@
 ### Changed
 
 - (UI) update color primary, background and foreground
+- (Refactor) remove README
 
 ### Fix
 
