@@ -1,4 +1,4 @@
-# 🦆 Duck Council
+![alt text](docs/assets/banner.png)
 
 AI-Powered Reflections for Human Decisions
 Ask the council. Reflect with ducks. Make better choices.
