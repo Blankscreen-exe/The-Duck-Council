@@ -26,7 +26,6 @@ def run():
     """
 
     inputs = {
-        # 'topic': 'AI LLMs',
         'task': prompt
     }
     
