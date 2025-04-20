@@ -16,3 +16,19 @@
 ### Fix
 
 - Miss configuration tailwind
+
+[20-04-2025]
+
+### Added
+
+- (Feat) Slicing UI Chat
+- (Feat) Slicing reusable textarea
+
+### Changed
+
+- (Refactor) split path route
+- (UI) Adding more variant for button
+
+### Fix
+
+- (Wip) layout public

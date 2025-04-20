@@ -50,22 +50,6 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-p {
-  @apply text-sm text-foreground;
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -143,6 +127,30 @@ p {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground m-0;
   }
+  h1 {
+    font-size: 3.2em;
+    line-height: 1.1;
+  }
+  p {
+    @apply text-sm text-foreground;
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--accent); /* thumb and track */
+}
+
+/* For WebKit (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #737373;
+  border-radius: 9999px;
 }

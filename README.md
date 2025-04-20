@@ -28,21 +28,21 @@ This project combines LLMs + agent collaboration to simulate multi-perspective r
 
 🔧 Tech Stack
 
-| Layer | Tools |
-|-----|-----|
-|Backend|CrewAI, FastAPI|
-|LLM|OpenAI or other compatible providers|
-|Frontend |React / Tailwind |
+| Layer    | Tools                                |
+| -------- | ------------------------------------ |
+| Backend  | CrewAI, FastAPI                      |
+| LLM      | OpenAI or other compatible providers |
+| Frontend | React / Tailwind                     |
 
 ## 🦆 The Ducks
 
-|Duck Name|	Role|	Style of Reasoning|
-|-----|-----|----|
-|Pragmatic Duck|	Focuses on logical feasibility|	“This makes sense. It's efficient.”|
-|Emo Duck|	Prioritizes feelings & empathy|	“How would this make people feel?”|
-|Ethical Duck|	Values morality & fairness|	“Is this the right thing to do?”|
-|Risky Duck|	Loves bold choices and chances|	“Fortune favors the brave!”|
-|Wise Duck|	Thinks long-term & big-picture|	“Will this matter in five years?”|
+| Duck Name      | Role                           | Style of Reasoning                  |
+| -------------- | ------------------------------ | ----------------------------------- |
+| Pragmatic Duck | Focuses on logical feasibility | “This makes sense. It's efficient.” |
+| Emo Duck       | Prioritizes feelings & empathy | “How would this make people feel?”  |
+| Ethical Duck   | Values morality & fairness     | “Is this the right thing to do?”    |
+| Risky Duck     | Loves bold choices and chances | “Fortune favors the brave!”         |
+| Wise Duck      | Thinks long-term & big-picture | “Will this matter in five years?”   |
 
 ## 🚀 How It Works
 
