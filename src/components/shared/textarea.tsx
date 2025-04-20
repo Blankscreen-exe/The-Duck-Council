@@ -22,7 +22,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, ITextArea>(
         value={value}
         rows={1}
         className={cn(
-          "w-full max-h-[50vh] text-tertiary resize-none custom-scrollbar overflow-y-auto text-sm focus:outline-none",
+          "w-full max-h-[30vh] text-tertiary resize-none custom-scrollbar overflow-y-auto text-sm focus:outline-none",
           className,
         )}
       />

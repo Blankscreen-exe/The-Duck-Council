@@ -17,9 +17,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --light-100: #f9f5d7;
-  --light-200: #fbf1c7;
-  --light-300: #ebdbb2;
+  --light-100: #fffdf2;
+  --light-200: #fff9d9;
+  --light-300: #fff3b0;
 
   --radius: 0.625rem;
   --background: oklch(0.9508 0.0324 97.64);
@@ -55,7 +55,7 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-@theme inline {
+@theme {
   --font-primary: "Chewy", "sans-serif";
   --font-secondary: "Comic Neue", "sans-serif";
   --font-tertiary: "Open Sans", "sans-serif";

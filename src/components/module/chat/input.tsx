@@ -1,7 +1,7 @@
 import Textarea from "@/components/shared/textarea";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Send } from "lucide-react";
+import { ArrowLeft, Send } from "lucide-react";
 import { forwardRef, Ref } from "react";
 
 interface ChatInputProps {
@@ -10,11 +10,21 @@ interface ChatInputProps {
   setMsg: (msg: string) => void;
   placeholder?: string;
   className?: string;
+  handleBack?: () => void;
+  isBack?: boolean;
 }
 
 const ChatInput = forwardRef(
   (
-    { onSend, msg, setMsg, placeholder, className }: ChatInputProps,
+    {
+      onSend,
+      msg,
+      setMsg,
+      placeholder,
+      className,
+      handleBack,
+      isBack,
+    }: ChatInputProps,
     ref: Ref<HTMLTextAreaElement>,
   ) => {
     const handleSubmit = () => {
@@ -43,14 +53,25 @@ const ChatInput = forwardRef(
           placeholder={placeholder}
           ref={ref}
         />
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-[12px]">
+          {isBack && (
+            <Button
+              onClick={handleBack}
+              className="text-sm underline text-muted-foreground hover:text-foreground transition-opacity duration-300"
+              variant={"none"}
+              size={"auto"}
+              title="Back to Situation"
+            >
+              <ArrowLeft className="size-[20px]" />
+            </Button>
+          )}
           <Button
             variant={"none"}
             size={"auto"}
             onClick={handleSubmit}
             disabled={!msg}
           >
-            <Send className="size-[18px]" />
+            <Send className="size-[20px]" />
           </Button>
         </div>
       </div>

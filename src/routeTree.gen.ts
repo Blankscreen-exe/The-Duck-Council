@@ -12,40 +12,12 @@
 
 import { Route as rootRoute } from "./routes/__root";
 import { Route as IndexImport } from "./routes/index";
-import { Route as PublicLayoutImport } from "./routes/_public/layout";
-import { Route as PublicHelpImport } from "./routes/_public/help";
-import { Route as PublicAboutImport } from "./routes/_public/about";
-import { Route as ChatChatImport } from "./routes/_chat/chat";
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   id: "/",
   path: "/",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const PublicLayoutRoute = PublicLayoutImport.update({
-  id: "/_public/layout",
-  path: "/layout",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const PublicHelpRoute = PublicHelpImport.update({
-  id: "/_public/help",
-  path: "/help",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const PublicAboutRoute = PublicAboutImport.update({
-  id: "/_public/about",
-  path: "/about",
-  getParentRoute: () => rootRoute,
-} as any);
-
-const ChatChatRoute = ChatChatImport.update({
-  id: "/_chat/chat",
-  path: "/chat",
   getParentRoute: () => rootRoute,
 } as any);
 
@@ -60,34 +32,6 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
-    "/_chat/chat": {
-      id: "/_chat/chat";
-      path: "/chat";
-      fullPath: "/chat";
-      preLoaderRoute: typeof ChatChatImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_public/about": {
-      id: "/_public/about";
-      path: "/about";
-      fullPath: "/about";
-      preLoaderRoute: typeof PublicAboutImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_public/help": {
-      id: "/_public/help";
-      path: "/help";
-      fullPath: "/help";
-      preLoaderRoute: typeof PublicHelpImport;
-      parentRoute: typeof rootRoute;
-    };
-    "/_public/layout": {
-      id: "/_public/layout";
-      path: "/layout";
-      fullPath: "/layout";
-      preLoaderRoute: typeof PublicLayoutImport;
-      parentRoute: typeof rootRoute;
-    };
   }
 }
 
@@ -95,58 +39,32 @@ declare module "@tanstack/react-router" {
 
 export interface FileRoutesByFullPath {
   "/": typeof IndexRoute;
-  "/chat": typeof ChatChatRoute;
-  "/about": typeof PublicAboutRoute;
-  "/help": typeof PublicHelpRoute;
-  "/layout": typeof PublicLayoutRoute;
 }
 
 export interface FileRoutesByTo {
   "/": typeof IndexRoute;
-  "/chat": typeof ChatChatRoute;
-  "/about": typeof PublicAboutRoute;
-  "/help": typeof PublicHelpRoute;
-  "/layout": typeof PublicLayoutRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
   "/": typeof IndexRoute;
-  "/_chat/chat": typeof ChatChatRoute;
-  "/_public/about": typeof PublicAboutRoute;
-  "/_public/help": typeof PublicHelpRoute;
-  "/_public/layout": typeof PublicLayoutRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: "/" | "/chat" | "/about" | "/help" | "/layout";
+  fullPaths: "/";
   fileRoutesByTo: FileRoutesByTo;
-  to: "/" | "/chat" | "/about" | "/help" | "/layout";
-  id:
-    | "__root__"
-    | "/"
-    | "/_chat/chat"
-    | "/_public/about"
-    | "/_public/help"
-    | "/_public/layout";
+  to: "/";
+  id: "__root__" | "/";
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute;
-  ChatChatRoute: typeof ChatChatRoute;
-  PublicAboutRoute: typeof PublicAboutRoute;
-  PublicHelpRoute: typeof PublicHelpRoute;
-  PublicLayoutRoute: typeof PublicLayoutRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  ChatChatRoute: ChatChatRoute,
-  PublicAboutRoute: PublicAboutRoute,
-  PublicHelpRoute: PublicHelpRoute,
-  PublicLayoutRoute: PublicLayoutRoute,
 };
 
 export const routeTree = rootRoute
@@ -159,27 +77,11 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
-        "/_chat/chat",
-        "/_public/about",
-        "/_public/help",
-        "/_public/layout"
+        "/"
       ]
     },
     "/": {
       "filePath": "index.tsx"
-    },
-    "/_chat/chat": {
-      "filePath": "_chat/chat.tsx"
-    },
-    "/_public/about": {
-      "filePath": "_public/about.tsx"
-    },
-    "/_public/help": {
-      "filePath": "_public/help.tsx"
-    },
-    "/_public/layout": {
-      "filePath": "_public/layout.tsx"
     }
   }
 }

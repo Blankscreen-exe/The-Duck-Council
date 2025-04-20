@@ -29,6 +29,9 @@
 
 - (Refactor) split path route
 - (UI) Adding more variant for button
+- (Refactor) Remove unsed route
+- (Refactor) Move Chat page to index
+- (UI) Separated the styles
 
 ### Fix
 

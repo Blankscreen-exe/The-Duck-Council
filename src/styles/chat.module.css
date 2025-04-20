@@ -1,0 +1,35 @@
+@reference "tailwindcss";
+@reference "../index.css";
+
+.parent {
+  @apply h-dvh overflow-y-auto flex flex-col gap-[12px] items-center relative;
+}
+
+.content {
+  @apply w-full max-w-5xl mx-auto;
+}
+
+.content_header {
+  @apply flex items-center justify-center flex-col gap-[4px] *:text-center transition-all duration-500 ease-in-out opacity-100;
+}
+.content_header > p {
+  @apply text-lg font-secondary font-semibold max-w-2xl;
+}
+
+.content_main {
+  @apply grid grid-cols-2 gap-5 transition-all duration-500 ease-in-out opacity-100 w-full pb-20 pt-2;
+}
+
+.content_chat {
+  @apply w-full flex justify-center flex-col gap-2 *:w-full *:flex *:justify-center *:items-center transition-all duration-300 ease-in-out;
+}
+.content_chat > div {
+  @apply transition-all duration-500 ease-in-out;
+}
+.hide {
+  @apply opacity-0 max-h-0 overflow-hidden pointer-events-none;
+}
+
+.show {
+  @apply opacity-100;
+}
