@@ -23,6 +23,7 @@
 
 - (Feat) Slicing UI Chat
 - (Feat) Slicing reusable textarea
+- (Feat) Slicing Chat page
 
 ### Changed
 

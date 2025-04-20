@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir, Helvetica, Arial, "Chewey", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -16,6 +16,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --light-100: #f9f5d7;
+  --light-200: #fbf1c7;
+  --light-300: #ebdbb2;
+
   --radius: 0.625rem;
   --background: oklch(0.9508 0.0324 97.64);
   --foreground: oklch(29.14% 0.019 26.65);
@@ -51,10 +56,19 @@
 }
 
 @theme inline {
+  --font-primary: "Chewy", "sans-serif";
+  --font-secondary: "Comic Neue", "sans-serif";
+  --font-tertiary: "Open Sans", "sans-serif";
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-light-100: var(--light-100);
+  --color-light-200: var(--light-200);
+  --color-light-300: var(--light-300);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -89,6 +103,10 @@
 }
 
 .dark {
+  --light-100: #1d2021;
+  --light-200: #282828;
+  --light-300: #3c3836;
+
   --background: oklch(27.36% 0 0);
   --foreground: oklch(0.9508 0.0324 97.64);
   --card: oklch(0.205 0 0);
@@ -130,11 +148,10 @@
     @apply bg-background text-foreground m-0;
   }
   h1 {
-    font-size: 3.2em;
-    line-height: 1.1;
+    @apply font-bold font-primary text-7xl;
   }
   p {
-    @apply text-sm text-foreground;
+    @apply text-sm text-foreground font-tertiary;
   }
 }
 
