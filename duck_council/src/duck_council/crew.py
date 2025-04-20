@@ -40,6 +40,13 @@ class DuckCouncil():
             config=self.agents_config['ethical_duck'],
             verbose=True
         )
+    
+    @agent
+    def winner_duck(self) -> Agent:
+        return Agent(
+            config=self.agents_config['winner_duck'],
+            verbose=True
+        )
 
     # To learn more about structured task outputs,
     # task dependencies, and task callbacks, check out the documentation:
@@ -63,12 +70,32 @@ class DuckCouncil():
     @crew
     def crew(self) -> Crew:
         """Creates the DuckCouncil crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+        prompt_template = "Given a situation and a proposed action, evaluate its suitability. {task}"
+
+        agent_list = [
+                ("pragmatic duck", self.pragmatic_duck()),
+                ("ethical duck", self.ethical_duck()),
+                ("winner duck", self.winner_duck()),
+            ]
+        
+        tasks = []
+
+        for name, agent in agent_list:
+            task = Task(
+                config=self.tasks_config['reflection'],
+                agent=agent,
+                output_format='raw'
+            )
+            # Task(
+            #     output_format='raw',
+            #     description=prompt_template,
+            #     expected_output='The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like: {"score":<float>, "reasoning":"..." }',
+            # )
+            tasks.append(task)
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
-            tasks=self.tasks, # Automatically created by the @task decorator
+            agents=[agent for _, agent in agent_list], 
+            tasks=tasks, 
             # process=Process.sequential,
             verbose=True,
             # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/

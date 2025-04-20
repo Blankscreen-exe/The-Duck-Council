@@ -5,7 +5,6 @@ reflection:
   expected_output: >
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
-  agents: 
-    - pragmatic_duck
-    - ethical_duck
-  async_execution: true
+  # agent: pragmatic_duck
+  # async_execution: true
+  
