@@ -43,3 +43,9 @@
 ### Changed
 
 - (UI) Separated input chat styles
+
+[22-04-2025]
+
+### Added
+
+- (Feat) Setup Axios
