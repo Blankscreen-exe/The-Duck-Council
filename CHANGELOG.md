@@ -33,6 +33,13 @@
 - (Refactor) Move Chat page to index
 - (UI) Separated the styles
 
-### Fix
+[20-04-2025]
 
-- (Wip) layout public
+### Added
+
+- (Chore) accordion
+- (UI) content mobile view
+
+### Changed
+
+- (UI) Separated input chat styles

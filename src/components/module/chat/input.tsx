@@ -3,16 +3,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Send } from "lucide-react";
 import { forwardRef, Ref } from "react";
-
-interface ChatInputProps {
-  onSend: (message: string) => void;
-  msg: string;
-  setMsg: (msg: string) => void;
-  placeholder?: string;
-  className?: string;
-  handleBack?: () => void;
-  isBack?: boolean;
-}
+import style from "@/styles/chat.module.css";
 
 const ChatInput = forwardRef(
   (
@@ -24,7 +15,7 @@ const ChatInput = forwardRef(
       className,
       handleBack,
       isBack,
-    }: ChatInputProps,
+    }: IChatInput,
     ref: Ref<HTMLTextAreaElement>,
   ) => {
     const handleSubmit = () => {
@@ -40,12 +31,7 @@ const ChatInput = forwardRef(
     };
 
     return (
-      <div
-        className={cn(
-          "w-full max-w-xl border border-light-300 bg-light-100 dark:bg-light-100 p-4 rounded-[20px]",
-          className,
-        )}
-      >
+      <div className={cn(style.parent_input, className)}>
         <Textarea
           value={msg}
           onChange={(e) => setMsg(e.target.value)}
@@ -53,16 +39,16 @@ const ChatInput = forwardRef(
           placeholder={placeholder}
           ref={ref}
         />
-        <div className="flex justify-end gap-[12px]">
+        <div>
           {isBack && (
             <Button
               onClick={handleBack}
-              className="text-sm underline text-muted-foreground hover:text-foreground transition-opacity duration-300"
+              className={style.input_back}
               variant={"none"}
               size={"auto"}
               title="Back to Situation"
             >
-              <ArrowLeft className="size-[20px]" />
+              <ArrowLeft />
             </Button>
           )}
           <Button
@@ -71,7 +57,7 @@ const ChatInput = forwardRef(
             onClick={handleSubmit}
             disabled={!msg}
           >
-            <Send className="size-[20px]" />
+            <Send />
           </Button>
         </div>
       </div>

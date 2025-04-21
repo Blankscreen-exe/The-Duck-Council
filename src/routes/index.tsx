@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import style from "@/styles/chat.module.css";
 import { BRAND } from "@/lib/contants";
+import { CAccordion } from "@/components/shared/accordion";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -63,14 +64,38 @@ function Index() {
             return (
               <div
                 key={id}
-                className="bg-neutral-100 dark:bg-light-100 w-full h-96 rounded-[12px]"
+                className="bg-neutral-100 dark:bg-light-100 hidden md:flex w-full h-96 rounded-[12px]"
               />
             );
           })}
+          <CAccordion
+            className="md:hidden"
+            defaultValue="item-1"
+            items={[
+              {
+                value: "item-1",
+                title: "Duck 1 (Score: 10.3)",
+                content:
+                  "Yes. It adheres to the WAI-ARIA design pattern. Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.Yes. It adheres to the WAI-ARIA design pattern. Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
+              },
+              {
+                value: "item-2",
+                title: "Is it styled?",
+                content:
+                  "Yes. It comes with default styles that match the aesthetic.",
+              },
+              {
+                value: "item-3",
+                title: "Is it animated?",
+                content:
+                  "Yes. It's animated by default, but you can disable it if you prefer.",
+              },
+            ]}
+          />
         </div>
       </div>
 
-      <div className={cn(style.content_chat, isAnswer && "fixed bottom-2")}>
+      <div className={cn(style.content_chat, isAnswer && style.answered)}>
         <div className={isSubmit ? style.hide : style.show}>
           <ChatInput
             onSend={handleSend}
