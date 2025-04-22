@@ -49,3 +49,5 @@
 ### Added
 
 - (Feat) Setup Axios
+- (UI) animation fade in
+- (Feat) Types IDuck

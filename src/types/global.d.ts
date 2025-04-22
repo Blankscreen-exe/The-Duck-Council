@@ -29,3 +29,9 @@ declare interface IAccordion {
   className?: string;
   defaultValue?: string;
 }
+
+declare interface IDuck {
+  name: string;
+  score: number;
+  reasoning: string;
+}
