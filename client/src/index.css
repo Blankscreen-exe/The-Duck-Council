@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir, Helvetica, Arial, "Chewey", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -16,6 +16,11 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --light-100: #fffdf2;
+  --light-200: #fff9d9;
+  --light-300: #fff3b0;
+
   --radius: 0.625rem;
   --background: oklch(0.9508 0.0324 97.64);
   --foreground: oklch(29.14% 0.019 26.65);
@@ -50,27 +55,20 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
+@theme {
+  --font-primary: "Chewy", "sans-serif";
+  --font-secondary: "Comic Neue", "sans-serif";
+  --font-tertiary: "Open Sans", "sans-serif";
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-p {
-  @apply text-sm text-foreground;
-}
-
-@theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-light-100: var(--light-100);
+  --color-light-200: var(--light-200);
+  --color-light-300: var(--light-300);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -102,9 +100,15 @@ p {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --animate-fade-in: fade-in 0.3s ease-out;
 }
 
 .dark {
+  --light-100: #1d2021;
+  --light-200: #282828;
+  --light-300: #3c3836;
+
   --background: oklch(27.36% 0 0);
   --foreground: oklch(0.9508 0.0324 97.64);
   --card: oklch(0.205 0 0);
@@ -143,6 +147,42 @@ p {
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground m-0;
+  }
+  h1 {
+    @apply font-bold font-primary text-7xl;
+  }
+  p {
+    @apply text-sm text-foreground font-tertiary;
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-foreground) var(--accent); /* thumb and track */
+}
+
+/* For WebKit (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #737373;
+  border-radius: 9999px;
+}
+
+/* FADE IN */
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
   }
 }
