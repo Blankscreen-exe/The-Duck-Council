@@ -52,12 +52,21 @@ class DuckCouncil():
     # task dependencies, and task callbacks, check out the documentation:
     # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
-    def reflection_task(self) -> Task:
-        print('----------------------------------------')
-        print(self.tasks_config)
-        print('----------------------------------------')
+    def pragmatic_reflection_task(self) -> Task:
         return Task(
-            config=self.tasks_config['reflection'],
+            config=self.tasks_config['pragmatic_reflection'],
+        )
+    
+    @task
+    def ethical_reflection_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['ethical_reflection'],
+        )
+    
+    @task
+    def winner_reflection_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['winner_reflection'],
         )
 
     # @task
@@ -72,31 +81,40 @@ class DuckCouncil():
         """Creates the DuckCouncil crew"""
         prompt_template = "Given a situation and a proposed action, evaluate its suitability. {task}"
 
-        agent_list = [
-                ("pragmatic duck", self.pragmatic_duck()),
-                ("ethical duck", self.ethical_duck()),
-                ("winner duck", self.winner_duck()),
-            ]
+        # agent_list = [
+        #         ("pragmatic duck", self.pragmatic_duck()),
+        #         ("ethical duck", self.ethical_duck()),
+        #         ("winner duck", self.winner_duck()),
+        #     ]
         
-        tasks = []
+        # tasks = []
 
-        for name, agent in agent_list:
-            task = Task(
-                config=self.tasks_config['reflection'],
-                agent=agent,
-                output_format='raw'
-            )
-            # Task(
-            #     output_format='raw',
-            #     description=prompt_template,
-            #     expected_output='The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like: {"score":<float>, "reasoning":"..." }',
-            # )
-            tasks.append(task)
+        # for name, agent in agent_list:
+        #     task = Task(
+        #         config=self.tasks_config['reflection'],
+        #         agent=agent,
+        #         output_format='raw'
+        #     )
+        #     # Task(
+        #     #     output_format='raw',
+        #     #     description=prompt_template,
+        #     #     expected_output='The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like: {"score":<float>, "reasoning":"..." }',
+        #     # )
+        #     tasks.append(task)
+        
+        # print(task)
 
+        # return Crew(
+        #     agents=[agent for _, agent in agent_list], 
+        #     tasks=tasks, 
+        #     # process=Process.sequential,
+        #     verbose=True,
+        #     # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+        # )
         return Crew(
-            agents=[agent for _, agent in agent_list], 
-            tasks=tasks, 
+            agents=self.agents, 
+            tasks=self.tasks, 
             # process=Process.sequential,
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
