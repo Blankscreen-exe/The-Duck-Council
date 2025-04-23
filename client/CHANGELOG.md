@@ -51,3 +51,9 @@
 - (Feat) Setup Axios
 - (UI) animation fade in
 - (Feat) Types IDuck
+
+[23-04-2025]
+
+### Changed
+
+- (Fix) conflict
