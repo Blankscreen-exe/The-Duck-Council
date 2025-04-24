@@ -34,15 +34,15 @@ This project combines LLMs + agent collaboration to simulate multi-perspective r
 |LLM|OpenAI or other compatible providers|
 |Frontend |React / Tailwind |
 
-## 🦆 The Ducks
+## 🦆 The Ducks (Starter Pack)
 
 |Duck Name|	Role|	Style of Reasoning|
 |-----|-----|----|
 |Pragmatic Duck|	Focuses on logical feasibility|	“This makes sense. It's efficient.”|
-|Emo Duck|	Prioritizes feelings & empathy|	“How would this make people feel?”|
-|Ethical Duck|	Values morality & fairness|	“Is this the right thing to do?”|
-|Risky Duck|	Loves bold choices and chances|	“Fortune favors the brave!”|
-|Wise Duck|	Thinks long-term & big-picture|	“Will this matter in five years?”|
+|Emo Duck|	Rebelious. Prioritizes feelings & empathy|	“How would this make people feel?”|
+|Ethical Duck|	Cautious. Values morality & fairness|	“Is this the right thing to do?”|
+|Risky Duck|	Adventurous and loves bold choices and chances|	“Fortune favors the brave!”|
+|Winner Duck|	Treats everything as a competition|	“How can I get the best possible outcome”|
 
 ## 🚀 How It Works
 
@@ -62,6 +62,19 @@ You get a council verdict
 
 ## 🛠️ Setup
 
+Copy `.env.example` to `.env` and populate the variables
+
+You need to install crew.ai CLI to your environment
+
+```bash
+cd ./duck_council/src/duck_council/
+
+# install crew.ai dependencies
+crewai install
+```
+
+Then install dependencies for Flask
+
 ```bash
 # Install dependencies
 uv pip install -r requirements.txt
@@ -70,12 +83,21 @@ uv pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-## 🧪 Example Request
+## 🧪 How To Add More Ducks?
 
-```json
-POST /evaluate/
-{
-  "situation": "My boss just emailed me on a Saturday.",
-  "intended_action": "I'm going to reply immediately."
-}
-```
+1. Add agent description in `.\src\duck_council\config\agents.yaml`
+2. Add agent's task description in `.\src\duck_council\config\tasks.yaml`
+3. Initialize the *task* (with @task decorator) and the *agent*  (with @agent decorator) inside `.\src\duck_council\crew.py`
+4. Inside the same `crew.py` file, update this function body `get_task_map`
+5. Inside `constants.py`, add the name of your agent here
+  ```py
+    class Constants:
+      ...
+      class agent_names:
+        WINNER = 'winner'
+        PRAGMATIC = 'pragmatic'
+        ETHICAL = 'ethical'
+        EMO = 'emo'
+        RISKY = 'risky'
+  ```
+6. Inside `config.py` edit the `ALLOWED_AGENT_LIST` array
