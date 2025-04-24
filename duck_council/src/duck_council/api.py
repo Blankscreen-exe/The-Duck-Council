@@ -2,26 +2,13 @@ from .crew import DuckCouncil
 import json
 
 def evaluate_action(situation: str, action: str):
-    # prompt = f"Situation: {situation}\nAction: {action}"
-    # crew = DuckCouncil().crew()
-    # result = crew.kickoff(inputs={"task": prompt})
-    # return result
+    agents = ['winner','pragmatic','ethical']
 
-    prompt = f"Situation: {situation}\nAction: {action}"
-    crew_instance = DuckCouncil().crew()
-    result = crew_instance.kickoff(inputs={"task": prompt})
-    print('=========RESULT==============')
-    print(result)
-    parsed_results = []
+    result = []
+    for agent in agents:
+        response = DuckCouncil().run_duck(duck_name=agent, situation=situation, action=action)
+        response_dict = json.loads(str(response))
+        response_dict['duck_name'] = agent
+        result.append(response_dict)
 
-    for task_output in result.tasks_output:
-        try:
-            raw = json.loads(task_output.raw)
-        except Exception as e:
-            raw = {"score": None, "reasoning": f"Failed to parse response: {str(e)}"}
-
-        parsed_results.append({
-            "name": task_output.agent.strip(),
-            "score": raw.get("score"),
-            "reasoning": raw.get("reasoning")
-        })
+    return result

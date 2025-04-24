@@ -1,24 +1,29 @@
 from flask import Flask, request, jsonify
-from src.duck_council.api import evaluate_action
-import json
+from duck_council.api import evaluate_action
 
 app = Flask(__name__)
 
-@app.route("/evaluate", methods=["POST"])
-def evaluate():
-    data = request.json
-    situation = data.get("situation")
-    action = data.get("action")
+# Health check
+@app.route('/')
+def index():
+    return 'Duck Council is live!'
+
+@app.route('/prompt', methods=['POST'])
+def handle_prompt():
+    data = request.get_json()
+    situation = data.get('situation')
+    action = data.get('action')
 
     if not situation or not action:
-        return jsonify({"error": "Missing 'situation' or 'action'"}), 400
+        return jsonify({"error": "Missing prompt"}), 400
 
-    reflections = evaluate_action(situation, action)
-    print('---------- THUIS INFO RIGHT HERE ----------------')
-    print(type(reflections))
-    print(reflections)
-    
-    return jsonify({"reflections": json.loads(reflections)})
+    responses = evaluate_action(situation=situation, action=action)
 
-if __name__ == "__main__":
-    app.run(debug=True)
+    return jsonify({
+            "status": 200,
+            "message": "Data fetched successfully",
+            "data": responses
+         }), 200
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8000)

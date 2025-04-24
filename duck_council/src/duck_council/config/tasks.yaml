@@ -5,6 +5,8 @@ pragmatic_reflection:
   expected_output: >
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Always end reasoning with 'Because I am PRACTICAL'
   agent: pragmatic_duck
   # async_execution: true
   
@@ -15,6 +17,8 @@ ethical_reflection:
   expected_output: >
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Always end reasoning with 'Because I am ETHICAL'
   agent: pragmatic_duck
 
 winner_reflection:
@@ -24,4 +28,6 @@ winner_reflection:
   expected_output: >
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Always end reasoning with 'Because I like to WIN things'
   agent: pragmatic_duck

@@ -9,21 +9,51 @@ from crewai.project import CrewBase, agent, crew, task, before_kickoff, after_ki
 class DuckCouncil():
     """DuckCouncil crew"""
 
-    @before_kickoff
-    def before_kickoff_function(self, inputs):
-        print(f"Before kickoff function with inputs: {inputs}")
-        return inputs # You can return the inputs or modify them as needed
-
-    @after_kickoff
-    def after_kickoff_function(self, result):
-        print(f"After kickoff function with result: {result}")
-        return result # You can return the result or modify it as needed
-
     # Learn more about YAML configuration files here:
     # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
     # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
     agents_config = 'config/agents.yaml'
     tasks_config = 'config/tasks.yaml'
+    
+    @before_kickoff
+    def before_kickoff_function(self, inputs):
+        return inputs
+
+    @after_kickoff
+    def after_kickoff_function(self, result):
+        return result
+    
+    def get_task_map(self):
+        return {
+            "pragmatic": (self.pragmatic_duck(), self.pragmatic_reflection_task),
+            "ethical": (self.ethical_duck(), self.ethical_reflection_task),
+            "winner": (self.winner_duck(), self.winner_reflection_task),
+        }
+
+    def run_duck(self, duck_name: str, situation: str, action: str):
+        task_map = self.get_task_map()
+        
+        if duck_name not in task_map:
+            raise ValueError(f"Invalid duck name '{duck_name}'. Choose from: {list(task_map.keys())}")
+
+        agent, task_func = task_map[duck_name]
+        task = task_func()
+
+        crew = Crew(
+            agents=[agent],
+            tasks=[task],
+            verbose=True,
+        )
+        
+        prompt = f"Situation: {situation}\nAction: {action}"
+        return crew.kickoff(inputs={"task": prompt})
+    
+    @task
+    def pragmatic_reflection_task(self, situation: str, action: str) -> Task:
+        return Task(
+            config=self.tasks_config['pragmatic_reflection'],
+            input={"situation": situation, "action": action}
+        )
 
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools
@@ -69,52 +99,15 @@ class DuckCouncil():
             config=self.tasks_config['winner_reflection'],
         )
 
-    # @task
-    # def reporting_task(self) -> Task:
-    #     return Task(
-    #         config=self.tasks_config['reporting_task'],
-    #         output_file='report.md'
-    #     )
-
     @crew
     def crew(self) -> Crew:
         """Creates the DuckCouncil crew"""
-        prompt_template = "Given a situation and a proposed action, evaluate its suitability. {task}"
 
-        # agent_list = [
-        #         ("pragmatic duck", self.pragmatic_duck()),
-        #         ("ethical duck", self.ethical_duck()),
-        #         ("winner duck", self.winner_duck()),
-        #     ]
-        
-        # tasks = []
-
-        # for name, agent in agent_list:
-        #     task = Task(
-        #         config=self.tasks_config['reflection'],
-        #         agent=agent,
-        #         output_format='raw'
-        #     )
-        #     # Task(
-        #     #     output_format='raw',
-        #     #     description=prompt_template,
-        #     #     expected_output='The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like: {"score":<float>, "reasoning":"..." }',
-        #     # )
-        #     tasks.append(task)
-        
-        # print(task)
-
-        # return Crew(
-        #     agents=[agent for _, agent in agent_list], 
-        #     tasks=tasks, 
-        #     # process=Process.sequential,
-        #     verbose=True,
-        #     # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
-        # )
         return Crew(
             agents=self.agents, 
             tasks=self.tasks, 
-            # process=Process.sequential,
+            process=Process.sequential,
             verbose=True,
-            process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
         )
+ 
