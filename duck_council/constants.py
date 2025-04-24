@@ -12,3 +12,10 @@ class Constants:
     class routes:
         health = '/'
         prompt = '/prompt'
+
+    class agent_names:
+        WINNER = 'winner'
+        PRAGMATIC = 'pragmatic'
+        ETHICAL = 'ethical'
+        EMO = 'emo'
+        RISKY = 'risky'

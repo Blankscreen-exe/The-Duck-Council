@@ -1,5 +1,6 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task, before_kickoff, after_kickoff
+from constants import Constants
 
 # If you want to run a snippet of code before or after the crew starts,
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -25,9 +26,9 @@ class DuckCouncil():
     
     def get_task_map(self):
         return {
-            "pragmatic": (self.pragmatic_duck(), self.pragmatic_reflection_task),
-            "ethical": (self.ethical_duck(), self.ethical_reflection_task),
-            "winner": (self.winner_duck(), self.winner_reflection_task),
+            Constants.agent_names.PRAGMATIC: (self.pragmatic_duck(), self.pragmatic_reflection_task),
+            Constants.agent_names.ETHICAL: (self.ethical_duck(), self.ethical_reflection_task),
+            Constants.agent_names.WINNER: (self.winner_duck(), self.winner_reflection_task),
         }
 
     def run_duck(self, duck_name: str, situation: str, action: str):
@@ -47,13 +48,6 @@ class DuckCouncil():
         
         prompt = f"Situation: {situation}\nAction: {action}"
         return crew.kickoff(inputs={"task": prompt})
-    
-    @task
-    def pragmatic_reflection_task(self, situation: str, action: str) -> Task:
-        return Task(
-            config=self.tasks_config['pragmatic_reflection'],
-            input={"situation": situation, "action": action}
-        )
 
     # If you would like to add tools to your agents, you can learn more about it here:
     # https://docs.crewai.com/concepts/agents#agent-tools

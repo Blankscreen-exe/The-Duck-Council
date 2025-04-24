@@ -1,8 +1,10 @@
 from .crew import DuckCouncil
+from config import ALLOWED_AGENT_LIST
 import json
 
+
 def evaluate_action(situation: str, action: str):
-    agents = ['winner','pragmatic','ethical']
+    agents = ALLOWED_AGENT_LIST
 
     result = []
     for agent in agents:
