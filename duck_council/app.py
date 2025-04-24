@@ -1,29 +1,39 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 from duck_council.api import evaluate_action
+from constants import Constants
+from config import APP_HOST, APP_PORT
+from helpers import create_server_response
+from request_validations import prompt_request_validation
 
 app = Flask(__name__)
 
-# Health check
-@app.route('/')
+@app.route(Constants.routes.health, methods=[Constants.http_methods.GET])
 def index():
-    return 'Duck Council is live!'
+    return '<h1>Duck Council is live!</h1>'
 
-@app.route('/prompt', methods=['POST'])
+@app.route(Constants.routes.prompt, methods=[Constants.http_methods.POST])
 def handle_prompt():
+
+    prompt_request_validation(request)
+    
     data = request.get_json()
     situation = data.get('situation')
     action = data.get('action')
+    
+    try:
+        responses = evaluate_action(situation=situation, action=action)
+    except Exception as e:
+        return create_server_response(
+            msg="There was a problem with CrewAI response",
+            data=e,
+            status_code=Constants.http_status_codes.SERVER_ERROR
+        )    
 
-    if not situation or not action:
-        return jsonify({"error": "Missing prompt"}), 400
-
-    responses = evaluate_action(situation=situation, action=action)
-
-    return jsonify({
-            "status": 200,
-            "message": "Data fetched successfully",
-            "data": responses
-         }), 200
+    return create_server_response(
+        msg="Data fetched successfully",
+        data=responses,
+        status_code=Constants.http_status_codes.OK
+    ) 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host=APP_HOST, port=APP_PORT)
