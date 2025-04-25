@@ -13,6 +13,7 @@ class Constants:
         health = '/'
         prompt = '/prompt'
         duck_data = '/duck_profiles'
+        images = '/images/<filename>'
 
     class agent_names:
         LAWYER = 'lawyer'

@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 APP_HOST='0.0.0.0'
 APP_PORT=8000
+BASE_URL='http://127.0.0.1:'+str(APP_PORT)
 DEBUG=True
 
 # Only these agents will be able to answer the prompt

@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from duck_council.api import evaluate_action
 from constants import Constants
 from config import APP_HOST, APP_PORT, DEBUG
@@ -10,6 +10,10 @@ app = Flask(__name__)
 @app.route(Constants.routes.health, methods=[Constants.http_methods.GET])
 def index():
     return '<h1>Duck Council is live!</h1>'
+
+@app.route(Constants.routes.images, methods=[Constants.http_methods.GET])
+def serve_image(filename):
+    return send_from_directory('static/images', filename)
 
 @app.route(Constants.routes.duck_data, methods=[Constants.http_methods.GET])
 def duck_profiles():
