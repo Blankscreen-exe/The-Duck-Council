@@ -1,7 +1,7 @@
 from flask import Flask, request
 from duck_council.api import evaluate_action
 from constants import Constants
-from config import APP_HOST, APP_PORT
+from config import APP_HOST, APP_PORT, DEBUG
 from helpers import create_server_response
 from request_validations import prompt_request_validation
 
@@ -36,4 +36,4 @@ def handle_prompt():
     ) 
 
 if __name__ == '__main__':
-    app.run(host=APP_HOST, port=APP_PORT)
+    app.run(host=APP_HOST, port=APP_PORT, debug=DEBUG)

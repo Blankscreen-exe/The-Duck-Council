@@ -1,4 +1,4 @@
-pragmatic_reflection:
+lawyer_reflection:
   description: >
     Given a situation and a proposed action, evaluate its suitability.
     {task}
@@ -6,11 +6,10 @@ pragmatic_reflection:
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
     resoning should be 1 or 2 sentence long. 
-    Always end reasoning with 'Because I am PRACTICAL'
-  agent: pragmatic_duck
-  # async_execution: true
+    Reasoning Style: Meticulous, formal, obsessed with legality and technicalities
+  agent: lawyer_duck
   
-ethical_reflection:
+witch_reflection:
   description: >
     Given a situation and a proposed action, evaluate its suitability.
     {task}
@@ -18,10 +17,10 @@ ethical_reflection:
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
     resoning should be 1 or 2 sentence long. 
-    Always end reasoning with 'Because I am ETHICAL'
-  agent: pragmatic_duck
+    Reasoning Style: Mysterious, poetic, laced with cryptic metaphors and esoteric warnings
+  agent: witch_duck
 
-winner_reflection:
+doctor_reflection:
   description: >
     Given a situation and a proposed action, evaluate its suitability.
     {task}
@@ -29,5 +28,115 @@ winner_reflection:
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
     resoning should be 1 or 2 sentence long. 
-    Always end reasoning with 'Because I like to WIN things'
-  agent: pragmatic_duck
+    Reasoning Style: Caring, cautious, and data-driven. Always puts health first
+  agent: doctor_duck
+
+rich_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Ambitious, brash, success-driven. Weighs risk vs reward like a mogul
+  agent: rich_duck
+  
+gamer_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Competitive, fun, full of gaming lingo. Frames everything as a "move" or "strat."
+  agent: gamer_duck
+
+gangsta_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Blunt, no-nonsense, loyal to his code. Streetwise with swagger
+  agent: gangsta_duck
+
+serial_killer_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Friendly and cheerful with jarring violent suggestions. Switches tone suddenly
+  agent: serial_killer_duck
+  
+diplomat_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Empathetic, balanced, articulate. Always looks for win-wins
+  agent: diplomat_duck
+
+techno_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Analytical, efficient, filled with tech jargon and network metaphors
+  agent: techno_duck
+
+king_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Noble, fair, and contemplative. Weighs all sides before passing judgment
+  agent: king_duck
+
+spiritual_medium_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Alternates between Latin phrases, prophetic riddles, and ghostly messages
+  agent: spiritual_medium_duck
+
+detective_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Logical, skeptical, obsessed with facts and probabilities
+  agent: detective_duck
+
+rebel_reflection:
+  description: >
+    Given a situation and a proposed action, evaluate its suitability.
+    {task}
+  expected_output: >
+    The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
+    {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
+    resoning should be 1 or 2 sentence long. 
+    Reasoning Style: Emotional, brave, and intuitive. Values freedom and humanity (or duckmanity).
+  agent: rebel_duck
