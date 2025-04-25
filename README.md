@@ -38,11 +38,19 @@ This project combines LLMs + agent collaboration to simulate multi-perspective r
 
 |Duck Name|	Role|	Style of Reasoning|
 |-----|-----|----|
-|Pragmatic Duck|	Focuses on logical feasibility|	“This makes sense. It's efficient.”|
-|Emo Duck|	Rebelious. Prioritizes feelings & empathy|	“How would this make people feel?”|
-|Ethical Duck|	Cautious. Values morality & fairness|	“Is this the right thing to do?”|
-|Risky Duck|	Adventurous and loves bold choices and chances|	“Fortune favors the brave!”|
-|Winner Duck|	Treats everything as a competition|	“How can I get the best possible outcome”|
+|Lawyer Duck|	Focuses on legal feasibility|	“The law is the ultimate word.”|
+|Witch Duck|	Quite and A-social. Expert in arcane. |	“Why am i even here? But since you asked ...”|
+|Doctor Duck|	Cautious. Values health and well-being|	“Is this the right thing to do?”|
+|Rich Duck|	Risk taker. Bold like a true leader|	“Fortune favors the brave!”|
+|Gamer Duck|	Treats everything as a competition or a game|	“How can I get the best possible outcome?”|
+|Gangsta Duck|	Punk straight outta the hood|	“Solutions to my problems are my homies”|
+|Serial Killer Duck| Nice and accomodating. Has murderous tendencies. *Average Genocide Jack*|	“I just looove it when I slice up a manly hunk.”|
+|Diplomat Duck|	Great negotiator. Wishes for everyones' well-being|	“How can I establish a profitable deal?”|
+|Techno Duck|	Expert in tech. Typical geek. Can probably hack you|	“The solutions I deal with, are computer apps.”|
+|King Duck|	Wise and dedicated. Treats everyone equally|	“By the power vested in me, I shall lay bare my wisdom for you aid"|
+|Spiritual-Medium Duck|	Possessed by a latin-speaking demon|	Fiat voluntas daemonis... He says the path is cursed, child. Turn back before the sun weeps.  ”|
+|Detective Duck| Focuses on logical feasibility|	“This makes sense. It is probable given the situation.”|
+|Rebel Duck|	Rebelious. Prioritizes feelings & empathy|	"Empathy is stronger than rules”|
 
 ## 🚀 How It Works
 
@@ -52,10 +60,10 @@ This project combines LLMs + agent collaboration to simulate multi-perspective r
 
 Each duck reflects
 
-- Pragmatic Duck: “Not practical. 20/100.”
-- Emo Duck: “You probably need the break, but...”
-- Risky Duck: “YOLO? 65/100.”
-- Ethical Duck: “You owe it to your future self.”
+- Lawyer Duck: “Not practical. 20/100.”
+- Gamer Duck: “You probably need the break, but...”
+- Rich Duck: “YOLO? 65/100.”
+- Doctor Duck: “You owe it to your future self.”
 
 You get a council verdict
 → A mix of scores, reflections, and wisdom from your feathered advisors.
@@ -82,22 +90,3 @@ uv pip install -r requirements.txt
 # Run API
 uvicorn app.main:app --reload
 ```
-
-## 🧪 How To Add More Ducks?
-
-1. Add agent description in `.\src\duck_council\config\agents.yaml`
-2. Add agent's task description in `.\src\duck_council\config\tasks.yaml`
-3. Initialize the *task* (with @task decorator) and the *agent*  (with @agent decorator) inside `.\src\duck_council\crew.py`
-4. Inside the same `crew.py` file, update this function body `get_task_map`
-5. Inside `constants.py`, add the name of your agent here
-  ```py
-    class Constants:
-      ...
-      class agent_names:
-        WINNER = 'winner'
-        PRAGMATIC = 'pragmatic'
-        ETHICAL = 'ethical'
-        EMO = 'emo'
-        RISKY = 'risky'
-  ```
-6. Inside `config.py` edit the `ALLOWED_AGENT_LIST` array
