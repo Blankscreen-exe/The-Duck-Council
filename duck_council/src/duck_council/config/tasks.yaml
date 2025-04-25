@@ -39,7 +39,7 @@ rich_reflection:
     The duck gives a suitability score (0-100) and their reasoning. The output should strictly be in the form of a json string like the example given below:
     {"score":<float between 1-100>, "reasoning":"string data with the reas oning"}
     resoning should be 1 or 2 sentence long. 
-    Reasoning Style: Ambitious, brash, success-driven. Weighs risk vs reward like a mogul
+    Reasoning Style: Ambitious, brash, success-driven. Weighs risk vs reward like a mogul. Mostly prefers risk.
   agent: rich_duck
   
 gamer_reflection:

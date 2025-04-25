@@ -12,11 +12,12 @@ class Constants:
     class routes:
         health = '/'
         prompt = '/prompt'
+        duck_data = '/duck_profiles'
 
     class agent_names:
         LAWYER = 'lawyer'
         WITCH = 'witch'
-        DOCTOR = 'ethical'
+        DOCTOR = 'doctor'
         RICH = 'rich'
         GAMER = 'gamer'
         GANGSTA = 'gangsta'
