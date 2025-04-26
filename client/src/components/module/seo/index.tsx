@@ -5,14 +5,17 @@ export default function Index() {
   return (
     <Helmet>
       <title>Duck Council</title>
-      <meta name="description" content="A Duck that helps you debug code" />
+      <meta
+        name="description"
+        content="AI-Powered Reflections for Human Decisions Ask the council. Reflect with ducks. Make better choices."
+      />
       <link rel="canonical" href={config.DOMAIN} />
 
       <meta property="og:url" content={config.DOMAIN} />
       <meta property="og:title" content="Duck Council" />
       <meta
         property="og:description"
-        content="A Duck that helps you debug code"
+        content="AI-Powered Reflections for Human Decisions Ask the council. Reflect with ducks. Make better choices."
       />
       <meta property="og:site_name" content="Duck Council" />
 
@@ -22,7 +25,7 @@ export default function Index() {
       <meta name="twitter:title" content="Duck Council" />
       <meta
         name="twitter:description"
-        content="A Duck that helps you debug code"
+        content="AI-Powered Reflections for Human Decisions Ask the council. Reflect with ducks. Make better choices."
       />
 
       <script type="application/ld+json">
@@ -35,7 +38,7 @@ export default function Index() {
               name: "What is the purpose of the Duck Council?",
               acceptedAnswer: {
                 "@type": "Answer",
-                text: "To help you debug code.",
+                text: "Humans are emotional. Decisions are messy. But what if you had a council of intelligent ducks to reflect back your choices? ",
               },
             },
             {
