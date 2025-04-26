@@ -30,7 +30,7 @@ This project combines LLMs + agent collaboration to simulate multi-perspective r
 
 | Layer | Tools |
 |-----|-----|
-|Backend|CrewAI, FastAPI|
+|Backend|CrewAI, Flask|
 |LLM|OpenAI or other compatible providers|
 |Frontend |React / Tailwind |
 
