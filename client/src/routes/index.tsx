@@ -6,12 +6,26 @@ import style from "@/styles/chat.module.css";
 import { BRAND } from "@/lib/contants";
 import { CAccordion } from "@/components/shared/accordion";
 import Seo from "@/components/module/seo";
+import { useCreatePrompt } from "@/service/global";
+import Loader from "@/components/module/chat/loader";
+import Result from "@/components/module/chat/text";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const { prompt, isPending, data } = useCreatePrompt();
+  const response = data?.data;
+  const duckResponse = response?.map((item) => {
+    const name = item.duck_name;
+    return {
+      value: name,
+      title: name,
+      content: <Result item={item} />,
+    };
+  });
+
   const situationRef = useRef<HTMLTextAreaElement | null>(null);
   const actionRef = useRef<HTMLTextAreaElement | null>(null);
   const [formState, setFormState] = useState({
@@ -25,7 +39,7 @@ function Index() {
     situationRef.current?.focus();
   }, []);
 
-  const handleSend = (msg: string) => {
+  const handleSend = () => {
     if (formState.situation && !isSubmit) {
       setFormState((prev) => ({ ...prev, isSubmit: true }));
       actionRef.current?.focus();
@@ -37,7 +51,11 @@ function Index() {
         isSubmit: false,
         isAnswer: true,
       });
-      console.log(msg);
+      const payload = {
+        situation: formState.situation,
+        action: formState.action,
+      };
+      prompt(payload);
     }
   };
   const handleBackToSituation = () => {
@@ -63,38 +81,15 @@ function Index() {
           </div>
 
           <div className={cn(style.content_main, !isAnswer && style.hide)}>
-            {Array.from({ length: 4 }).map((_, id) => {
-              return (
-                <div
-                  key={id}
-                  className="bg-neutral-100 dark:bg-light-100 hidden md:flex w-full h-96 rounded-[12px]"
-                />
-              );
-            })}
-            <CAccordion
-              className="md:hidden"
-              defaultValue="item-1"
-              items={[
-                {
-                  value: "item-1",
-                  title: "Duck 1 (Score: 10.3)",
-                  content:
-                    "Yes. It adheres to the WAI-ARIA design pattern. Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.Yes. It adheres to the WAI-ARIA design pattern. Lorem ipsum dolor sit amet, qui minim labore adipisicing minim sint cillum sint consectetur cupidatat.",
-                },
-                {
-                  value: "item-2",
-                  title: "Is it styled?",
-                  content:
-                    "Yes. It comes with default styles that match the aesthetic.",
-                },
-                {
-                  value: "item-3",
-                  title: "Is it animated?",
-                  content:
-                    "Yes. It's animated by default, but you can disable it if you prefer.",
-                },
-              ]}
-            />
+            {isPending && <Loader />}
+            {duckResponse?.map((item) => item.content)}
+            {!!duckResponse?.length && (
+              <CAccordion
+                className="md:hidden"
+                defaultValue={duckResponse?.[0].value}
+                items={duckResponse}
+              />
+            )}
           </div>
         </div>
 
