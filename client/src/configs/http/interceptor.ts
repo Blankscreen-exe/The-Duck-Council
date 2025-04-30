@@ -23,4 +23,4 @@ const applyInterceptor = (axiosInstance: AxiosInstance) => {
   axiosInstance.interceptors.response.use((response) => response, errorHandler);
 };
 
-export const Base = createAxiosInstance(config.API_BASE as string);
+export const Base = createAxiosInstance(config.API_URL as string);

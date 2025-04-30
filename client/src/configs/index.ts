@@ -1,6 +1,7 @@
 const config = {
-  API_BASE: process.env.NEXT_PUBLIC_API_BASE,
-  API_KEY: process.env.NEXT_PUBLIC_API_KEY,
+  API_URL: import.meta.env.VITE_API_URL,
+  API_KEY: import.meta.env.VITE_API_KEY,
+  DOMAIN: import.meta.env.VITE_DOMAIN,
 };
 
 export { config };
