@@ -5,7 +5,10 @@ from config import APP_HOST, APP_PORT, DEBUG
 from helpers import create_server_response
 from request_validations import prompt_request_validation
 from src.duck_council.config.duck_data import duck_data
+from flask_cors import CORS
+
 app = Flask(__name__)
+CORS(app)
 
 @app.route(Constants.routes.health, methods=[Constants.http_methods.GET])
 def index():
