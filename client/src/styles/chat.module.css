@@ -1,0 +1,57 @@
+@reference "tailwindcss";
+@reference "../index.css";
+
+.parent {
+  @apply px-2 h-dvh overflow-y-auto flex flex-col gap-[12px] items-center relative;
+}
+
+.content {
+  @apply w-full max-w-5xl mx-auto;
+}
+
+.content_header {
+  @apply flex items-center justify-center flex-col gap-[4px] *:text-center transition-all duration-500 ease-in-out opacity-100;
+}
+.content_header > p {
+  @apply text-lg font-secondary font-semibold max-w-2xl;
+}
+
+.content_main {
+  @apply w-full grid grid-cols-1 md:grid-cols-2 gap-5 transition-all duration-500 ease-in-out opacity-100 pb-28 md:pb-20 pt-2;
+}
+
+.content_chat {
+  @apply animate-fade-in w-full flex justify-center flex-col gap-2 *:w-full *:flex *:justify-center *:items-center transition-all duration-300 ease-in-out;
+}
+.answered {
+  @apply fixed bottom-2 flex items-center justify-center max-w-11/12;
+}
+
+.content_chat > div {
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.hide {
+  @apply opacity-0 h-0 overflow-hidden pointer-events-none;
+}
+
+.show {
+  @apply opacity-100 animate-fade-in;
+}
+
+/* INPUT COMPONENT */
+.parent_input {
+  @apply w-full max-w-xl border border-light-300 bg-light-100 dark:bg-light-100 p-4 rounded-[20px];
+}
+
+.parent_input > div {
+  @apply flex justify-end gap-[12px];
+}
+.btn_back {
+  @apply text-sm underline text-muted-foreground hover:text-foreground transition-opacity duration-300;
+}
+.parent_input > div > * > * {
+  @apply size-[20px];
+}
+
+/* END INPUT COMPONENT */
