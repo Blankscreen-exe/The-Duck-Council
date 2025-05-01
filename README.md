@@ -68,9 +68,12 @@ Each duck reflects
 You get a council verdict
 → A mix of scores, reflections, and wisdom from your feathered advisors.
 
-## 🛠️ Setup
+## 🛠️ Setup (Backend)
 
-Copy `.env.example` to `.env` and populate the variables
+Prerequisites:
+- you need `crewai` installed
+
+Copy `duck_council/.env.example` to `duck_council/.env` and populate the variables
 
 You need to install crew.ai CLI to your environment
 
@@ -86,7 +89,29 @@ Then install dependencies for Flask
 ```bash
 # Install dependencies
 uv pip install -r requirements.txt
+```
 
+Your API is now ready to run
+
+```bash
 # Run API
 uvicorn app.main:app --reload
+```
+
+## 🛠️ Setup (Frontend)
+
+Copy `client/.env.example` to `client/.env` and populate the variables
+
+Install dependencies
+
+```bash
+cd ./client/
+
+pnpm install
+```
+
+Run you client
+
+```bash
+pnpm run dev
 ```
