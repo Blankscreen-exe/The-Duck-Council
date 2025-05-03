@@ -1,0 +1,37 @@
+# Use an official Python image
+FROM python:3.11-slim
+
+# Set work directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# RUN wget -qO- https://astral.sh/uv/install.sh | sh
+
+# RUN uv tool install crewai
+
+RUN pip install crewai
+
+# Copy project files
+COPY . .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+RUN cd ./src/duck_council/ && crewai install
+
+# Expose the port Flask runs on
+EXPOSE 8000
+
+# Set environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Run the Flask app
+CMD ["flask", "run", "-p", "8000"]

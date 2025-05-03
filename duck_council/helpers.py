@@ -1,7 +1,7 @@
 from flask import jsonify
 from constants import Constants
 from config import BASE_URL, ALLOWED_AGENT_LIST
-from duck_council.src.duck_council.config.duck_names import duck_names
+from src.duck_council.config.duck_names import duck_names
 
 def create_server_response(msg: str, data:any, status_code:int, is_jsonify:bool=False):
     response = {

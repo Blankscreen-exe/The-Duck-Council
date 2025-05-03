@@ -1,1 +1,1 @@
-from duck_council import *
+from . import *
