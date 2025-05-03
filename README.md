@@ -97,6 +97,9 @@ Your API is now ready to run
 # Run API
 uvicorn app.main:app --reload
 ```
+Then go visit the API endpoint on your browser. If you see the following page then that means you have successfully launched the API.
+
+![alt text](docs/assets/api_page.png)
 
 ## 🛠️ Setup (Frontend)
 
