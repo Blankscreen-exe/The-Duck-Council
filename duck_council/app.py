@@ -1,10 +1,10 @@
 from flask import Flask, request, send_from_directory
-from duck_council.api import evaluate_action
+from .src.duck_council.api import evaluate_action
 from constants import Constants
 from config import APP_HOST, APP_PORT, DEBUG
 from helpers import create_server_response
 from request_validations import prompt_request_validation
-from src.duck_council.config.duck_data import duck_data
+from .src.duck_council.config.duck_data import duck_data
 from flask_cors import CORS
 
 app = Flask(__name__)
