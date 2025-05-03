@@ -1,3 +1,11 @@
+from dataclasses import dataclass
+
+@dataclass
+class Route:
+    path: str
+    description: str
+    method: str
+    
 class Constants:
 
     class http_methods:
@@ -10,10 +18,10 @@ class Constants:
         SERVER_ERROR=500
 
     class routes:
-        health = '/'
-        prompt = '/prompt'
-        duck_data = '/duck_profiles'
-        images = '/images/<filename>'
+        health = Route('/', 'Health check endpoint', 'GET')
+        prompt = Route('/prompt', 'Submit a prompt to the duck council', 'POST')
+        duck_data = Route('/duck_profiles', 'Get profiles of all duck agents', 'GET')
+        images = Route('/images/<filename>', 'Serve agent images by filename', 'GET')
 
     class agent_names:
         LAWYER = 'lawyer'

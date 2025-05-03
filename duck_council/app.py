@@ -1,7 +1,7 @@
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, render_template
 from .src.duck_council.api import evaluate_action
 from constants import Constants
-from config import APP_HOST, APP_PORT, DEBUG
+from config import APP_HOST, APP_PORT, DEBUG, ALLOWED_AGENT_LIST
 from helpers import create_server_response
 from request_validations import prompt_request_validation
 from .src.duck_council.config.duck_data import duck_data
@@ -10,22 +10,31 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-@app.route(Constants.routes.health, methods=[Constants.http_methods.GET])
+@app.route(Constants.routes.health.path, methods=[Constants.http_methods.GET])
 def index():
-    return '<h1>Duck Council is live!</h1>'
+    return render_template(
+        'home.html', 
+        debug=DEBUG, 
+        available_agents=ALLOWED_AGENT_LIST,
+        routes=[
+            value
+            for value in vars(Constants.routes).items()
+            if not value[0].startswith('__')
+            ]
+        )
 
-@app.route(Constants.routes.images, methods=[Constants.http_methods.GET])
+@app.route(Constants.routes.images.path, methods=[Constants.http_methods.GET])
 def serve_image(filename):
     return send_from_directory('static/images', filename)
 
-@app.route(Constants.routes.duck_data, methods=[Constants.http_methods.GET])
+@app.route(Constants.routes.duck_data.path, methods=[Constants.http_methods.GET])
 def duck_profiles():
     return create_server_response(
         msg=str(len(duck_data))+' records fetched successfully',
         data=duck_data,
         status_code=Constants.http_status_codes.OK)
 
-@app.route(Constants.routes.prompt, methods=[Constants.http_methods.POST])
+@app.route(Constants.routes.prompt.path, methods=[Constants.http_methods.POST])
 def handle_prompt():
 
     prompt_request_validation(request)

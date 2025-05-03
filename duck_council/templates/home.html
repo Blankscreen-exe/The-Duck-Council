@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duck Council API</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+        >
+    <style>
+        @media (prefers-color-scheme: dark) {
+            html, body {
+            background-color: white !important;
+            color: #363636 !important;
+            }
+        
+            .box, .api-container {
+            background-color: white !important;
+            color: #363636 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero is-medium is-link">
+            <div class="hero-body">
+              <p class="title">The Duck Council API</p>
+              <p class="subtitle has-text-warning has-text-weight-bold">DEBUG = {{debug}}</p>
+              <p class="subtitle">If you are seeing this page, then your API is working perfectly</p>
+            </div>
+          </section>
+        <div class="api-container my-5">
+            <h3 class="has-text-info-dark is-size-4">Available Agents</h3>
+            <ul style="list-style-type: disc; padding-left: 1.5rem;">
+                {% for agent in available_agents %}
+                <!-- <li><code class="has-background-light has-text-danger">{{agent}}</code></li> -->
+                <li><span class=" has-text-info-dark">{{agent}}</span></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="api-container my-5">
+            <h3 class="has-text-info-dark is-size-4">Available Endpoints</h3>
+            {% for route in routes %}
+                <div class="api-section box">
+                    <h3> <span class=" has-text-weight-semibold has-text-link">Path: </span> <code class="has-background-light has-text-danger">{{route.1.path}}</code></h3>
+                    <p> <span class=" has-text-weight-semibold has-text-link">Method: </span> {{route.1.method}}</p>
+                    <p> <span class=" has-text-weight-semibold has-text-link">Description: </span> {{route.1.description}}</p>
+                    
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
