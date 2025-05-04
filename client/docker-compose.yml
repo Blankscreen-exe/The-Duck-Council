@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "4173:4173"
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production
