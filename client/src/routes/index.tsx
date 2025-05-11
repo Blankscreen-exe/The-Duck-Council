@@ -16,16 +16,6 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { prompt, isPending, data } = useCreatePrompt();
-  const response = data?.data;
-  const duckResponse = response?.map((item) => {
-    const name = item.duck_name;
-    return {
-      value: name,
-      title: name,
-      content: <Result item={item} />,
-    };
-  });
-
   const situationRef = useRef<HTMLTextAreaElement | null>(null);
   const actionRef = useRef<HTMLTextAreaElement | null>(null);
   const [formState, setFormState] = useState({
@@ -33,6 +23,15 @@ function Index() {
     action: "",
     isSubmit: false,
     isAnswer: false,
+  });
+
+  const duckResponse = data?.map((item) => {
+    const name = item.duck_name;
+    return {
+      value: name,
+      title: name,
+      content: <Result item={item} />,
+    };
   });
 
   useEffect(() => {
@@ -80,9 +79,13 @@ function Index() {
             <p>{BRAND.description}</p>
           </div>
 
-          <div className={cn(style.content_main, !isAnswer && style.hide)}>
+          <div className={cn(style.content_main, !isAnswer && style.hide, "hidden! md:grid!")}>
             {isPending && <Loader />}
             {duckResponse?.map((item) => item.content)}
+          </div>
+
+          <div className={cn(style.content_main, !isAnswer && style.hide, "md:hidden! grid")}>
+            {isPending && <Loader />}
             {!!duckResponse?.length && (
               <CAccordion
                 className="md:hidden"

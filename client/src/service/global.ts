@@ -12,7 +12,7 @@ export const useCreatePrompt = () => {
 
   return {
     prompt: mutate,
-    data,
+    data: data?.data,
     isPending,
     isError,
   };
