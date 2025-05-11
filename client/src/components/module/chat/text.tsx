@@ -12,9 +12,9 @@ export default function Result({ item }: { item: IPrompt }) {
           alt={name}
           className="rounded-full min-w-[50px] h-[50px] object-cover object-center"
         />
-        <span className="flex items-center gap-[8px] *:font-semibold *:text-base">
+        <span className="flex flex-col items-start gap-[2px] *:font-normal *:text-base *:font-primary">
           <p>{name}</p>
-          <p>({item.score})</p>
+          <p className="text-gray-200">Score: {item.score}/100</p>
         </span>
       </div>
       <p>{item.reasoning}</p>
