@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./duck_council
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=${FLASK_ENV}
+      - FLASK_APP=${FLASK_APP}
+      - FLASK_RUN_HOST=0.0.0.0
+      - API_KEY=${API_KEY}
+    volumes:
+      - ./duck_council:/app
+    depends_on:
+      - frontend
+
+  frontend:
+    build:
+      context: ./client
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_URL=${API_URL}
+      - VITE_API_KEY=${API_KEY}
+      - VITE_DOMAIN=${DOMAIN}
+
