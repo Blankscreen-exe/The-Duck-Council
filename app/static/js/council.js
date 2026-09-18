@@ -87,40 +87,14 @@
     document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.textContent = initials || "?"; });
   });
 
-  // ── Reading a clipped notice in full (D40) ──────────────────────────────────
-  // Notices have a fixed height so the board never moves (D26); long text is clipped.
-  // "Read more" appears only where text really is clipped, and lifts a copy of the
-  // notice off the board into a dialog. The motion is FLIP: measure the notice on the
-  // board (First) and the copy in the middle of the screen (Last), transform the copy
-  // to sit on the original (Invert), then animate the transform away (Play).
+  // ── Picking a notice up off the board (D40) ─────────────────────────────────
+  // Every notice can be picked up: a copy lifts off the board into a dialog, full
+  // size and unclipped. The motion is FLIP: measure the notice on the board (First)
+  // and the copy in the middle of the screen (Last), transform the copy to sit on the
+  // original (Invert), then animate the transform away (Play).
   const reader = document.getElementById("reader");
-  const CLIPPABLE = ".qt, .lens, .lens dd";
   const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let lifted = null; // { card, copy, button } while a notice is off the board
-
-  function markClipped(root = document) {
-    root.querySelectorAll?.(".row").forEach((card) => {
-      const button = card.querySelector("[data-read-more]");
-      if (!button) return;
-      const clipped = [...card.querySelectorAll(CLIPPABLE)]
-        .some((part) => part.scrollHeight > part.clientHeight + 1);
-      button.hidden = !clipped;
-    });
-  }
-
-  // Text wraps differently once the fonts load and whenever the width changes.
-  markClipped();
-  document.fonts?.ready.then(() => markClipped());
-  let resizing = 0;
-  window.addEventListener("resize", () => {
-    window.clearTimeout(resizing);
-    resizing = window.setTimeout(() => markClipped(), 150);
-  });
-  new MutationObserver((changes) => {
-    if (changes.some((change) => change.addedNodes.length)) {
-      window.requestAnimationFrame(() => markClipped());
-    }
-  }).observe(document.body, { childList: true, subtree: true });
 
   function travel(from, to) {
     // The transform that makes a box at `to` look as if it were at `from`.
@@ -137,7 +111,7 @@
     copy.classList.remove("stamped", "pending");
     copy.classList.add("reader-card");
     delete copy.dataset.landed;
-    copy.querySelectorAll("[data-reader-omit], [data-read-more]").forEach((part) => part.remove());
+    copy.querySelectorAll("[data-reader-omit], [data-pick-up]").forEach((part) => part.remove());
     copy.querySelectorAll("[data-reader-only]").forEach((part) => { part.hidden = false; });
     const close = document.createElement("button");
     close.type = "button";
@@ -188,7 +162,7 @@
   }
 
   document.addEventListener("click", (event) => {
-    const button = event.target.closest?.("[data-read-more]");
+    const button = event.target.closest?.("[data-pick-up]");
     if (!button) return;
     const card = button.closest(".row");
     if (card) liftOff(card, button);

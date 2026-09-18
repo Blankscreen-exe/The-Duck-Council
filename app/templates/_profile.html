@@ -23,7 +23,7 @@
   </dl>
   {% if notice_error %}<p class="notice-error" role="alert">{{ notice_error }}</p>{% endif %}
   <div class="card-foot">
-  <button class="more" type="button" data-read-more hidden aria-label="Read {{ duck.name }}'s notice in full">Read more</button>
+  <button class="pick-up" type="button" data-pick-up aria-label="Pick up {{ duck.name }}'s notice">Pick it up</button>
   {% if duck.origin == "user" %}
     <div class="own" data-reader-omit>
       <a href="/bench/{{ duck.id }}/edit">Amend</a>

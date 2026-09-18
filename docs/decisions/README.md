@@ -536,15 +536,16 @@ Built to match, each covered by a test:
 - Changing the default takes effect on the next hearing, without a restart.
 - The providers table arrived as migration 2; migration 1 was left untouched.
 
-### D40 — Clipped text is read by lifting the notice off the board (owner's call)
+### D40 — Every notice can be picked up off the board (owner's calls)
 Notices have a fixed height so the board never moves (D26), which clips long
 verdicts. Growing the card to show more would push every row below it. Instead,
-"Read more" lifts a copy of the notice off the board: it grows and glides to the
+"Pick it up" lifts a copy of the notice off the board: it grows and glides to the
 middle of the screen with the full text, and "Put it back", a click outside it, or
 Esc animates it back to its place. Its spot on the board stays empty meanwhile.
 
-- "Read more" appears only on notices whose text is actually clipped; the page
-  measures each one, again after fonts load and when the window is resized.
+- Every verdict, empty chair and Bench notice has a **Pick it up** button (owner's
+  call; first built as "Read more", shown only where text was clipped). Seats still
+  deliberating and the "Commission a duck" notice do not: there is nothing to read.
 - The lifted verdict also shows what the duck noticed before it scored (the model's
   `read`). A lifted Bench notice adds the duck's voice, which the card omits.
 - Bench notices get the same treatment (owner's call).

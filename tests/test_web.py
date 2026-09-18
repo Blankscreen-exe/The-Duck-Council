@@ -196,7 +196,7 @@ def test_the_page_needs_nothing_from_the_internet(client: TestClient) -> None:
 def test_a_verdict_carries_what_it_needs_to_be_read_in_full(client: TestClient) -> None:
     events = dict(read_events(client, file_case(client)))
     notice = events["seat-doctor"]
-    # The button starts hidden; the page's script shows it only when text is clipped (D40).
-    assert "data-read-more hidden" in notice
+    assert ">Pick it up</button>" in notice  # every notice can be picked up (D40)
+    assert ">Pick it up</button>" in events["seat-rebel"]  # empty chairs too
     assert 'class="noticed" data-reader-only hidden' in notice  # the duck's reasoning
     assert '<dialog id="reader"' in client.get("/").text

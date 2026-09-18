@@ -367,15 +367,14 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 .preset-note { margin-top: 14px; }
 .sheet .help a { color: var(--felt); font-weight: 700; margin-left: 4px; }
 
-/* ── reading a clipped notice in full (D40) ───────────────────── */
+/* ── picking a notice up off the board (D40) ─────────────────── */
 .card-foot { margin-top: auto; padding-top: 8px; display: flex; gap: 16px 18px;
   align-items: center; flex-wrap: wrap; }
 .qt, .lens { flex: 0 1 auto; }
 .lens { min-height: 0; overflow: hidden; }
-.more { font: 700 11px var(--sans); letter-spacing: .14em; text-transform: uppercase;
+.pick-up { font: 700 11px var(--sans); letter-spacing: .14em; text-transform: uppercase;
   color: var(--felt); background: none; border: 0; padding: 0; cursor: pointer;
   text-decoration: underline; text-decoration-color: var(--brass); text-underline-offset: 3px; }
-.more[hidden] { display: none; }
 
 /* the notice's spot stays empty while it is off the board */
 .row.lifted { visibility: hidden; }

@@ -21,7 +21,7 @@
     <p class="noticed-label">What caught its eye</p>
     <p>{{ seat.verdict.read }}</p>
   </div>
-  <div class="card-foot"><button class="more" type="button" data-read-more hidden aria-label="Read {{ duck.name }}'s notice in full">Read more</button></div>
+  <div class="card-foot"><button class="pick-up" type="button" data-pick-up aria-label="Pick up {{ duck.name }}'s notice">Pick it up</button></div>
 </article>
 {% else %}
 <article class="row absent{% if live %} stamped{% endif %}" id="seat-{{ duck.id }}">
@@ -31,5 +31,6 @@
   <h2 class="nm">{{ duck.name }}</h2>
   <p class="rl">{{ duck.epithet }}</p>
   <p class="qt">{{ absence_text(seat.absence) }}</p>
+  <div class="card-foot"><button class="pick-up" type="button" data-pick-up aria-label="Pick up {{ duck.name }}'s notice">Pick it up</button></div>
 </article>
 {% endif %}
