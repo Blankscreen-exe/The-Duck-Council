@@ -1,0 +1,49 @@
+{# Small pieces shared by the pages and by the streamed fragments. #}
+
+{% macro portrait(duck, small=False) -%}
+  {%- if duck.portrait -%}
+    <img class="port{% if small %} small{% endif %}" src="{{ portrait_url(duck) }}"
+         alt="" width="68" height="84" loading="lazy">
+  {%- else -%}
+    <span class="port mg{% if small %} small{% endif %}"
+          style="--hue: {{ monogram_hue(duck) }}" aria-hidden="true">{{ monogram(duck) }}</span>
+  {%- endif -%}
+{%- endmacro %}
+
+{% macro medallion(verdict) -%}
+  <div class="med">
+    <div class="coin {{ coin_class(verdict.band) }}"><b>{{ verdict.score }}</b></div>
+    <div class="mb">{{ band_label(verdict.band) }}</div>
+  </div>
+{%- endmacro %}
+
+{% macro caption(case) -%}
+  <div class="matter">
+    <div class="cell">
+      <p class="lbl"><span class="num">I.</span><span class="cap">The Situation</span></p>
+      <p class="said">{{ case.situation }}</p>
+    </div>
+    <div class="cell">
+      <p class="lbl"><span class="num">II.</span><span class="cap">The Action Proposed</span></p>
+      <p class="said">{{ case.action }}</p>
+    </div>
+  </div>
+{%- endmacro %}
+
+{% macro roster_strip(roster) -%}
+  <div class="roster">
+    <ul class="faces">
+      {% for duck in roster %}<li title="{{ duck.name }}">{{ portrait(duck, small=True) }}</li>{% endfor %}
+    </ul>
+    <p><b>{{ roster | length }} sitting</b> &middot; <a class="quiet" href="/bench">change the bench</a></p>
+  </div>
+{%- endmacro %}
+
+{% macro nav(current="desk") -%}
+  <nav class="nav" aria-label="The Duck Council">
+    <a href="/"{% if current == "desk" %} aria-current="page"{% endif %}>The Filing Desk</a>
+    <a href="/bench"{% if current == "bench" %} aria-current="page"{% endif %}>The Bench</a>
+    <a href="/register"{% if current == "register" %} aria-current="page"{% endif %}>The Register</a>
+    <a href="/providers"{% if current == "chambers" %} aria-current="page"{% endif %}>Chambers</a>
+  </nav>
+{%- endmacro %}

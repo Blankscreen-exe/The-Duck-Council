@@ -1,0 +1,39 @@
+{% from "_components.html" import caption %}
+{# A hearing. When `live`, the board is already at full size: one seat per sitting duck,
+   each waiting for its own event, so notices stamp into place and nothing reflows (D26). #}
+<section id="hearing" class="hearing">
+  <div class="filing">
+    {{ caption(run.case) }}
+    {% if run.number %}<p class="heard">Entered as No. {{ docket(run.number) }}</p>{% endif %}
+  </div>
+
+  <div class="wrap">
+    <div class="court"{% if live %} hx-ext="sse" sse-connect="/council/{{ run.id }}/stream" sse-close="done"{% endif %}>
+      <div class="bench" aria-live="polite">
+        {% for duck in run.roster %}
+          {% with seat = seats.get(duck.id) %}{% include "_notice.html" %}{% endwith %}
+        {% endfor %}
+      </div>
+
+      {% if live and not run.seats %}
+        {# While the ducks deliberate: a card of rotating lines over the dimmed board (D42).
+           council.js shuffles them, changes one every 2.5s, and fades the card when the
+           first notice lands. It never blocks clicks or scrolling. #}
+        <div class="loader" data-loader data-lines='{{ loading_lines(run.roster, run.tone) | tojson }}'>
+          <div class="loader-card" role="status">
+            <p class="loader-kick">The council is deliberating</p>
+            <p class="loader-line" aria-hidden="true" data-loader-line>{{ loading_lines(run.roster, run.tone)[0] }}</p>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if run.done %}
+        {% include "_finding.html" %}
+      {% else %}
+        <div id="finding" class="finding-slot" sse-swap="finding" hx-swap="outerHTML"></div>
+      {% endif %}
+    </div>
+
+    {% include "_after.html" %}
+  </div>
+</section>

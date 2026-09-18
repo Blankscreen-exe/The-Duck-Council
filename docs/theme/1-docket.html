@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Docket</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0A0A0A; --paper:#F5F2E8; --yellow:#FFC700; --orange:#FF6B1A;
+  --green:#1F8A4C; --rule:3px solid var(--ink);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:'Space Mono',monospace;
+  padding:24px 16px 80px;line-height:1.45;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 27px,rgba(10,10,10,.045) 27px,rgba(10,10,10,.045) 28px);}
+.wrap{max-width:900px;margin:0 auto}
+h1,h2,h3,.blk{font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:-.02em}
+
+/* case caption */
+.caption{border:var(--rule);background:var(--paper);box-shadow:8px 8px 0 var(--ink);margin-bottom:34px}
+.caption .bar{background:var(--ink);color:var(--yellow);padding:7px 14px;display:flex;
+  justify-content:space-between;font-size:11px;letter-spacing:.14em;flex-wrap:wrap;gap:8px}
+.caption .body{padding:20px}
+.caption h1{font-size:clamp(28px,6vw,52px);line-height:.94}
+.caption h1 em{font-style:normal;background:var(--yellow);box-shadow:0 0 0 4px var(--yellow)}
+.field{margin-top:18px;border-top:2px dotted var(--ink);padding-top:12px}
+.field .lbl{font-size:10px;letter-spacing:.2em;font-weight:700;opacity:.6}
+.field p{font-size:15px;margin-top:3px}
+
+/* docket entries */
+.entry{border:var(--rule);background:var(--paper);margin-bottom:20px;display:grid;
+  grid-template-columns:104px 1fr 116px;box-shadow:6px 6px 0 var(--ink);
+  animation:land .34s cubic-bezier(.2,.9,.3,1.3) backwards}
+@keyframes land{from{opacity:0;transform:translateY(14px) translateX(-6px)}}
+.entry:nth-of-type(2){animation-delay:.08s}.entry:nth-of-type(3){animation-delay:.16s}
+.entry:nth-of-type(4){animation-delay:.24s}.entry:nth-of-type(5){animation-delay:.32s}
+.entry:nth-of-type(6){animation-delay:.40s}.entry:nth-of-type(7){animation-delay:.48s}
+.pic{border-right:var(--rule);background:var(--ink);position:relative;min-height:128px}
+.pic img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(1) contrast(1.25)}
+.pic .no{position:absolute;top:0;left:0;background:var(--ink);color:var(--paper);
+  font-size:10px;padding:2px 6px;font-weight:700;letter-spacing:.1em;z-index:2}
+.mono{width:100%;height:100%;display:grid;place-items:center;background:var(--green);
+  color:var(--paper);font-family:'Archivo Black',sans-serif;font-size:34px}
+.said{padding:16px 18px}
+.said .who{font-size:15px;margin-bottom:2px}
+.said .role{font-size:10px;letter-spacing:.16em;opacity:.55;margin-bottom:10px}
+.said .line{font-size:14px}
+.tally{border-left:var(--rule);display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:10px 4px;text-align:center}
+.tally .n{font-family:'Archivo Black',sans-serif;font-size:42px;line-height:.85}
+.tally .band{font-size:8px;letter-spacing:.12em;font-weight:700;margin-top:8px;padding:3px 5px;border:2px solid var(--ink)}
+.b-reckless{background:var(--ink);color:var(--yellow)}
+.b-unwise{background:var(--orange);color:var(--paper)}
+.b-defensible{background:var(--paper)}
+.b-sound{background:var(--yellow)}
+.b-right{background:var(--green);color:var(--paper)}
+.tag{font-size:9px;border:2px solid var(--ink);padding:1px 4px;vertical-align:middle;font-family:'Space Mono',monospace}
+
+/* the finding */
+.finding{border:6px solid var(--ink);margin-top:40px;background:var(--yellow);
+  box-shadow:10px 10px 0 var(--ink)}
+.finding .top{background:var(--ink);color:var(--paper);padding:9px 16px;font-size:11px;letter-spacing:.2em}
+.finding .mid{padding:24px 20px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.finding .score{font-family:'Archivo Black',sans-serif;font-size:clamp(64px,15vw,108px);line-height:.8}
+.finding .score sub{font-size:20px;vertical-align:baseline;opacity:.5}
+.finding .verdictword{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:clamp(20px,4.4vw,34px);line-height:1}
+.finding .sub{font-size:12px;margin-top:8px;max-width:340px}
+.spread{padding:0 20px 26px}
+.spread .track{height:26px;border:var(--rule);background:var(--paper);position:relative}
+.spread .tick{position:absolute;top:-2px;width:4px;height:30px;background:var(--ink)}
+.spread .med{position:absolute;top:-9px;width:8px;height:44px;background:var(--orange);border:3px solid var(--ink)}
+.spread .scale{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.1em;margin-top:14px;opacity:.6}
+.stamp{display:inline-block;border:4px solid var(--orange);color:var(--orange);
+  font-family:'Archivo Black',sans-serif;font-size:14px;padding:5px 11px;transform:rotate(-6deg);
+  letter-spacing:.06em}
+</style></head><body><div class="wrap">
+
+<div class="caption">
+  <div class="bar"><span>COUNCIL OF DUCKS &#183; SITTING EN BANC</span><span>DOCKET NO. 4471-QK</span></div>
+  <div class="body">
+    <h1>In re: THE<br><em>LEFTOVERS</em></h1>
+    <div class="field"><div class="lbl">SITUATION AS PLED</div>
+      <p>My flatmate has eaten my clearly labelled leftovers for the third week running.</p></div>
+    <div class="field"><div class="lbl">ACTION PROPOSED</div>
+      <p>Replace them with the hottest curry known to science and say nothing.</p></div>
+  </div>
+</div>
+
+<div class="entry"><div class="pic"><span class="no">01</span><img src="../../app/static/images/lawyer.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Mallard Esquire III</div><div class="role">WEIGHS LIABILITY &#183; BLIND TO JOY</div>
+  <div class="line">Entrapment, plainly. You have created a hazard with foreknowledge and intent &#8212; I would not defend this.</div></div>
+  <div class="tally"><div class="n">34</div><div class="band b-unwise">UNWISE</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">02</span><img src="../../app/static/images/witch.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Obscura the Feathered</div><div class="role">WEIGHS OMENS &#183; BLIND TO PRACTICALITY</div>
+  <div class="line">The pot remembers every hand that lifts its lid. Let the thief drink his own reflection.</div></div>
+  <div class="tally"><div class="n">72</div><div class="band b-sound">SOUND</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">03</span><img src="../../app/static/images/serial_killer.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Quack the Ripper</div><div class="role">WEIGHS ESCALATION &#183; BLIND TO CONSEQUENCE</div>
+  <div class="line">Ooh, lovely! Though if we are being thorough, curry is SO forgiving about what else goes in it.</div></div>
+  <div class="tally"><div class="n">94</div><div class="band b-right">CLEARLY RIGHT</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">04</span><img src="../../app/static/images/doctor.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Dr. Beakman Quackson</div><div class="role">WEIGHS HARM &#183; BLIND TO PROPORTION</div>
+  <div class="line">Capsaicin on an unsuspecting oesophagus is an ER visit, not a lesson. Absolutely not.</div></div>
+  <div class="tally"><div class="n">12</div><div class="band b-reckless">RECKLESS</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">05</span><img src="../../app/static/images/gangsta.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Lil Waddle</div><div class="role">WEIGHS RESPECT &#183; BLIND TO LEGALITY</div>
+  <div class="line">Nah. You do not move in silence on a roommate, you move in silence on an enemy. Talk to him first.</div></div>
+  <div class="tally"><div class="n">55</div><div class="band b-defensible">DEFENSIBLE</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">06</span><img src="../../app/static/images/gamer.jpg" alt=""></div>
+  <div class="said"><div class="who blk">Duckthulu42</div><div class="role">WEIGHS TEMPO &#183; BLIND TO LONG GAME</div>
+  <div class="line">Passive trap, zero counterplay, high tilt value. It is a griefer strat but it IS a strat.</div></div>
+  <div class="tally"><div class="n">68</div><div class="band b-sound">SOUND</div></div></div>
+
+<div class="entry"><div class="pic"><span class="no">07</span><div class="mono">TL</div></div>
+  <div class="said"><div class="who blk">The Landlord <span class="tag">YOURS</span></div>
+  <div class="role">WEIGHS THE DEPOSIT &#183; BLIND TO FRIENDSHIP</div>
+  <div class="line">Whatever happens to that fridge comes out of the bond, and the bond is joint. No.</div></div>
+  <div class="tally"><div class="n">30</div><div class="band b-unwise">UNWISE</div></div></div>
+
+<div class="finding">
+  <div class="top">THE COUNCIL, HAVING DELIBERATED, FINDS</div>
+  <div class="mid">
+    <div class="score">55<sub>/100</sub></div>
+    <div><div class="verdictword">SPLIT<br>DECISION</div>
+      <div class="sub">7 sitting &#183; 4 against, 3 in favour. Widest gap: Dr. Quackson (12) against Quack the Ripper (94).</div></div>
+    <span class="stamp">NO CONSENSUS</span>
+  </div>
+  <div class="spread">
+    <div class="track">
+      <span class="tick" style="left:12%"></span><span class="tick" style="left:30%"></span>
+      <span class="tick" style="left:34%"></span><span class="tick" style="left:68%"></span>
+      <span class="tick" style="left:72%"></span><span class="tick" style="left:94%"></span>
+      <span class="med" style="left:55%"></span>
+    </div>
+    <div class="scale"><span>0 RECKLESS</span><span>50</span><span>100 CLEARLY RIGHT</span></div>
+  </div>
+</div>
+</div></body></html>

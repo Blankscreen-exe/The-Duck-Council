@@ -1,0 +1,38 @@
+{% from "_components.html" import portrait %}
+{# A duck on the Bench. Built-ins can be seated or stood down; user ducks can also be
+   amended and removed (D14). A stood-down duck hangs unpinned, as though it fell. #}
+{% set duck = entry.duck %}
+<article class="row profile{% if not entry.sitting %} stood{% endif %}" id="duck-{{ duck.id }}">
+  <div class="rtop">
+    {{ portrait(duck) }}
+    <form method="post" action="/bench/{{ duck.id }}/seat" data-reader-omit
+          hx-post="/bench/{{ duck.id }}/seat" hx-target="#duck-{{ duck.id }}" hx-swap="outerHTML">
+      <input type="hidden" name="sitting" value="{{ '0' if entry.sitting else '1' }}">
+      <button class="seat-toggle" type="submit" aria-pressed="{{ 'true' if entry.sitting else 'false' }}"
+              title="{{ 'Stand down' if entry.sitting else 'Seat' }} {{ duck.name }}">
+        {{ "Sitting" if entry.sitting else "Stood down" }}
+      </button>
+    </form>
+  </div>
+  <h2 class="nm">{{ duck.name }}{% if duck.origin == "user" %} <span class="tag">Yours</span>{% endif %}</h2>
+  <p class="rl">{{ duck.epithet }}</p>
+  <dl class="lens">
+    <dt data-reader-only hidden>Voice</dt><dd data-reader-only hidden>{{ duck.voice }}</dd>
+    <dt>Weighs</dt><dd>{{ duck.weighs }}</dd>
+    <dt>Blind to</dt><dd>{{ duck.blind_spot }}</dd>
+  </dl>
+  {% if notice_error %}<p class="notice-error" role="alert">{{ notice_error }}</p>{% endif %}
+  <div class="card-foot">
+  <button class="pick-up" type="button" data-pick-up aria-label="Pick up {{ duck.name }}'s notice">Pick it up</button>
+  {% if duck.origin == "user" %}
+    <div class="own" data-reader-omit>
+      <a href="/bench/{{ duck.id }}/edit">Amend</a>
+      <form method="post" action="/bench/{{ duck.id }}/delete"
+            hx-post="/bench/{{ duck.id }}/delete" hx-target="#bench" hx-swap="outerHTML"
+            hx-confirm="Remove {{ duck.name }} from the bench for good?">
+        <button type="submit">Remove</button>
+      </form>
+    </div>
+  {% endif %}
+  </div>
+</article>

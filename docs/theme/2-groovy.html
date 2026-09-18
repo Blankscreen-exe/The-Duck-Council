@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Groovy Tribunal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shrikhand&family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#FFF3DC; --ink:#241503; --orange:#F2691B; --yellow:#FFC531;
+  --green:#2F7D4F; --deep:#7A2E0E; --white:#FFFDF6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'Rubik',sans-serif;
+  padding:0 0 90px;line-height:1.5;overflow-x:hidden}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+.disp{font-family:'Shrikhand',cursive;font-weight:400;letter-spacing:.01em}
+
+/* sunburst header inside an arch */
+.arch{background:var(--deep);border-radius:260px 260px 26px 26px;padding:52px 28px 34px;
+  text-align:center;position:relative;overflow:hidden;margin-top:26px}
+.arch::before{content:"";position:absolute;inset:0;
+  background:repeating-conic-gradient(from 0deg at 50% 8%,
+    rgba(255,197,49,.20) 0deg 9deg, transparent 9deg 18deg)}
+.arch h1{position:relative;font-size:clamp(34px,8.5vw,64px);color:var(--yellow);line-height:.95;
+  text-shadow:4px 4px 0 var(--orange)}
+.arch .kick{position:relative;color:var(--cream);font-size:11px;letter-spacing:.34em;
+  text-transform:uppercase;font-weight:700;margin-bottom:14px;opacity:.75}
+.pleas{position:relative;margin-top:22px;display:grid;gap:10px;max-width:520px;margin-inline:auto}
+.plea{background:var(--cream);border-radius:22px;padding:12px 18px;text-align:left}
+.plea b{display:block;font-size:9px;letter-spacing:.2em;color:var(--orange);margin-bottom:2px}
+.plea span{font-size:14px;font-weight:500}
+
+/* wavy divider */
+.wave{height:30px;margin:26px 0 22px;
+  background:radial-gradient(circle at 12px -6px,transparent 14px,var(--orange) 15px 19px,transparent 20px) 0 0/40px 30px repeat-x}
+
+/* duck pods */
+.pod{background:var(--white);border-radius:34px;padding:18px;margin-bottom:16px;
+  display:grid;grid-template-columns:92px 1fr auto;gap:18px;align-items:center;
+  border:4px solid var(--ink);animation:pop .4s cubic-bezier(.34,1.56,.5,1) backwards}
+@keyframes pop{from{opacity:0;transform:scale(.9) translateY(18px)}}
+.pod:nth-of-type(2){animation-delay:.07s}.pod:nth-of-type(3){animation-delay:.14s}
+.pod:nth-of-type(4){animation-delay:.21s}.pod:nth-of-type(5){animation-delay:.28s}
+.pod:nth-of-type(6){animation-delay:.35s}.pod:nth-of-type(7){animation-delay:.42s}
+.ring{width:92px;height:92px;border-radius:50%;overflow:hidden;border:5px solid var(--yellow);
+  outline:4px solid var(--ink);flex:none;background:var(--green)}
+.ring img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.15) contrast(1.05)}
+.ring .mg{width:100%;height:100%;display:grid;place-items:center;
+  font-family:'Shrikhand',cursive;font-size:30px;color:var(--cream)}
+.who{font-family:'Shrikhand',cursive;font-size:19px;line-height:1.1}
+.role{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--orange);margin:3px 0 7px}
+.line{font-size:14.5px}
+.tag{display:inline-block;font-size:8.5px;letter-spacing:.1em;background:var(--green);color:var(--white);
+  border-radius:20px;padding:2px 8px;vertical-align:2px;font-family:'Rubik',sans-serif;font-weight:700}
+
+/* dial */
+.dial{width:82px;text-align:center;flex:none}
+.donut{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;
+  border:4px solid var(--ink);position:relative}
+.donut i{position:absolute;inset:9px;background:var(--white);border-radius:50%}
+.donut b{position:relative;font-family:'Shrikhand',cursive;font-size:25px;line-height:1}
+.dband{font-size:8px;letter-spacing:.1em;font-weight:900;text-transform:uppercase;margin-top:7px}
+
+/* the finding */
+.finding{margin-top:38px;background:var(--orange);border:5px solid var(--ink);
+  border-radius:40px 40px 200px 200px;padding:34px 26px 46px;text-align:center;color:var(--ink)}
+.finding .kick{font-size:10px;letter-spacing:.3em;font-weight:900;text-transform:uppercase;opacity:.7}
+.finding .big{font-family:'Shrikhand',cursive;font-size:clamp(70px,17vw,120px);line-height:.82;
+  color:var(--yellow);text-shadow:5px 5px 0 var(--deep);margin:8px 0 2px}
+.finding .word{font-family:'Shrikhand',cursive;font-size:clamp(22px,5vw,34px);color:var(--white)}
+.finding .sub{font-size:13px;max-width:400px;margin:10px auto 0;font-weight:500}
+.bar{max-width:430px;margin:24px auto 0;height:20px;background:var(--cream);border:4px solid var(--ink);
+  border-radius:20px;position:relative}
+.bar .d{position:absolute;top:50%;width:13px;height:13px;border-radius:50%;background:var(--deep);
+  transform:translate(-50%,-50%);border:2px solid var(--cream)}
+.bar .m{position:absolute;top:50%;width:26px;height:26px;border-radius:50%;background:var(--yellow);
+  border:4px solid var(--ink);transform:translate(-50%,-50%)}
+.scl{display:flex;justify-content:space-between;max-width:430px;margin:12px auto 0;
+  font-size:9px;letter-spacing:.14em;font-weight:700;opacity:.65}
+</style></head><body>
+<div class="wrap">
+
+<div class="arch">
+  <div class="kick">The Duck Council &#183; Now In Session</div>
+  <h1>THE<br>GROOVY<br>TRIBUNAL</h1>
+  <div class="pleas">
+    <div class="plea"><b>THE SITUATION</b><span>My flatmate has eaten my clearly labelled leftovers for the third week running.</span></div>
+    <div class="plea"><b>WHAT I INTEND TO DO</b><span>Replace them with the hottest curry known to science and say nothing.</span></div>
+  </div>
+</div>
+
+<div class="wave"></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/lawyer.jpg" alt=""></div>
+  <div><div class="who">Mallard Esquire III</div><div class="role">Weighs liability &#183; blind to joy</div>
+  <div class="line">Entrapment, plainly. You have created a hazard with foreknowledge and intent &#8212; I would not defend this.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--orange) 34%,var(--cream) 0)"><i></i><b>34</b></div><div class="dband" style="color:var(--orange)">Unwise</div></div></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/witch.jpg" alt=""></div>
+  <div><div class="who">Obscura the Feathered</div><div class="role">Weighs omens &#183; blind to practicality</div>
+  <div class="line">The pot remembers every hand that lifts its lid. Let the thief drink his own reflection.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--green) 72%,var(--cream) 0)"><i></i><b>72</b></div><div class="dband" style="color:var(--green)">Sound</div></div></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/serial_killer.jpg" alt=""></div>
+  <div><div class="who">Quack the Ripper</div><div class="role">Weighs escalation &#183; blind to consequence</div>
+  <div class="line">Ooh, lovely! Though if we are being thorough, curry is SO forgiving about what else goes in it.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--green) 94%,var(--cream) 0)"><i></i><b>94</b></div><div class="dband" style="color:var(--green)">Clearly right</div></div></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/doctor.jpg" alt=""></div>
+  <div><div class="who">Dr. Beakman Quackson</div><div class="role">Weighs harm &#183; blind to proportion</div>
+  <div class="line">Capsaicin on an unsuspecting oesophagus is an ER visit, not a lesson. Absolutely not.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--deep) 12%,var(--cream) 0)"><i></i><b>12</b></div><div class="dband" style="color:var(--deep)">Reckless</div></div></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/gangsta.jpg" alt=""></div>
+  <div><div class="who">Lil Waddle</div><div class="role">Weighs respect &#183; blind to legality</div>
+  <div class="line">Nah. You do not move in silence on a roommate, you move in silence on an enemy. Talk to him first.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--yellow) 55%,var(--cream) 0)"><i></i><b>55</b></div><div class="dband" style="color:var(--ink)">Defensible</div></div></div>
+
+<div class="pod"><div class="ring"><img src="../../app/static/images/gamer.jpg" alt=""></div>
+  <div><div class="who">Duckthulu42</div><div class="role">Weighs tempo &#183; blind to long game</div>
+  <div class="line">Passive trap, zero counterplay, high tilt value. It is a griefer strat but it IS a strat.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--green) 68%,var(--cream) 0)"><i></i><b>68</b></div><div class="dband" style="color:var(--green)">Sound</div></div></div>
+
+<div class="pod"><div class="ring"><div class="mg">TL</div></div>
+  <div><div class="who">The Landlord <span class="tag">YOURS</span></div><div class="role">Weighs the deposit &#183; blind to friendship</div>
+  <div class="line">Whatever happens to that fridge comes out of the bond, and the bond is joint. No.</div></div>
+  <div class="dial"><div class="donut" style="background:conic-gradient(var(--orange) 30%,var(--cream) 0)"><i></i><b>30</b></div><div class="dband" style="color:var(--orange)">Unwise</div></div></div>
+
+<div class="finding">
+  <div class="kick">The Council Has Spoken</div>
+  <div class="big">55</div>
+  <div class="word">A Split Verdict</div>
+  <div class="sub">Seven ducks sat. Four said no, three said go. The furthest apart were Dr. Quackson and Quack the Ripper, and they were not close.</div>
+  <div class="bar">
+    <span class="d" style="left:12%"></span><span class="d" style="left:30%"></span>
+    <span class="d" style="left:34%"></span><span class="d" style="left:68%"></span>
+    <span class="d" style="left:72%"></span><span class="d" style="left:94%"></span>
+    <span class="m" style="left:55%"></span>
+  </div>
+  <div class="scl"><span>RECKLESS</span><span>DEFENSIBLE</span><span>CLEARLY RIGHT</span></div>
+</div>
+
+</div></body></html>

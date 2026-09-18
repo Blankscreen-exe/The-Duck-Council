@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Duck Council banners</title>
+<style>
+@font-face { font-family: "DM Serif Display"; font-weight: 400; font-style: normal;
+  src: url("../../app/static/fonts/dm-serif-display-400.woff2") format("woff2"); }
+@font-face { font-family: "DM Serif Display"; font-weight: 400; font-style: italic;
+  src: url("../../app/static/fonts/dm-serif-display-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Karla"; font-weight: 400;
+  src: url("../../app/static/fonts/karla-400.woff2") format("woff2"); }
+@font-face { font-family: "Karla"; font-weight: 700;
+  src: url("../../app/static/fonts/karla-700.woff2") format("woff2"); }
+
+:root {
+  --felt: #123B2B; --feltdk: #0B241A; --cream: #F7F0DE; --brass: #C79A2E;
+  --brasslt: #E9C566; --ink: #14180F; --orange: #D9641E; --sage: #6E9B6A;
+  --serif: "DM Serif Display", Georgia, serif;
+  --sans: "Karla", system-ui, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #2A2D2A; color: #E8E6DF; font-family: var(--sans); padding: 32px; }
+
+/* ── the page around the banners (not part of any screenshot) ── */
+.guide { max-width: 900px; margin-bottom: 36px; line-height: 1.6; font-size: 15px; }
+.guide h1 { font: 400 30px var(--serif); color: var(--brasslt); margin-bottom: 8px; }
+.guide ol { margin: 10px 0 0 20px; }
+.guide code { background: #1A1C1A; padding: 1px 6px; border-radius: 3px; }
+.spec { margin-bottom: 56px; }
+.spec h2 { font: 700 13px var(--sans); letter-spacing: .2em; text-transform: uppercase;
+  color: #9FA59A; margin-bottom: 12px; }
+.frame { position: relative; overflow: hidden; flex: none; }
+
+/* ── shared pieces ── */
+.felt { background:
+  radial-gradient(ellipse at 20% 0%, rgba(233, 197, 102, .10), transparent 55%),
+  radial-gradient(ellipse at 100% 100%, rgba(0, 0, 0, .35), transparent 60%),
+  var(--felt); color: var(--cream); }
+.timber { background:
+  repeating-linear-gradient(91deg, rgba(0, 0, 0, .17) 0 2px, transparent 2px 7px),
+  repeating-linear-gradient(88deg, rgba(255, 255, 255, .022) 0 1px, transparent 1px 29px),
+  linear-gradient(176deg, #332516, #231A10 55%, #1A1209);
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, .65); }
+.seal { width: 84px; height: 84px; border-radius: 50%; border: 3px solid var(--brass);
+  display: grid; place-items: center; position: relative; flex: none; }
+.seal::before { content: ""; position: absolute; inset: 7px; border-radius: 50%;
+  border: 1px solid var(--brasslt); opacity: .5; }
+.seal span { font: 38px/1 var(--serif); color: var(--brasslt); }
+.kick { font: 700 14px var(--sans); letter-spacing: .34em; text-transform: uppercase;
+  color: var(--brasslt); }
+.title { font: 400 var(--serif); line-height: .98; }
+.title i { color: var(--brasslt); }
+.tagline { font: 400 22px/1.4 var(--sans); color: rgba(247, 240, 222, .9); }
+.rule-dash { height: 7px; background: repeating-linear-gradient(90deg, var(--brass) 0 14px,
+  transparent 14px 28px); }
+.chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip { font: 700 13px var(--sans); letter-spacing: .08em; color: var(--brasslt);
+  border: 1px solid rgba(233, 197, 102, .55); padding: 6px 12px; border-radius: 2px; }
+
+/* a parchment notice, pinned and hung slightly crooked */
+.notice { position: relative; transform: rotate(var(--rot, -1deg)); padding: 26px 16px 16px;
+  background:
+    radial-gradient(ellipse at 18% 20%, rgba(150, 112, 52, .14), transparent 46%),
+    radial-gradient(ellipse at 84% 70%, rgba(133, 98, 44, .12), transparent 44%),
+    linear-gradient(168deg, #FCF6E6, #F3E8CE 54%, #EADBB8);
+  box-shadow: inset 0 0 26px rgba(122, 88, 38, .2);
+  filter: drop-shadow(2px 6px 6px rgba(0, 0, 0, .55));
+  clip-path: polygon(0.5% 1.4%, 12% 0.4%, 26% 1.7%, 41% 0.3%, 58% 1.6%, 73% 0.4%, 88% 1.5%,
+    99.5% 0.7%, 99% 14%, 99.7% 31%, 98.7% 49%, 99.6% 67%, 99% 85%, 99.5% 98.7%, 86% 99.4%,
+    71% 98.3%, 55% 99.6%, 39% 98.4%, 24% 99.5%, 10% 98.5%, 0.5% 99.2%, 1% 83%, 0.3% 65%,
+    1.2% 47%, 0.4% 29%, 1% 15%);
+  color: var(--ink); }
+.notice::before { content: ""; position: absolute; top: 9px; left: 50%; width: 12px; height: 12px;
+  margin-left: -6px; border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, #F4D583, var(--brass) 56%, #7A5B12);
+  box-shadow: 0 2px 3px rgba(60, 40, 10, .5); }
+.top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.port { width: 58px; height: 72px; object-fit: cover; border: 2px solid var(--felt);
+  box-shadow: 0 0 0 1px var(--brass) inset; filter: sepia(.18); display: block; }
+.coin { width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
+  font: 20px/1 var(--serif); color: #FBF6E8;
+  box-shadow: 0 2px 0 rgba(20, 24, 15, .28), inset 0 0 0 3px rgba(255, 255, 255, .22); }
+.coin.low { background: radial-gradient(circle at 34% 28%, #E2A382, var(--orange) 62%, #8E3B0C); }
+.coin.mid { background: radial-gradient(circle at 34% 28%, var(--brasslt), var(--brass) 62%, #9A7520);
+  color: var(--feltdk); }
+.coin.high { background: radial-gradient(circle at 34% 28%, #A8D3A0, var(--sage) 62%, #3F6B3C); }
+.nm { font: 400 17px/1.15 var(--serif); margin-top: 10px; }
+.qt { font: italic 400 13.5px/1.4 var(--sans); color: #32372A; margin-top: 6px; }
+
+/* ════════════ README · A · 1600 × 400 : title on felt, the council on a board ════════════ */
+.readme-a { width: 1600px; height: 400px; display: grid; grid-template-columns: 640px 1fr; }
+.readme-a .left { padding: 50px 54px; display: flex; flex-direction: column; justify-content: center;
+  gap: 18px; position: relative; }
+.readme-a .left::after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 7px;
+  background: var(--brass); }
+.readme-a .row { display: flex; align-items: center; gap: 22px; }
+.readme-a .title { font-size: 72px; }
+.readme-a .board { display: flex; align-items: center; justify-content: center; gap: 18px;
+  padding: 0 40px; }
+.readme-a .notice { width: 172px; height: 292px; }
+
+/* ════════════ README · B · 1600 × 400 : the whole bench beneath the title ════════════ */
+.readme-b { width: 1600px; height: 400px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center; gap: 16px; }
+.readme-b .title { font-size: 80px; }
+.readme-b .bench { display: flex; gap: 14px; margin-top: 10px; }
+.readme-b .bench img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover;
+  border: 3px solid var(--brass); box-shadow: 0 4px 10px rgba(0, 0, 0, .45); filter: sepia(.12); }
+.readme-b .bench img:nth-child(odd) { transform: translateY(6px); }
+.readme-b .edge { position: absolute; left: 0; right: 0; bottom: 0; }
+
+/* ════════════ PORTFOLIO · A · 1200 × 630 : title band over a board and its finding ════════════ */
+.port-a { width: 1200px; height: 630px; display: grid; grid-template-rows: 250px 1fr; }
+.port-a .band { display: flex; align-items: center; gap: 30px; padding: 0 56px;
+  border-bottom: 7px solid var(--brass); }
+.port-a .title { font-size: 70px; }
+.port-a .band .tagline { margin-top: 8px; font-size: 21px; }
+.port-a .band .chips { margin-top: 14px; }
+.port-a .board { display: flex; align-items: center; gap: 18px; padding: 0 44px; }
+.port-a .notice { width: 170px; height: 300px; }
+.finding-card { margin-left: auto; width: 250px; padding: 22px 20px 20px; text-align: center;
+  background: var(--felt); color: var(--cream); border-top: 5px solid var(--brass);
+  border-bottom: 5px solid var(--brass); box-shadow: 0 10px 24px rgba(0, 0, 0, .5); }
+.finding-card .k { font: 700 11px var(--sans); letter-spacing: .28em; text-transform: uppercase;
+  color: var(--brasslt); }
+.finding-card .n { font: 76px/.9 var(--serif); color: var(--brasslt); margin-top: 8px; }
+.finding-card .n sub { font-size: 18px; opacity: .55; vertical-align: baseline; }
+.finding-card .w { font: italic 22px var(--serif); margin-top: 4px; }
+.track { position: relative; height: 22px; margin-top: 16px; border: 1px solid rgba(199, 154, 46, .5);
+  background: linear-gradient(90deg, rgba(217, 100, 30, .45), rgba(199, 154, 46, .2) 50%,
+    rgba(110, 155, 106, .45)); }
+.track b { position: absolute; top: 50%; width: 9px; height: 9px; border-radius: 50%;
+  transform: translate(-50%, -50%); border: 1px solid rgba(11, 36, 26, .6); }
+.track .needle { position: absolute; top: -5px; bottom: -5px; width: 3px; margin-left: -1.5px;
+  background: var(--brasslt); box-shadow: 0 0 8px rgba(233, 197, 102, .6); }
+
+/* ════════════ PORTFOLIO · B · 1200 × 630 : title left, two ducks disagreeing right ════════════ */
+.port-b { width: 1200px; height: 630px; display: grid; grid-template-columns: 620px 1fr; }
+.port-b .left { padding: 60px 56px; display: flex; flex-direction: column; justify-content: center;
+  gap: 20px; border-right: 7px solid var(--brass); }
+.port-b .title { font-size: 92px; line-height: .92; }
+.port-b .tagline { font-size: 23px; }
+.port-b .right { position: relative; }
+.port-b .notice { position: absolute; width: 250px; height: 360px; padding: 30px 22px 20px; }
+.port-b .notice .port { width: 76px; height: 94px; }
+.port-b .notice .coin { width: 64px; height: 64px; font-size: 26px; }
+.port-b .notice .nm { font-size: 22px; }
+.port-b .notice .qt { font-size: 16px; }
+.port-b .one { left: 50px; top: 80px; --rot: -5deg; }
+.port-b .two { left: 280px; top: 170px; --rot: 4deg; }
+.stamp { position: absolute; right: 36px; top: 40px; transform: rotate(-8deg);
+  font: 700 17px var(--sans); letter-spacing: .18em; text-transform: uppercase;
+  color: var(--brasslt); border: 3px solid var(--brasslt); padding: 8px 14px; opacity: .92; }
+</style></head><body>
+
+<div class="guide">
+  <h1>Duck Council banners</h1>
+  <p>Every banner below is drawn at its exact final size. To save one as a PNG:</p>
+  <ol>
+    <li>Open this file in Chrome or Edge and press <code>F12</code>.</li>
+    <li>In the Elements panel, find the banner's <code>&lt;div class="frame …"&gt;</code>
+        (or right-click the banner, choose <b>Inspect</b>, and step up to the frame).</li>
+    <li>Right-click that element and choose <b>Capture node screenshot</b>.</li>
+  </ol>
+  <p>For a sharper image (recommended for GitHub), first open the device toolbar
+     (<code>Ctrl+Shift+M</code>), set <b>DPR</b> to 2, then capture: you get a 2× PNG.</p>
+</div>
+
+<!-- ═══════════════════════════════ README · A ═══════════════════════════════ -->
+<section class="spec">
+  <h2>README banner · 1600 × 400 · A: title and the council on a board</h2>
+  <div class="frame readme-a">
+    <div class="left felt">
+      <div class="row">
+        <div class="seal"><span>&#9878;</span></div>
+        <p class="kick">A council of opinionated ducks</p>
+      </div>
+      <h1 class="title">The <i>Duck</i> Council</h1>
+      <p class="tagline">Tell them what you're about to do.<br>They will judge.</p>
+    </div>
+    <div class="board timber">
+      <div class="notice" style="--rot:-1.5deg">
+        <div class="top"><img class="port" src="../../app/static/images/lawyer.jpg" alt=""><div class="coin low">24</div></div>
+        <p class="nm">Mallard Esquire III</p>
+        <p class="qt">A trap you set on purpose is no excuse, counsel notes.</p>
+      </div>
+      <div class="notice" style="--rot:1.2deg">
+        <div class="top"><img class="port" src="../../app/static/images/doctor.jpg" alt=""><div class="coin low">15</div></div>
+        <p class="nm">Dr. Beakman Quackson</p>
+        <p class="qt">I can already see the waiting room.</p>
+      </div>
+      <div class="notice" style="--rot:-0.6deg">
+        <div class="top"><img class="port" src="../../app/static/images/witch.jpg" alt=""><div class="coin mid">54</div></div>
+        <p class="nm">Obscura the Feathered</p>
+        <p class="qt">Fire given in silence is a new debt.</p>
+      </div>
+      <div class="notice" style="--rot:1.6deg">
+        <div class="top"><img class="port" src="../../app/static/images/rich.jpg" alt=""><div class="coin high">73</div></div>
+        <p class="nm">Sir Bill Quackington IV</p>
+        <p class="qt">Magnificent leverage, my friend.</p>
+      </div>
+      <div class="notice" style="--rot:-1.2deg">
+        <div class="top"><img class="port" src="../../app/static/images/serial_killer.jpg" alt=""><div class="coin high">74</div></div>
+        <p class="nm">Quack the Ripper</p>
+        <p class="qt">Oh, how lovely! A little surprise supper!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ README · B ═══════════════════════════════ -->
+<section class="spec">
+  <h2>README banner · 1600 × 400 · B: the title over the whole bench</h2>
+  <div class="frame readme-b felt">
+    <p class="kick">A council of opinionated ducks</p>
+    <h1 class="title">The <i>Duck</i> Council</h1>
+    <p class="tagline">Tell them what you're about to do. They will judge.</p>
+    <div class="bench">
+      <img src="../../app/static/images/lawyer.jpg" alt=""><img src="../../app/static/images/doctor.jpg" alt="">
+      <img src="../../app/static/images/witch.jpg" alt=""><img src="../../app/static/images/serial_killer.jpg" alt="">
+      <img src="../../app/static/images/gangsta.jpg" alt=""><img src="../../app/static/images/gamer.jpg" alt="">
+      <img src="../../app/static/images/king.jpg" alt=""><img src="../../app/static/images/rich.jpg" alt="">
+      <img src="../../app/static/images/diplomat.jpg" alt=""><img src="../../app/static/images/techno.jpg" alt="">
+      <img src="../../app/static/images/spiritual_medium.jpg" alt=""><img src="../../app/static/images/detective.jpg" alt="">
+      <img src="../../app/static/images/rebel.jpg" alt="">
+    </div>
+    <div class="edge rule-dash"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ PORTFOLIO · A ═══════════════════════════════ -->
+<section class="spec">
+  <h2>Portfolio preview · 1200 × 630 · A: title band, a hearing and its finding</h2>
+  <div class="frame port-a">
+    <div class="band felt">
+      <div class="seal"><span>&#9878;</span></div>
+      <div>
+        <h1 class="title">The <i>Duck</i> Council</h1>
+        <p class="tagline">Tell them what you're about to do. They will judge.</p>
+        <div class="chips"><span class="chip">FastAPI</span><span class="chip">htmx + SSE</span>
+          <span class="chip">SQLite</span><span class="chip">Claude · OpenAI · Ollama</span></div>
+      </div>
+    </div>
+    <div class="board timber">
+      <div class="notice" style="--rot:-1.4deg">
+        <div class="top"><img class="port" src="../../app/static/images/doctor.jpg" alt=""><div class="coin low">15</div></div>
+        <p class="nm">Dr. Beakman Quackson</p>
+        <p class="qt">I can already see the waiting room.</p>
+      </div>
+      <div class="notice" style="--rot:1.1deg">
+        <div class="top"><img class="port" src="../../app/static/images/witch.jpg" alt=""><div class="coin mid">54</div></div>
+        <p class="nm">Obscura the Feathered</p>
+        <p class="qt">Fire given in silence is a new debt.</p>
+      </div>
+      <div class="notice" style="--rot:-0.7deg">
+        <div class="top"><img class="port" src="../../app/static/images/serial_killer.jpg" alt=""><div class="coin high">74</div></div>
+        <p class="nm">Quack the Ripper</p>
+        <p class="qt">Oh, how lovely! A little surprise supper!</p>
+      </div>
+      <div class="finding-card">
+        <p class="k">The council finds</p>
+        <p class="n">41<sub>/100</sub></p>
+        <p class="w">A split decision</p>
+        <div class="track">
+          <b style="left:15%;background:var(--orange)"></b><b style="left:24%;background:var(--orange)"></b>
+          <b style="left:27%;background:var(--orange)"></b><b style="left:54%;background:var(--brasslt)"></b>
+          <b style="left:73%;background:var(--sage)"></b><b style="left:74%;background:var(--sage)"></b>
+          <span class="needle" style="left:41%"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ PORTFOLIO · B ═══════════════════════════════ -->
+<section class="spec">
+  <h2>Portfolio preview · 1200 × 630 · B: the title, and two ducks who disagree</h2>
+  <div class="frame port-b">
+    <div class="left felt">
+      <div class="seal"><span>&#9878;</span></div>
+      <h1 class="title">The <i>Duck</i><br>Council</h1>
+      <p class="tagline">Tell them what you're about to do.<br>They will judge.</p>
+      <div class="chips"><span class="chip">FastAPI</span><span class="chip">htmx + SSE</span>
+        <span class="chip">SQLite</span><span class="chip">Claude · OpenAI · Ollama</span></div>
+    </div>
+    <div class="right timber">
+      <div class="notice one">
+        <div class="top"><img class="port" src="../../app/static/images/doctor.jpg" alt=""><div class="coin low">15</div></div>
+        <p class="nm">Dr. Beakman Quackson, MD</p>
+        <p class="qt">Absolutely not. I can already see the waiting room, and you are in it.</p>
+      </div>
+      <div class="notice two">
+        <div class="top"><img class="port" src="../../app/static/images/serial_killer.jpg" alt=""><div class="coin high">74</div></div>
+        <p class="nm">Quack the Ripper</p>
+        <p class="qt">Oh, how lovely, a little surprise supper! I do adore a lesson they'll feel for days.</p>
+      </div>
+      <p class="stamp">Split decision</p>
+    </div>
+  </div>
+</section>
+
+</body></html>

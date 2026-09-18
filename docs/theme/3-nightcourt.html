@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Night Court</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --black:#0B0B09; --coal:#15150F; --bone:#EDEAD8; --yellow:#FFE500;
+  --orange:#FF6A00; --green:#5BE37E; --dim:#5A5A4C;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--bone);font-family:'Space Grotesk',sans-serif;
+  padding:0 0 90px;line-height:1.5}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+.anton{font-family:'Anton',sans-serif;text-transform:uppercase;letter-spacing:.005em;font-weight:400}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--dim);padding:22px 0 0;margin-bottom:26px}
+.strip{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.24em;
+  color:var(--dim);text-transform:uppercase;flex-wrap:wrap;gap:8px}
+.mast h1{font-family:'Anton',sans-serif;text-transform:uppercase;
+  font-size:clamp(46px,13vw,124px);line-height:.84;margin:12px 0 4px;color:var(--bone)}
+.mast h1 span{color:var(--yellow)}
+.mast h1 i{font-style:normal;-webkit-text-stroke:2px var(--orange);color:transparent}
+.pleas{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;
+  background:var(--dim);border:1px solid var(--dim);margin:22px 0 0}
+.plea{background:var(--black);padding:14px 16px}
+.plea b{display:block;font-size:9px;letter-spacing:.24em;color:var(--yellow);margin-bottom:5px}
+.plea span{font-size:14px;color:var(--bone)}
+
+/* bench grid */
+.bench{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;
+  background:var(--dim);border:1px solid var(--dim);margin-top:26px}
+.seat{background:var(--coal);padding:16px;display:flex;flex-direction:column;gap:11px;
+  animation:fade .3s ease backwards}
+@keyframes fade{from{opacity:0;background:var(--yellow)}}
+.seat:nth-of-type(2){animation-delay:.08s}.seat:nth-of-type(3){animation-delay:.16s}
+.seat:nth-of-type(4){animation-delay:.24s}.seat:nth-of-type(5){animation-delay:.32s}
+.seat:nth-of-type(6){animation-delay:.40s}.seat:nth-of-type(7){animation-delay:.48s}
+.hd{display:flex;gap:12px;align-items:center}
+.av{width:52px;height:52px;flex:none;overflow:hidden;background:var(--yellow);position:relative}
+.av img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:grayscale(1) contrast(1.5) brightness(.95);mix-blend-mode:luminosity;opacity:.9}
+.av .mg{width:100%;height:100%;display:grid;place-items:center;background:var(--green);
+  color:var(--black);font-family:'Anton',sans-serif;font-size:21px}
+.nm{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:17px;line-height:1.05}
+.rl{font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-top:3px}
+.qt{font-size:14px;color:var(--bone);opacity:.92;flex:1}
+.mtr{display:flex;align-items:center;gap:10px;border-top:1px solid #2A2A22;padding-top:10px}
+.mtr .track{flex:1;height:7px;background:#2A2A22;position:relative}
+.mtr .fill{position:absolute;inset:0 auto 0 0}
+.mtr .n{font-family:'Anton',sans-serif;font-size:27px;line-height:.8;min-width:44px;text-align:right}
+.mtr .bd{font-size:8px;letter-spacing:.16em;text-transform:uppercase;min-width:74px}
+.tag{font-size:8px;letter-spacing:.14em;border:1px solid var(--green);color:var(--green);
+  padding:1px 5px;font-family:'Space Grotesk',sans-serif;vertical-align:3px}
+
+/* finding */
+.finding{margin-top:30px;border:1px solid var(--dim);display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}
+.fl{background:var(--yellow);color:var(--black);padding:26px 22px}
+.fl .k{font-size:10px;letter-spacing:.26em;text-transform:uppercase;font-weight:700;opacity:.65}
+.fl .n{font-family:'Anton',sans-serif;font-size:clamp(78px,18vw,150px);line-height:.78;margin:6px 0}
+.fl .w{font-family:'Anton',sans-serif;text-transform:uppercase;font-size:clamp(19px,4vw,30px);line-height:1}
+.fr{padding:26px 22px;background:var(--coal)}
+.fr p{font-size:13.5px;color:var(--bone);opacity:.85;margin-bottom:20px}
+.dist{height:52px;position:relative;border-bottom:1px solid var(--dim)}
+.dist .t{position:absolute;bottom:0;width:1px;height:20px;background:var(--dim)}
+.dist .t b{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
+  width:9px;height:9px;background:var(--bone);border-radius:50%}
+.dist .med{position:absolute;bottom:0;width:2px;height:52px;background:var(--orange)}
+.dist .med b{position:absolute;bottom:52px;left:50%;transform:translateX(-50%);
+  font-family:'Anton',sans-serif;font-size:11px;color:var(--orange);white-space:nowrap}
+.scl{display:flex;justify-content:space-between;font-size:9px;letter-spacing:.18em;
+  color:var(--dim);margin-top:9px;text-transform:uppercase}
+@media(max-width:640px){.finding{grid-template-columns:1fr}}
+</style></head><body><div class="wrap">
+
+<div class="mast">
+  <div class="strip"><span>The Duck Council</span><span>Session 4471 &#183; 02:14</span></div>
+  <h1>NIGHT<br><span>COURT</span> <i>IS</i><br>IN SESSION</h1>
+  <div class="pleas">
+    <div class="plea"><b>SITUATION</b><span>My flatmate has eaten my clearly labelled leftovers for the third week running.</span></div>
+    <div class="plea"><b>PROPOSED ACTION</b><span>Replace them with the hottest curry known to science and say nothing.</span></div>
+  </div>
+</div>
+
+<div class="bench">
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/lawyer.jpg" alt=""></div>
+  <div><div class="nm">Mallard Esquire III</div><div class="rl">Liability &#183; blind to joy</div></div></div>
+  <div class="qt">Entrapment, plainly. You have created a hazard with foreknowledge and intent &#8212; I would not defend this.</div>
+  <div class="mtr"><span class="bd" style="color:var(--orange)">Unwise</span>
+    <span class="track"><span class="fill" style="width:34%;background:var(--orange)"></span></span>
+    <span class="n" style="color:var(--orange)">34</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/witch.jpg" alt=""></div>
+  <div><div class="nm">Obscura the Feathered</div><div class="rl">Omens &#183; blind to practicality</div></div></div>
+  <div class="qt">The pot remembers every hand that lifts its lid. Let the thief drink his own reflection.</div>
+  <div class="mtr"><span class="bd" style="color:var(--green)">Sound</span>
+    <span class="track"><span class="fill" style="width:72%;background:var(--green)"></span></span>
+    <span class="n" style="color:var(--green)">72</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/serial_killer.jpg" alt=""></div>
+  <div><div class="nm">Quack the Ripper</div><div class="rl">Escalation &#183; blind to consequence</div></div></div>
+  <div class="qt">Ooh, lovely! Though if we are being thorough, curry is SO forgiving about what else goes in it.</div>
+  <div class="mtr"><span class="bd" style="color:var(--green)">Clearly right</span>
+    <span class="track"><span class="fill" style="width:94%;background:var(--green)"></span></span>
+    <span class="n" style="color:var(--green)">94</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/doctor.jpg" alt=""></div>
+  <div><div class="nm">Dr. Beakman Quackson</div><div class="rl">Harm &#183; blind to proportion</div></div></div>
+  <div class="qt">Capsaicin on an unsuspecting oesophagus is an ER visit, not a lesson. Absolutely not.</div>
+  <div class="mtr"><span class="bd" style="color:#FF3B3B">Reckless</span>
+    <span class="track"><span class="fill" style="width:12%;background:#FF3B3B"></span></span>
+    <span class="n" style="color:#FF3B3B">12</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/gangsta.jpg" alt=""></div>
+  <div><div class="nm">Lil Waddle</div><div class="rl">Respect &#183; blind to legality</div></div></div>
+  <div class="qt">Nah. You do not move in silence on a roommate, you move in silence on an enemy. Talk to him first.</div>
+  <div class="mtr"><span class="bd" style="color:var(--yellow)">Defensible</span>
+    <span class="track"><span class="fill" style="width:55%;background:var(--yellow)"></span></span>
+    <span class="n" style="color:var(--yellow)">55</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><img src="../../app/static/images/gamer.jpg" alt=""></div>
+  <div><div class="nm">Duckthulu42</div><div class="rl">Tempo &#183; blind to long game</div></div></div>
+  <div class="qt">Passive trap, zero counterplay, high tilt value. It is a griefer strat but it IS a strat.</div>
+  <div class="mtr"><span class="bd" style="color:var(--green)">Sound</span>
+    <span class="track"><span class="fill" style="width:68%;background:var(--green)"></span></span>
+    <span class="n" style="color:var(--green)">68</span></div></div>
+
+<div class="seat"><div class="hd"><div class="av"><div class="mg">TL</div></div>
+  <div><div class="nm">The Landlord <span class="tag">YOURS</span></div><div class="rl">The deposit &#183; blind to friendship</div></div></div>
+  <div class="qt">Whatever happens to that fridge comes out of the bond, and the bond is joint. No.</div>
+  <div class="mtr"><span class="bd" style="color:var(--orange)">Unwise</span>
+    <span class="track"><span class="fill" style="width:30%;background:var(--orange)"></span></span>
+    <span class="n" style="color:var(--orange)">30</span></div></div>
+
+</div>
+
+<div class="finding">
+  <div class="fl"><div class="k">The council finds</div><div class="n">55</div><div class="w">Split<br>decision</div></div>
+  <div class="fr">
+    <p>Seven ducks sat. Four against, three in favour, and nobody near the middle. The widest gap was Dr. Quackson at 12 against Quack the Ripper at 94 &#8212; which tells you more than the median does.</p>
+    <div class="dist">
+      <span class="t" style="left:12%"><b></b></span><span class="t" style="left:30%"><b></b></span>
+      <span class="t" style="left:34%"><b></b></span><span class="t" style="left:68%"><b></b></span>
+      <span class="t" style="left:72%"><b></b></span><span class="t" style="left:94%"><b></b></span>
+      <span class="med" style="left:55%"><b>MEDIAN 55</b></span>
+    </div>
+    <div class="scl"><span>0 Reckless</span><span>50</span><span>100 Clearly right</span></div>
+  </div>
+</div>
+
+</div></body></html>

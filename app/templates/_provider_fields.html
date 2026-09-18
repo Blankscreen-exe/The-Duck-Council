@@ -1,0 +1,56 @@
+{# The fields one kind of provider needs. Swapped in when the provider choice changes.
+   A key is never put back into this form; when amending, blank means "keep it". #}
+<div id="provider-fields">
+  {% if preset.note %}<p class="help preset-note">{{ preset.note }}</p>{% endif %}
+
+  <label>
+    <span class="field-name">Name on the list</span>
+    <input name="label" maxlength="60" value="{{ values.label or '' }}" placeholder="{{ preset.label }}">
+  </label>
+
+  <label>
+    <span class="field-name">Model</span>
+    <span class="help">
+      {% if preset.kind == "claude_code" %}"default" uses whatever your Claude Code uses; or name one, such as sonnet.
+      {% else %}Pre-filled with a sensible choice. Any model this provider offers will work.{% endif %}
+    </span>
+    <input name="model" maxlength="120" value="{{ values.model or preset.default_model }}" required>
+  </label>
+
+  {% if preset.kind == "openai_compatible" %}
+    <label>
+      <span class="field-name">Base URL</span>
+      <input name="base_url" maxlength="300" value="{{ values.base_url or preset.base_url or '' }}"
+             {% if not preset.base_url %}required placeholder="https://example.com/v1"{% endif %}>
+    </label>
+  {% endif %}
+
+  {% if preset.requires_key or preset.kind == "openai_compatible" %}
+    <label>
+      <span class="field-name">API key{% if not preset.requires_key %} (optional){% endif %}</span>
+      {% if not can_keep_keys %}
+        <span class="help">This computer has no credential store, so keys cannot be kept.</span>
+      {% else %}
+        <span class="help">
+          {% if editing and editing.key_hint %}Leave blank to keep the current key ({{ editing.key_hint }}).
+          {% else %}Stored in this computer's credential store.{% endif %}
+          {% if preset.help_url %}<a href="{{ preset.help_url }}" target="_blank" rel="noreferrer noopener">Get a key</a>{% endif %}
+        </span>
+        <input name="api_key" type="password" autocomplete="off" spellcheck="false"
+               {% if preset.requires_key and not (editing and editing.key_hint) %}required{% endif %}>
+      {% endif %}
+    </label>
+  {% endif %}
+
+  {% if preset.kind in takes_effort %}
+    <label>
+      <span class="field-name">Effort</span>
+      <span class="help">How hard it thinks before answering. Low suits one-line verdicts and keeps hearings quick.</span>
+      <select name="effort">
+        {% for level in efforts %}
+          <option value="{{ level }}"{% if level == (values.effort or "low") %} selected{% endif %}>{{ level }}</option>
+        {% endfor %}
+      </select>
+    </label>
+  {% endif %}
+</div>

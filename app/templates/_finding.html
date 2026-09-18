@@ -1,0 +1,30 @@
+{# The council's finding (D16), with the engraved scale bar. Lands last, with the gavel. #}
+{% set finding = run.finding %}
+{% set votes = voted_seats(run.roster, run.seats) %}
+<section class="finding{% if live %} stamped{% endif %}" id="finding" aria-label="The finding of the bench">
+  <p class="kick">The finding of the bench</p>
+  {% if finding.median is none %}
+    <p class="w">Every chair is empty</p>
+    <p>No duck returned a verdict, so there is nothing to find. The provider may be unreachable.</p>
+    <p class="by">Heard by {{ run.heard_by }}</p>
+  {% else %}
+    <p class="n">{{ finding.median }}<sub>/100</sub></p>
+    <p class="by">Heard by {{ run.heard_by }}</p>
+    <p class="w">{{ verdict_word(finding) }}</p>
+    <p>{{ finding_summary(finding, run.seats) }}</p>
+
+    <div class="scale" aria-hidden="true">
+      <div class="cue"><span style="left: {{ finding.median }}%">Median {{ finding.median }}</span></div>
+      <div class="track">
+        <i style="left: 20%"></i><i style="left: 40%"></i><i style="left: 60%"></i><i style="left: 80%"></i>
+        {% for seat in votes %}
+          <b class="{{ coin_class(seat.verdict.band) }}" style="left: {{ seat.verdict.score }}%"
+             title="{{ seat.duck.name }}: {{ seat.verdict.score }}"></b>
+        {% endfor %}
+        <span class="needle" style="left: {{ finding.median }}%"></span>
+      </div>
+      <div class="ticks"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span></div>
+    </div>
+    <div class="ends" aria-hidden="true"><span>Reckless</span><span>Clearly right</span></div>
+  {% endif %}
+</section>

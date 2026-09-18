@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "_components.html" import nav %}
+{% block title %}Amend a provider · The Duck Council{% endblock %}
+{% block heading %}Amend <i>{{ editing.label }}</i>{% endblock %}
+{% block nav %}{{ nav("chambers") }}{% endblock %}
+{% block content %}
+<div class="filing filing-note">
+  <p>Saving tests the provider again. Changing its settings means the old test result no
+     longer applies.</p>
+</div>
+<div class="wrap">
+  <form class="sheet" method="post" action="/providers/{{ editing.id }}/edit">
+    <h2 class="sheet-title">{{ preset.label }}</h2>
+    {% if error %}<p class="error-line" role="alert">{{ error }}</p>{% endif %}
+    {% include "_provider_fields.html" %}
+    <div class="sheet-actions">
+      <button class="btn" type="submit">Save and test</button>
+      <a class="quiet" href="/providers">Back to Chambers</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

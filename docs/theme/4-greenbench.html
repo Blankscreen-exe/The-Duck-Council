@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Green Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --felt:#123B2B; --feltdk:#0B241A; --cream:#F7F0DE; --brass:#C79A2E;
+  --brasslt:#E9C566; --ink:#14180F; --orange:#D9641E; --sage:#6E9B6A;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--cream);color:var(--ink);font-family:'Karla',sans-serif;
+  line-height:1.55;padding-bottom:90px}
+.wrap{max-width:880px;margin:0 auto;padding:0 16px}
+.serif{font-family:'DM Serif Display',serif;font-weight:400}
+
+/* seal + masthead */
+.head{background:var(--felt);color:var(--cream);padding:38px 24px 32px;text-align:center;
+  border-bottom:7px solid var(--brass);position:relative}
+.head::after{content:"";position:absolute;left:0;right:0;bottom:-15px;height:8px;
+  background:repeating-linear-gradient(90deg,var(--brass) 0 14px,transparent 14px 28px)}
+.seal{width:78px;height:78px;margin:0 auto 16px;border-radius:50%;border:3px solid var(--brass);
+  display:grid;place-items:center;position:relative}
+.seal::before{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid var(--brasslt);opacity:.5}
+.seal span{font-family:'DM Serif Display',serif;font-size:34px;color:var(--brasslt);line-height:1}
+.head .kick{font-size:10px;letter-spacing:.38em;text-transform:uppercase;color:var(--brasslt);margin-bottom:9px}
+.head h1{font-family:'DM Serif Display',serif;font-size:clamp(32px,7vw,56px);line-height:1.02}
+.head h1 i{color:var(--brasslt)}
+.head .rule{width:52px;height:1px;background:var(--brass);margin:20px auto 24px}
+
+/* the matter before the bench - two distinct sections */
+.matter{max-width:660px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;
+  text-align:left;border-top:1px solid rgba(199,154,46,.45);
+  border-bottom:1px solid rgba(199,154,46,.45)}
+.matter .cell{padding:20px 22px}
+.matter .cell+.cell{border-left:1px solid rgba(199,154,46,.45)}
+.matter .lbl{display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
+.matter .num{font-family:'DM Serif Display',serif;font-size:22px;color:var(--brasslt);line-height:1}
+.matter .cap{font-size:13px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--brasslt);font-weight:700}
+.matter p{font-size:14.5px;opacity:.94}
+@media(max-width:620px){
+  .matter{grid-template-columns:1fr}
+  .matter .cell+.cell{border-left:0;border-top:1px solid rgba(199,154,46,.45)}
+}
+
+/* bench rows */
+/* ── the quest board ─────────────────── */
+.bench{margin-top:46px;position:relative;display:grid;align-items:start;
+  grid-template-columns:repeat(auto-fill,minmax(318px,1fr));
+  gap:30px 26px;padding:34px 22px 40px;
+  background:
+    repeating-linear-gradient(91deg,rgba(0,0,0,.17) 0 2px,transparent 2px 7px),
+    repeating-linear-gradient(88deg,rgba(255,255,255,.022) 0 1px,transparent 1px 29px),
+    linear-gradient(176deg,#332516,#231a10 55%,#1A1209);
+  /* carved timber frame: grain runs around all four sides */
+  border:18px solid #3D2913;
+  border-image:repeating-linear-gradient(172deg,
+    #5E4121 0 3px,#4A3117 3px 7px,#382509 7px 11px,#573C1B 11px 14px) 1;
+  box-shadow:
+    inset 0 0 0 2px rgba(0,0,0,.62),      /* inner lip where frame meets board */
+    inset 0 0 70px rgba(0,0,0,.62),       /* recessed depth */
+    0 10px 24px rgba(0,0,0,.4)}           /* board hangs off the wall */
+/* brass bolts pinning the frame at each corner */
+.bench::before{content:"";position:absolute;inset:-18px;pointer-events:none;z-index:4;
+  background:
+    radial-gradient(circle at 9px 9px,#F4D68C 0 2.4px,var(--brass) 2.4px 5px,#674C0E 5px 6.6px,transparent 6.6px),
+    radial-gradient(circle at calc(100% - 9px) 9px,#F4D68C 0 2.4px,var(--brass) 2.4px 5px,#674C0E 5px 6.6px,transparent 6.6px),
+    radial-gradient(circle at 9px calc(100% - 9px),#F4D68C 0 2.4px,var(--brass) 2.4px 5px,#674C0E 5px 6.6px,transparent 6.6px),
+    radial-gradient(circle at calc(100% - 9px) calc(100% - 9px),#F4D68C 0 2.4px,var(--brass) 2.4px 5px,#674C0E 5px 6.6px,transparent 6.6px)}
+
+/* each verdict is a notice nailed to it */
+.row{--rot:-.5deg;position:relative;padding:30px 22px 26px;
+  transform:rotate(var(--rot));
+  background:
+    radial-gradient(ellipse at 18% 20%,rgba(150,112,52,.14),transparent 46%),
+    radial-gradient(ellipse at 84% 70%,rgba(133,98,44,.12),transparent 44%),
+    radial-gradient(ellipse at 58% 96%,rgba(120,88,38,.10),transparent 40%),
+    linear-gradient(168deg,#FCF6E6,#F3E8CE 54%,#EADBB8);
+  box-shadow:inset 0 0 30px rgba(122,88,38,.20);
+  filter:drop-shadow(2px 5px 5px rgba(0,0,0,.45));
+  clip-path:polygon(
+    0.5% 1.4%, 12% 0.4%, 26% 1.7%, 41% 0.3%, 58% 1.6%, 73% 0.4%, 88% 1.5%, 99.5% 0.7%,
+    99% 14%, 99.7% 31%, 98.7% 49%, 99.6% 67%, 99% 85%, 99.5% 98.7%,
+    86% 99.4%, 71% 98.3%, 55% 99.6%, 39% 98.4%, 24% 99.5%, 10% 98.5%, 0.5% 99.2%,
+    1% 83%, 0.3% 65%, 1.2% 47%, 0.4% 29%, 1% 15%);
+  animation:rise .38s ease backwards}
+.row::before{content:"";position:absolute;top:10px;left:50%;width:13px;height:13px;
+  margin-left:-6.5px;border-radius:50%;z-index:3;
+  background:radial-gradient(circle at 34% 28%,#F4D583,var(--brass) 56%,#7A5B12);
+  box-shadow:0 2px 3px rgba(60,40,10,.5), inset 0 -1px 1px rgba(255,255,255,.35)}
+.rtop{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:15px}
+@keyframes rise{from{opacity:0;transform:rotate(var(--rot)) translateY(14px)}}
+.row:nth-of-type(4n+2){--rot:.6deg}
+.row:nth-of-type(4n+3){--rot:-.35deg}
+.row:nth-of-type(4n+4){--rot:.45deg}
+.row:nth-of-type(2){animation-delay:.08s}.row:nth-of-type(3){animation-delay:.16s}
+.row:nth-of-type(4){animation-delay:.24s}.row:nth-of-type(5){animation-delay:.32s}
+.row:nth-of-type(6){animation-delay:.40s}.row:nth-of-type(7){animation-delay:.48s}
+.port{width:68px;height:84px;overflow:hidden;background:var(--felt);flex:none;
+  border:2px solid var(--felt);box-shadow:0 0 0 1px var(--brass) inset}
+.port img{width:100%;height:100%;object-fit:cover;display:block;filter:sepia(.18) saturate(.95)}
+.port .mg{width:100%;height:100%;display:grid;place-items:center;background:var(--sage);
+  color:var(--cream);font-family:'DM Serif Display',serif;font-size:26px}
+.nm{font-family:'DM Serif Display',serif;font-size:20px;line-height:1.12}
+.rl{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--felt);
+  opacity:.82;margin:6px 0 12px}
+.qt{font-size:15px;font-style:italic;color:#32372A}
+.tag{font-family:'Karla',sans-serif;font-style:normal;font-size:8.5px;letter-spacing:.14em;
+  background:var(--brass);color:var(--feltdk);padding:2px 7px;border-radius:2px;vertical-align:4px;font-weight:700}
+
+/* brass medallion */
+.med{text-align:center;flex:none}
+.coin{width:64px;height:64px;margin:0 auto;border-radius:50%;display:grid;place-items:center;
+  background:radial-gradient(circle at 34% 28%,var(--brasslt),var(--brass) 62%,#9A7520);
+  box-shadow:0 2px 0 rgba(20,24,15,.28), inset 0 0 0 3px rgba(255,255,255,.22)}
+.coin b{font-family:'DM Serif Display',serif;font-size:25px;color:var(--feltdk);line-height:1}
+.coin.low{background:radial-gradient(circle at 34% 28%,#E2A382,var(--orange) 62%,#8E3B0C)}
+.coin.mid{background:radial-gradient(circle at 34% 28%,var(--brasslt),var(--brass) 62%,#9A7520)}
+.coin.high{background:radial-gradient(circle at 34% 28%,#A8D3A0,var(--sage) 62%,#3F6B3C)}
+.coin.high b,.coin.low b{color:#FBF6E8}
+.mb{font-size:9px;letter-spacing:.18em;text-transform:uppercase;margin-top:9px;opacity:.7}
+
+/* the finding */
+.finding{margin-top:46px;background:var(--felt);color:var(--cream);
+  border-top:7px solid var(--brass);border-bottom:7px solid var(--brass);
+  padding:36px 26px 40px;text-align:center}
+.finding .kick{font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:var(--brasslt)}
+.finding .n{font-family:'DM Serif Display',serif;font-size:clamp(76px,17vw,132px);
+  line-height:.86;color:var(--brasslt);margin:10px 0 2px}
+.finding .n sub{font-size:20px;vertical-align:baseline;opacity:.55}
+.finding .w{font-family:'DM Serif Display',serif;font-style:italic;font-size:clamp(22px,5vw,34px)}
+.finding p{max-width:460px;margin:14px auto 0;font-size:13.5px;opacity:.85}
+/* engraved scale bar */
+.scale{max-width:470px;margin:34px auto 0}
+.scale .cue{position:relative;height:25px}
+.scale .cue span{position:absolute;bottom:0;transform:translateX(-50%);white-space:nowrap;
+  font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--brasslt);font-weight:700}
+.scale .cue span::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-5px;
+  border:5px solid transparent;border-top-color:var(--brasslt)}
+.track{position:relative;height:34px;border:1px solid rgba(199,154,46,.5);
+  background:linear-gradient(90deg,
+    rgba(217,100,30,.40),rgba(217,100,30,.20) 22%,
+    rgba(199,154,46,.18) 44%,rgba(199,154,46,.24) 56%,
+    rgba(110,155,106,.22) 78%,rgba(110,155,106,.44));
+  box-shadow:inset 0 2px 7px rgba(0,0,0,.5)}
+.track i{position:absolute;top:0;bottom:0;width:1px;background:rgba(199,154,46,.3)}
+.track b{position:absolute;top:50%;width:11px;height:11px;border-radius:50%;
+  transform:translate(-50%,-50%);border:1px solid rgba(11,36,26,.6);
+  box-shadow:0 1px 2px rgba(0,0,0,.45)}
+.track .needle{position:absolute;top:-6px;bottom:-6px;width:3px;margin-left:-1.5px;
+  background:linear-gradient(180deg,#F6DB97,var(--brass));
+  box-shadow:0 0 0 1px rgba(11,36,26,.65), 0 0 10px rgba(233,197,102,.55)}
+.ticks{display:flex;justify-content:space-between;margin-top:11px;
+  font-size:12px;letter-spacing:.12em;color:var(--brasslt);opacity:.9;font-weight:500}
+.ends{display:flex;justify-content:space-between;max-width:470px;margin:9px auto 0;
+  font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;opacity:.92;font-weight:700}
+
+/* ── convene bar (mockup only: audio needs a gesture) ── */
+.convene{display:flex;align-items:center;justify-content:center;gap:14px;
+  margin:40px auto 0;flex-wrap:wrap}
+.btn{font-family:'Karla',sans-serif;font-size:13px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:#2A1E08;cursor:pointer;padding:13px 26px;border:0;
+  background:linear-gradient(176deg,#F0CF7E,var(--brass) 58%,#9A7520);
+  box-shadow:0 3px 0 #6F520F, 0 6px 12px rgba(0,0,0,.28);border-radius:2px}
+.btn:hover{filter:brightness(1.07)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #6F520F}
+.btn[disabled]{opacity:.5;cursor:default;transform:none}
+.mute{font-family:'Karla',sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--felt);cursor:pointer;background:none;border:1px solid rgba(18,59,43,.4);
+  padding:11px 15px;border-radius:2px;font-weight:700}
+.mute[aria-pressed="true"]{opacity:.45}
+
+/* ── the stamp ── */
+/* starts at 130% and fully transparent, then scale and opacity resolve
+   together to 100% / 1 — the notice settles onto the board */
+@keyframes slam{
+  0%  {opacity:0;
+       transform:rotate(var(--rot,0deg)) scale(1.3);
+       filter:drop-shadow(0 26px 20px rgba(0,0,0,.5))}
+  100%{opacity:1;
+       transform:rotate(var(--rot,0deg)) scale(1);
+       filter:drop-shadow(2px 5px 5px rgba(0,0,0,.45))}
+}
+@keyframes softin{from{opacity:0}to{opacity:1}}
+@keyframes jolt{0%,100%{transform:translateY(0)}34%{transform:translateY(3px)}}
+.row.slam{animation:slam .48s cubic-bezier(.16,.72,.24,1) !important}
+.bench.jolt{animation:jolt .17s ease}
+.pending{visibility:hidden}
+.finding.slam{animation:slam .48s cubic-bezier(.16,.72,.24,1)}
+@media(prefers-reduced-motion:reduce){
+  .row.slam,.finding.slam{animation:softin .3s ease !important}
+  .bench.jolt{animation:none}
+}
+</style></head><body>
+
+<div class="head">
+  <div class="seal"><span>&#9876;</span></div>
+  <div class="kick">The Duck Council</div>
+  <h1>The <i>Green Bench</i><br>Returns Its Finding</h1>
+  <div class="rule"></div>
+  <div class="matter">
+    <div class="cell">
+      <div class="lbl"><span class="num">I.</span><span class="cap">The Situation</span></div>
+      <p>My flatmate has eaten my clearly labelled leftovers for the third week running.</p>
+    </div>
+    <div class="cell">
+      <div class="lbl"><span class="num">II.</span><span class="cap">The Action Proposed</span></div>
+      <p>Replace them with the hottest curry known to science and say nothing.</p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="convene">
+  <button class="btn" id="convene">&#9878; Convene the Council</button>
+  <button class="mute" id="mute" aria-pressed="false">Sound on</button>
+</div>
+
+<div class="bench">
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/lawyer.jpg" alt=""></div>
+    <div class="med"><div class="coin low"><b>34</b></div><div class="mb">Unwise</div></div></div>
+  <div class="nm">Mallard Esquire III</div><div class="rl">Weighs liability &#183; blind to joy</div>
+  <div class="qt">Entrapment, plainly. You have created a hazard with foreknowledge and intent &#8212; I would not defend this.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/witch.jpg" alt=""></div>
+    <div class="med"><div class="coin high"><b>72</b></div><div class="mb">Sound</div></div></div>
+  <div class="nm">Obscura the Feathered</div><div class="rl">Weighs omens &#183; blind to practicality</div>
+  <div class="qt">The pot remembers every hand that lifts its lid. Let the thief drink his own reflection.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/serial_killer.jpg" alt=""></div>
+    <div class="med"><div class="coin high"><b>94</b></div><div class="mb">Clearly right</div></div></div>
+  <div class="nm">Quack the Ripper</div><div class="rl">Weighs escalation &#183; blind to consequence</div>
+  <div class="qt">Ooh, lovely! Though if we are being thorough, curry is SO forgiving about what else goes in it.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/doctor.jpg" alt=""></div>
+    <div class="med"><div class="coin low"><b>12</b></div><div class="mb">Reckless</div></div></div>
+  <div class="nm">Dr. Beakman Quackson</div><div class="rl">Weighs harm &#183; blind to proportion</div>
+  <div class="qt">Capsaicin on an unsuspecting oesophagus is an ER visit, not a lesson. Absolutely not.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/gangsta.jpg" alt=""></div>
+    <div class="med"><div class="coin mid"><b>55</b></div><div class="mb">Defensible</div></div></div>
+  <div class="nm">Lil Waddle</div><div class="rl">Weighs respect &#183; blind to legality</div>
+  <div class="qt">Nah. You do not move in silence on a roommate, you move in silence on an enemy. Talk to him first.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><img src="../../app/static/images/gamer.jpg" alt=""></div>
+    <div class="med"><div class="coin high"><b>68</b></div><div class="mb">Sound</div></div></div>
+  <div class="nm">Duckthulu42</div><div class="rl">Weighs tempo &#183; blind to long game</div>
+  <div class="qt">Passive trap, zero counterplay, high tilt value. It is a griefer strat but it IS a strat.</div></div>
+
+<div class="row">
+  <div class="rtop"><div class="port"><div class="mg">TL</div></div>
+    <div class="med"><div class="coin low"><b>30</b></div><div class="mb">Unwise</div></div></div>
+  <div class="nm">The Landlord <span class="tag">YOURS</span></div><div class="rl">Weighs the deposit &#183; blind to friendship</div>
+  <div class="qt">Whatever happens to that fridge comes out of the bond, and the bond is joint. No.</div></div>
+
+</div></div>
+
+<div class="finding">
+  <div class="kick">The finding of the bench</div>
+  <div class="n">55<sub>/100</sub></div>
+  <div class="w">A split decision</div>
+  <p>Seven ducks sat. Four in favour, three against, and none of them near the middle.
+     The bench was furthest divided between Dr. Quackson and Quack the Ripper.</p>
+  <div class="scale">
+    <div class="cue"><span style="left:55%">Median 55</span></div>
+    <div class="track">
+      <i style="left:20%"></i><i style="left:40%"></i><i style="left:60%"></i><i style="left:80%"></i>
+      <b style="left:12%;background:var(--orange)"></b>
+      <b style="left:30%;background:var(--orange)"></b>
+      <b style="left:34%;background:var(--orange)"></b>
+      <b style="left:55%;background:var(--brasslt)"></b>
+      <b style="left:68%;background:var(--sage)"></b>
+      <b style="left:72%;background:var(--sage)"></b>
+      <b style="left:94%;background:var(--sage)"></b>
+      <span class="needle" style="left:55%"></span>
+    </div>
+    <div class="ticks"><span>0</span><span>20</span><span>40</span><span>60</span><span>80</span><span>100</span></div>
+  </div>
+  <div class="ends"><span>Reckless</span><span>Clearly right</span></div>
+</div>
+
+<script>
+(function(){
+  var board   = document.querySelector('.bench');
+  var rows    = Array.prototype.slice.call(document.querySelectorAll('.row'));
+  var finding = document.querySelector('.finding');
+  var btn     = document.getElementById('convene');
+  var muteBtn = document.getElementById('mute');
+
+  var GAP    = 520;   // ms between notices
+  var IMPACT = 170;   // ms into the 480ms slam where it reads as landing
+  var muted  = false;
+
+  var src = new Audio('sounds/stamp.mp3');
+  src.preload = 'auto';
+
+  // Clone per hit so overlapping stamps do not cut each other off,
+  // and detune slightly so repeats do not sound mechanical.
+  function hit(rate, vol){
+    if (muted) return;
+    try {
+      var a = src.cloneNode();
+      a.playbackRate = rate || (0.94 + Math.random() * 0.12);
+      a.volume = vol == null ? 0.85 : vol;
+      a.play().catch(function(){});   // audio never gates content
+    } catch (e) {}
+  }
+
+  function jolt(){
+    board.classList.remove('jolt');
+    void board.offsetWidth;
+    board.classList.add('jolt');
+  }
+
+  function stamp(el, isFinding){
+    el.classList.remove('pending');
+    el.classList.remove('slam');
+    void el.offsetWidth;
+    el.classList.add('slam');
+    setTimeout(function(){
+      hit(isFinding ? 0.72 : null, isFinding ? 1 : 0.85);   // gavel runs lower
+      if (!isFinding) jolt();
+    }, IMPACT);
+  }
+
+  function run(){
+    btn.disabled = true;
+    rows.forEach(function(r){ r.classList.add('pending'); r.classList.remove('slam'); });
+    finding.classList.add('pending');
+    finding.classList.remove('slam');
+
+    rows.forEach(function(r, i){
+      setTimeout(function(){ stamp(r, false); }, i * GAP);
+    });
+    setTimeout(function(){
+      stamp(finding, true);
+      btn.disabled = false;
+    }, rows.length * GAP + 340);
+  }
+
+  btn.addEventListener('click', run);
+  muteBtn.addEventListener('click', function(){
+    muted = !muted;
+    muteBtn.setAttribute('aria-pressed', String(muted));
+    muteBtn.textContent = muted ? 'Sound off' : 'Sound on';
+  });
+})();
+</script>
+</body></html>

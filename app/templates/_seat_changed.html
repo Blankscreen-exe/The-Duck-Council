@@ -1,0 +1,7 @@
+{# Answer to seating or standing down one duck: its notice, plus the count and the
+   preset tabs, which change with it (swapped out-of-band by htmx). #}
+{% include "_profile.html" %}
+{% with oob = true %}
+  {% include "_bench_count.html" %}
+  {% include "_presets.html" %}
+{% endwith %}

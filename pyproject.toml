@@ -1,0 +1,57 @@
+[project]
+name = "duck-council"
+version = "0.1.0"
+description = "A council of opinionated ducks judges what you are about to do."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiosqlite>=0.22.1",
+    "anthropic>=1.6,<2",
+    "fastapi>=0.141.1",
+    "jinja2>=3.1.6",
+    "keyring>=25.7.0",
+    "openai>=3.15,<4",
+    "pillow>=11",
+    "platformdirs>=4.11.10",
+    "pydantic>=2.7",
+    "python-multipart>=0.0.32",
+    "uvicorn>=0.53.0",
+]
+
+[project.scripts]
+duck-council = "app.cli:main"
+duck-council-web = "app.web.main:serve"
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "httpx>=0.28.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+    # Raised inside Starlette's own test client, not by this project.
+    "ignore:The anyio.abc.BlockingPortal alias is deprecated:DeprecationWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]

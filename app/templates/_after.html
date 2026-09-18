@@ -1,0 +1,24 @@
+{# What you can do with a hearing. Drawn with the page, and sent again, out of band,
+   with the live finding: the actions that need a finished hearing (hearing it again,
+   saving it as an image) then appear the moment it ends, without a reload. #}
+<div class="after" id="after"{% if oob %} hx-swap-oob="true"{% endif %}>
+  {% if run.done %}
+    {# Always heard fresh (owner's call): the same case asked again gets new verdicts. #}
+    <form method="post" action="/council"
+          hx-post="/council" hx-target="#hearing" hx-swap="outerHTML"
+          hx-disabled-elt="find button">
+      <input type="hidden" name="situation" value="{{ run.case.situation }}">
+      <input type="hidden" name="action" value="{{ run.case.action }}">
+      <button class="quiet again" type="submit">
+        <span class="idle">Hear it again</span><span class="busy">The clerk is reading it&hellip;</span>
+      </button>
+    </form>
+  {% endif %}
+  {% if run.done and run.finding %}
+    <a class="quiet" href="/council/{{ run.id }}/card.png" download>Save as image</a>
+  {% endif %}
+  <a class="quiet" href="/">Bring a new case</a>
+  <a class="quiet" href="/council/{{ run.id }}/amend"
+     hx-get="/council/{{ run.id }}/amend" hx-target="#hearing" hx-swap="outerHTML">Amend this case</a>
+  <a class="quiet" href="/council/{{ run.id }}">Link to this hearing</a>
+</div>

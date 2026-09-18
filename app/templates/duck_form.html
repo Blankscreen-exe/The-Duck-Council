@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% from "_components.html" import nav %}
+{% block title %}{{ "Amend a duck" if duck_id else "Commission a duck" }} · The Duck Council{% endblock %}
+{% block heading %}{% if duck_id %}Amend <i>{{ values.name }}</i>{% else %}Commission <i>a duck</i>{% endif %}{% endblock %}
+{% block nav %}{{ nav("bench") }}{% endblock %}
+{% block content %}
+<div class="filing filing-note">
+  <p>A duck's <b>voice</b> is only how it talks. What it <b>weighs</b> and what it is
+     <b>blind to</b> decide its score, and they are why the council disagrees. A duck
+     that weighs everything fairly will agree with everyone.</p>
+</div>
+<div class="wrap">
+  <form class="sheet" method="post" enctype="multipart/form-data"
+        action="{{ '/bench/' ~ duck_id ~ '/edit' if duck_id else '/bench/new' }}">
+    {# The portrait (D44). Both previews show the saved portrait, or the monogram; council.js
+       swaps in a picked file before it is sent, so the crop is seen before saving. #}
+    {% set initial = values.name[:1] | upper if values.name else "?" %}
+    {% set src = "/portraits/" ~ portrait if portrait else "" %}
+    <fieldset class="portrait-field">
+      <legend class="field-name">Portrait <span class="optional">(optional)</span></legend>
+      <div class="portrait-row">
+        <div class="previews" aria-hidden="true">
+          <figure>
+            <img class="port" data-preview-img data-original="{{ src }}" src="{{ src }}" alt=""
+                 width="68" height="84"{% if not portrait %} hidden{% endif %}>
+            <span class="port mg" data-monogram{% if portrait %} hidden{% endif %}>{{ initial }}</span>
+            <figcaption>On its card</figcaption>
+          </figure>
+          <figure>
+            <img class="port small" data-preview-img data-original="{{ src }}" src="{{ src }}" alt=""
+                 width="48" height="48"{% if not portrait %} hidden{% endif %}>
+            <span class="port mg small" data-monogram{% if portrait %} hidden{% endif %}>{{ initial }}</span>
+            <figcaption>In the roster</figcaption>
+          </figure>
+        </div>
+        <label class="portrait-pick">
+          <span class="sr">Choose a portrait</span>
+          <input type="file" name="portrait" accept="{{ accept }}" data-portrait-input
+                 data-max-bytes="{{ max_bytes }}">
+          <span class="help guideline">
+            Square works best, with the duck's face in the middle: it is cropped to a
+            square and shown small. At least 256&times;256 pixels. JPEG, PNG or WebP,
+            up to 5&nbsp;MB. Without one, the duck wears a monogram of its initials.
+          </span>
+          <span class="field-error" role="alert" data-portrait-note
+                {% if not errors.portrait %}hidden{% endif %}>{{ errors.portrait }}</span>
+        </label>
+      </div>
+      {% if portrait %}
+        <label class="check">
+          <input type="checkbox" name="remove_portrait" value="1" data-portrait-remove>
+          Remove the portrait and wear a monogram instead
+        </label>
+      {% endif %}
+    </fieldset>
+
+    {% macro field(name, label, help, limit, long=False) %}
+      <label>
+        <span class="field-name">{{ label }}</span>
+        <span class="help">{{ help }}</span>
+        {% if long %}
+          <textarea name="{{ name }}" rows="3" maxlength="{{ limit }}" required>{{ values[name] or "" }}</textarea>
+        {% else %}
+          <input name="{{ name }}" maxlength="{{ limit }}" required value="{{ values[name] or '' }}"
+                 {% if name == "name" %}data-monogram-from{% endif %}>
+        {% endif %}
+        {% if errors[name] %}<span class="field-error" role="alert">{{ errors[name] }}</span>{% endif %}
+      </label>
+    {% endmacro %}
+
+    {{ field("name", "Name", "As it appears on the bench.", 40) }}
+    {{ field("epithet", "Card line", "Short, for its notice. For example: Weighs the deposit · blind to friendship", 48) }}
+    {{ field("voice", "Voice", "How it talks. Flavour only: this never moves the score.", 600, long=True) }}
+    {{ field("weighs", "Weighs", "What actually moves its score. Be specific.", 300, long=True) }}
+    {{ field("blind_spot", "Blind to", "What it deliberately ignores. This is what makes it disagree.", 300, long=True) }}
+
+    <div class="sheet-actions">
+      <button class="btn" type="submit">{{ "Amend" if duck_id else "Commission" }}</button>
+      <a class="quiet" href="/bench">Back to the bench</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

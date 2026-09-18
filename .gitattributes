@@ -1,0 +1,7 @@
+# One line ending everywhere, so diffs stay clean between Windows and Linux (CI).
+* text=auto eol=lf
+*.jpg binary
+*.mp3 binary
+*.woff2 binary
+*.psd binary
+*.png binary

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "_components.html" import nav %}
+{% block title %}The Bench · The Duck Council{% endblock %}
+{% block heading %}The <i>Bench</i>{% endblock %}
+{% block nav %}{{ nav("bench") }}{% endblock %}
+{% block content %}
+<div class="filing filing-note">
+  <p>Seat the ducks you want to hear from, stand down the rest, or commission your own.
+     Save a line-up as a preset to call it back in one click.</p>
+</div>
+<div class="wrap">
+  {% include "_bench_board.html" %}
+</div>
+{% endblock %}
