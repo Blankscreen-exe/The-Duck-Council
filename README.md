@@ -64,6 +64,11 @@ against, furthest divided between the doctor (15) and Quack the Ripper (74).
   app's files. Fonts, scripts and sounds are bundled, so nothing loads from the
   internet when you open a page.
 
+|||
+|---|---|
+|![bench](docs/assets/preview_bench.png)|![register](docs/assets/preview_register.png)|
+|![scores](docs/assets/preview_scores.png)|![verdict](docs/assets/preview_verdict.png)|
+
 ---
 
 ## Quick start
@@ -184,9 +189,6 @@ docs/
 
 ---
 
-## Status
+# Shareable Image Output
 
-Working: the Filing Desk, the clerk, the live board, the Bench, the Register,
-Chambers, uploaded portraits and the share image.
-
-Not yet built: a Docker image and continuous integration.
+![Shareable Image Output](docs/assets/shareable_image_output.png)
