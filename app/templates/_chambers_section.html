@@ -1,0 +1,84 @@
+{# The provider list and the add form. Every action here re-renders this section. #}
+<section id="chambers" class="chambers">
+  {% if error %}<p class="error-line" role="alert">{{ error }}</p>{% endif %}
+
+  {% if suggest_claude %}
+    <form class="suggest" method="post" action="/providers/claude-code"
+          hx-post="/providers/claude-code" hx-target="#chambers" hx-swap="outerHTML">
+      <p><b>Found on this computer: Claude Code.</b> Use the Claude subscription you are
+         already signed into. No API key needed.</p>
+      <button class="btn small act" type="submit">
+        <span class="idle">Add it and make it the default</span>
+        <span class="busy">Testing Claude Code&hellip;</span>
+      </button>
+    </form>
+  {% endif %}
+
+  <ol class="ledger">
+    {% for saved in providers %}
+      <li class="entry{% if saved.is_default %} is-default{% endif %}">
+        <div class="who">
+          <p class="entry-name">{{ saved.label }}{% if saved.is_default %} <span class="tag">Default</span>{% endif %}</p>
+          <p class="entry-meta">
+            {{ saved.preset.label }}{% if not saved.is_demo %} &middot; {{ saved.model }}{% endif %}
+            {% if saved.key_hint %} &middot; key {{ saved.key_hint }}{% endif %}
+          </p>
+          <p class="status {{ 'ok' if saved.usable else ('bad' if saved.check else 'untested') }}"
+             {% if saved.checked_at %}title="Tested {{ saved.checked_at }} (UTC)"{% endif %}>
+            {% if saved.is_demo %}Always works: scripted verdicts, no AI.
+            {% elif saved.check is none %}Not tested yet.
+            {% elif saved.check.ok %}Working. {{ saved.check.message }}
+            {% else %}Failing: {{ saved.check.message }}{% endif %}
+          </p>
+        </div>
+        <div class="acts">
+          {% if not saved.is_demo %}
+            <form method="post" action="/providers/{{ saved.id }}/check"
+                  hx-post="/providers/{{ saved.id }}/check" hx-target="#chambers" hx-swap="outerHTML">
+              <button class="act" type="submit"
+                      {% if saved.preset.kind == "claude_code" %}title="Claude Code takes about 15 seconds to start"{% endif %}>
+                <span class="idle">Test</span><span class="busy">Testing&hellip;</span>
+              </button>
+            </form>
+          {% endif %}
+          {% if not saved.is_default %}
+            <form method="post" action="/providers/{{ saved.id }}/default"
+                  hx-post="/providers/{{ saved.id }}/default" hx-target="#chambers" hx-swap="outerHTML">
+              <button class="act" type="submit"{% if not saved.usable %} disabled title="Pass the test first"{% endif %}>
+                <span class="idle">Make default</span><span class="busy">&hellip;</span>
+              </button>
+            </form>
+          {% endif %}
+          {% if not saved.is_demo %}
+            <a class="act" href="/providers/{{ saved.id }}/edit">Amend</a>
+            <form method="post" action="/providers/{{ saved.id }}/delete"
+                  hx-post="/providers/{{ saved.id }}/delete" hx-target="#chambers" hx-swap="outerHTML"
+                  hx-confirm="Remove {{ saved.label }}? Its key is deleted from this computer too.">
+              <button class="act" type="submit"><span class="idle">Remove</span><span class="busy">&hellip;</span></button>
+            </form>
+          {% endif %}
+        </div>
+      </li>
+    {% endfor %}
+  </ol>
+
+  <form class="sheet add-provider" method="post" action="/providers"
+        hx-post="/providers" hx-target="#chambers" hx-swap="outerHTML">
+    <h2 class="sheet-title">Add a provider</h2>
+    <label>
+      <span class="field-name">Provider</span>
+      <select name="preset" hx-get="/providers/fields" hx-target="#provider-fields" hx-swap="outerHTML"
+              hx-include="this">
+        {% for option in addable %}
+          <option value="{{ option.id }}"{% if option.id == preset.id %} selected{% endif %}>{{ option.label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    {% include "_provider_fields.html" %}
+    <div class="sheet-actions">
+      <button class="btn act" type="submit">
+        <span class="idle">Add and test</span><span class="busy">Testing&hellip;</span>
+      </button>
+    </div>
+  </form>
+</section>

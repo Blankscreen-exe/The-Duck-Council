@@ -20,35 +20,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.ducks import BUILTIN_DUCKS, DEFAULT_PRESET, DEFAULT_ROSTER
 from app.schema import Duck, Origin
-
-# Each entry moves the schema up one version (tracked in PRAGMA user_version).
-# Never edit a migration that has shipped; add a new one after it.
-MIGRATIONS: tuple[str, ...] = (
-    """
-    CREATE TABLE ducks (
-        id         TEXT    PRIMARY KEY,
-        name       TEXT    NOT NULL,
-        epithet    TEXT    NOT NULL,
-        voice      TEXT    NOT NULL,
-        weighs     TEXT    NOT NULL,
-        blind_spot TEXT    NOT NULL,
-        portrait   TEXT,
-        origin     TEXT    NOT NULL CHECK (origin IN ('builtin', 'user')),
-        position   INTEGER NOT NULL,
-        sitting    INTEGER NOT NULL DEFAULT 1 CHECK (sitting IN (0, 1))
-    );
-    CREATE TABLE presets (
-        id         INTEGER PRIMARY KEY,
-        name       TEXT    NOT NULL UNIQUE COLLATE NOCASE,
-        is_default INTEGER NOT NULL DEFAULT 0 CHECK (is_default IN (0, 1))
-    );
-    CREATE TABLE preset_ducks (
-        preset_id INTEGER NOT NULL REFERENCES presets (id) ON DELETE CASCADE,
-        duck_id   TEXT    NOT NULL REFERENCES ducks (id)   ON DELETE CASCADE,
-        PRIMARY KEY (preset_id, duck_id)
-    );
-    """,
-)
+from app.storage import open_database
 
 _ORDER = "ORDER BY origin = 'user', position"  # built-ins first, in code order
 
@@ -102,14 +74,9 @@ class Bench:
 
     @classmethod
     async def open(cls, path: Path) -> Self:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        db = await aiosqlite.connect(path)
-        db.row_factory = aiosqlite.Row
-        await db.execute("PRAGMA foreign_keys = ON")
-        await db.execute("PRAGMA journal_mode = WAL")
-        bench = cls(db)
-        await bench._migrate()
-        await bench._sync_builtins()
+        """Open a bench on its own connection (used by tests). `close()` closes it."""
+        bench = cls(await open_database(path))
+        await bench.sync()
         return bench
 
     async def close(self) -> None:
@@ -117,16 +84,8 @@ class Bench:
 
     # ── setup ────────────────────────────────────────────────────────────────
 
-    async def _migrate(self) -> None:
-        async with self._db.execute("PRAGMA user_version") as cursor:
-            row = await cursor.fetchone()
-        version = int(row[0]) if row else 0
-        for number, script in enumerate(MIGRATIONS[version:], start=version + 1):
-            await self._db.executescript(script)
-            await self._db.execute(f"PRAGMA user_version = {number}")
-        await self._db.commit()
-
-    async def _sync_builtins(self) -> None:
+    async def sync(self) -> None:
+        """Bring built-in ducks and the default preset in line with the code."""
         for position, duck in enumerate(BUILTIN_DUCKS):
             await self._db.execute(
                 """

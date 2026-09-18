@@ -7,6 +7,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from app.ducks import BUILTIN_DUCKS, DEFAULT_ROSTER
+from app.keystore import MemoryKeyStore
 from app.providers import Refused
 from app.web.main import create_app
 from tests.fakes import Script, ScriptedProvider, verdict_scoring
@@ -35,7 +36,8 @@ def provider() -> ScriptedProvider:
 
 @pytest.fixture
 def client(provider: ScriptedProvider, tmp_path: Path) -> Iterator[TestClient]:
-    app = create_app(provider, database=tmp_path / "council.db", provider_label="Scripted")
+    app = create_app(provider, database=tmp_path / "council.db", keystore=MemoryKeyStore(),
+                     provider_label="Scripted")  # fmt: skip
     with TestClient(app, base_url=ORIGIN) as test_client:
         yield test_client
 

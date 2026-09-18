@@ -506,17 +506,47 @@ hearings use. Switching is a click, not re-entering settings.
 Per-duck provider override (D19) is dropped: one provider for the whole council.
 Simpler to use and to explain, and it removes a picker from every duck.
 
+### D39 — How Chambers behaves (owner's calls)
+Chambers (`/providers`) is the page where the AI is chosen. The name stayed: in a
+courthouse, chambers is the judge's office behind the courtroom.
+
+- **The web app no longer takes `--provider`.** Chambers is the one place the AI
+  is chosen. The terminal tool keeps its own `--provider` for quick hearings.
+- **A fresh install uses the demo**, and if Claude Code is found on this computer,
+  Chambers offers it in one click. Nothing is ever used without being chosen.
+- **A provider that fails its test is saved anyway**, marked failing with the reason,
+  and cannot become the default until it passes. Useful when Ollama is simply off.
+- **The model is typed**, pre-filled from the preset, so any vendor and any new
+  model works without the app needing to know its catalogue.
+- **Custom commands stay terminal-only.** A web form that makes the server run a
+  program you name is the one field an attacker would most want; the safest version
+  of that field is the one that does not exist.
+
+Built to match, each covered by a test:
+
+- Adding or amending a provider tests it at once; amending clears the old result,
+  since new settings make it meaningless.
+- Keys live in the OS credential store (D12) and never in SQLite: a test reads the
+  database files byte by byte after saving one. They are never sent back to a page,
+  not even into a form redisplayed after an error; the person types it again.
+- `KeyStore` is an interface because it has two real implementations: the OS store,
+  and an in-memory one so tests never write into the owner's credential store. (The
+  same rule as D15's amendment: an interface when there is a second implementation.)
+- At most one default provider, enforced by a partial unique index in the database.
+- Changing the default takes effect on the next hearing, without a restart.
+- The providers table arrived as migration 2; migration 1 was left untouched.
+
 ---
 
 ## Next session starts here
 
-**State:** step 4a is done: the Bench (seat and stand down ducks, commission your
-own, presets) on SQLite. 130 tests pass; ruff and `mypy --strict` clean. Step 4b,
-Chambers, is designed (D38) but not started: its remaining decisions get put to the
-owner before building.
+**State:** step 4 is done. The Filing Desk, the Bench and Chambers all work, on
+SQLite, with keys in the OS credential store. 150 tests pass; ruff and
+`mypy --strict` clean. Verified against a real server: first run offers Claude
+Code, one click tests it (13s) and makes it the default.
 
-Run it: `uv run --system-certs duck-council-web` (`--provider claude-code` for real
-AI). **Visual check in a browser is pending: the owner tests by hand.**
+Run it: `uv run --system-certs duck-council-web`, then choose the AI in Chambers.
+**Visual check in a browser is pending: the owner tests by hand.**
 
 **Build order:**
 
@@ -525,18 +555,18 @@ AI). **Visual check in a browser is pending: the owner tests by hand.**
    sentences (clamped to 5 lines on the board); every duck adds a safety caveat,
    which may pull the chaos ducks toward the middle.
 3. ~~Web app: Filing Desk and live board.~~ Done.
-4. ~~4a: the Bench on SQLite.~~ Done. **4b: Chambers** (saved provider list, one
-   default, keys in the OS keyring per D12/D18).
-5. The Register (history of hearings) and its cache. Hearings are still in memory.
+4. ~~The Bench and Chambers.~~ Done.
+5. The Register (history of hearings). Hearings are still kept in memory only.
 
-**Not yet built from the frozen decisions:** the safety gate (D20/D22).
+**Not yet built from the frozen decisions:** the safety gate (D20/D22); Docker
+(D17, D18's env-var key store); CI (D17).
 
-**Open issue:** an intermittent pytest warning appeared in a few runs before the
-default roster shrank to five, and has not reproduced in 20+ runs since. Suspected:
-a test ending while a background hearing is still running. Not yet pinned down.
+**Open issue:** an intermittent pytest warning seen in a few early runs; not
+reproduced in 30+ runs since. Suspected: a test ending while a background hearing
+is still running.
 
 **Untested against the live service:** the Anthropic API and OpenAI-compatible
-adapters (no key used yet). Claude Code is tested for real.
+adapters (no key used yet). Claude Code is tested for real, including from Chambers.
 
 **Environment gotchas:** pass `--system-certs` to every `uv` command (something
 intercepts TLS here). While `duck-council-web` is running, also pass `--no-sync`:

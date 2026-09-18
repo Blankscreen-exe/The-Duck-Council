@@ -3,6 +3,7 @@
 import asyncio
 from dataclasses import dataclass, field
 
+from app.providers import ProviderConfig
 from app.providers.base import ConnectionCheck
 from app.schema import BAND_CENTRE, Band, Case, Duck, Verdict
 
@@ -50,3 +51,35 @@ class ScriptedProvider:
 
     async def check_connection(self) -> ConnectionCheck:
         return ConnectionCheck(ok=True, message="scripted")
+
+
+@dataclass
+class FakeBuilt:
+    """A provider from `FakeBuilder`. Its connection check fails when its model is "broken"."""
+
+    config: ProviderConfig
+    max_concurrency: int = 8
+    timeout: float = 5.0
+    name: str = field(init=False)
+
+    def __post_init__(self) -> None:
+        self.name = self.config.kind  # so the demo still reads as "demo"
+
+    async def judge(self, duck: Duck, case: Case) -> Verdict:
+        return verdict_scoring(60, line=f"Judged by {self.config.model}.")
+
+    async def check_connection(self) -> ConnectionCheck:
+        if self.config.model == "broken":
+            return ConnectionCheck(ok=False, message="Invalid API key.")
+        return ConnectionCheck(ok=True, message=f"Connected to {self.config.model}")
+
+
+@dataclass
+class FakeBuilder:
+    """Stands in for `build_provider`, remembering every configuration it was given."""
+
+    built: list[ProviderConfig] = field(default_factory=list)
+
+    def __call__(self, config: ProviderConfig) -> FakeBuilt:
+        self.built.append(config)
+        return FakeBuilt(config)

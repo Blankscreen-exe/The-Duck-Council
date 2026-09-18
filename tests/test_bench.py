@@ -7,9 +7,10 @@ from pathlib import Path
 import aiosqlite
 import pytest
 
-from app.bench import MIGRATIONS, Bench, BenchError, DuckDraft
+from app.bench import Bench, BenchError, DuckDraft
 from app.ducks import BUILTIN_DUCKS, DEFAULT_PRESET, DEFAULT_ROSTER
 from app.schema import Origin
+from app.storage import MIGRATIONS
 
 DRAFT = DuckDraft(
     name="The Landlord",

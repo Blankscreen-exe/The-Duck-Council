@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_components.html" import nav %}
+{% block title %}Chambers · The Duck Council{% endblock %}
+{% block heading %}<i>Chambers</i>{% endblock %}
+{% block content %}
+<div class="filing filing-note">
+  <p>Choose the AI that gives the ducks their voices. Test a provider before making it the
+     default. Keys are kept in this computer's credential store, never in the app's files,
+     and only their last four characters are ever shown.</p>
+</div>
+<div class="wrap">
+  {% include "_chambers_section.html" %}
+  {{ nav("chambers") }}
+</div>
+{% endblock %}

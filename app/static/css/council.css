@@ -326,3 +326,43 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
   border: 1px solid rgba(18, 59, 43, .3); border-radius: 2px; background: #FFFDF6; resize: vertical; }
 .field-error { display: block; color: #A33D0B; font-weight: 700; font-size: 13px; margin-top: 5px; }
 .sheet-actions { display: flex; gap: 20px; align-items: center; margin-top: 26px; }
+
+/* ── Chambers (D38) ───────────────────────────────────────────── */
+.chambers { margin-top: 30px; }
+.chambers .error-line { text-align: center; margin-bottom: 14px; }
+
+.suggest { display: flex; gap: 16px; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; padding: 16px 20px; margin-bottom: 22px; background: var(--felt);
+  color: var(--cream); border-left: 6px solid var(--brass); }
+.suggest p { max-width: 520px; font-size: 14.5px; }
+.suggest b { color: var(--brasslt); }
+
+/* the list reads like a court ledger: ruled rows, brass for the default */
+.ledger { list-style: none; border-top: 2px solid var(--felt); }
+.entry { display: flex; gap: 16px 24px; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; padding: 16px 6px; border-bottom: 1px solid rgba(20, 24, 15, .18); }
+.entry.is-default { background: linear-gradient(90deg, rgba(199, 154, 46, .16), transparent 70%);
+  box-shadow: inset 4px 0 0 var(--brass); padding-left: 16px; }
+.entry-name { font: 400 20px/1.2 var(--serif); }
+.entry-meta { font-size: 13px; color: #4D5244; margin-top: 2px; overflow-wrap: anywhere; }
+.status { font-size: 13.5px; margin-top: 6px; font-weight: 700; }
+.status.ok { color: #3F6B3C; }
+.status.bad { color: #A33D0B; }
+.status.untested { color: #6B6552; }
+.acts { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.act { font: 700 12px var(--sans); letter-spacing: .08em; text-transform: uppercase;
+  padding: 8px 12px; border: 1px solid var(--felt); background: transparent; color: var(--felt);
+  border-radius: 2px; cursor: pointer; text-decoration: none; display: inline-block; }
+.act:hover { background: rgba(18, 59, 43, .08); }
+.act[disabled] { opacity: .4; cursor: not-allowed; }
+.act .busy { display: none; }
+.htmx-request .act .idle, .act.htmx-request .idle { display: none; }
+.htmx-request .act .busy, .act.htmx-request .busy { display: inline; }
+.btn.act { color: #2A1E08; border: 0; }
+
+.add-provider { margin-top: 34px; }
+.sheet-title { font: 400 24px var(--serif); }
+.sheet select { width: 100%; font: 15px var(--sans); padding: 10px 12px; border-radius: 2px;
+  border: 1px solid rgba(18, 59, 43, .3); background: #FFFDF6; }
+.preset-note { margin-top: 14px; }
+.sheet .help a { color: var(--felt); font-weight: 700; margin-left: 4px; }

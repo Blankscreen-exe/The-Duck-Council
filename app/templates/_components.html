@@ -44,6 +44,6 @@
     <a href="/"{% if current == "desk" %} aria-current="page"{% endif %}>The Filing Desk</a>
     <a href="/bench"{% if current == "bench" %} aria-current="page"{% endif %}>The Bench</a>
     <span class="soon" title="Past hearings. Coming soon.">The Register</span>
-    <span class="soon" title="Choose the AI provider. Coming next.">Chambers</span>
+    <a href="/providers"{% if current == "chambers" %} aria-current="page"{% endif %}>Chambers</a>
   </nav>
 {%- endmacro %}

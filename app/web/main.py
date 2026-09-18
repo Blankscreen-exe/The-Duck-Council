@@ -1,17 +1,17 @@
 """Build the web app, and run it.
 
-    uv run duck-council-web                          demo, no AI needed
-    uv run duck-council-web --provider claude-code   Claude Code on this PC
+    uv run duck-council-web
 
-API keys come from the DUCK_COUNCIL_API_KEY environment variable, as in the CLI.
-The bench (your ducks and presets) is kept in SQLite in the user's data folder,
-or in DUCK_COUNCIL_DATA if that is set.
+The AI provider is chosen in the browser, in Chambers (/providers). Settings and
+the bench are kept in SQLite in the user's data folder (or DUCK_COUNCIL_DATA if
+set); API keys are kept in the operating system's credential store.
 """
 
 import argparse
 import asyncio
 import os
-from collections.abc import AsyncIterator
+import shutil
+from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -22,9 +22,12 @@ from fastapi.staticfiles import StaticFiles
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from app.bench import Bench
-from app.providers import PRESETS_BY_ID, DemoProvider, Provider, ProviderConfig, build_provider
-from app.providers.factory import API_KEY_ENV
+from app.chambers import Builder, Chambers
+from app.keystore import KeyStore, OsKeyStore
+from app.providers import Provider, build_provider
+from app.storage import open_database
 from app.web.bench_routes import router as bench_router
+from app.web.chambers_routes import router as chambers_router
 from app.web.routes import router
 from app.web.runs import InMemoryRunStore, RunStore
 from app.web.security import LOCAL_HOSTS, SameOriginMiddleware, SecurityHeadersMiddleware
@@ -45,17 +48,26 @@ def create_app(
     provider: Provider | None = None,
     *,
     database: Path,
+    keystore: KeyStore,
     provider_label: str | None = None,
     runs: RunStore | None = None,
+    build: Builder = build_provider,
+    find_program: Callable[[str], str | None] = shutil.which,
 ) -> FastAPI:
     """Everything the app depends on is passed in here, which is what makes it testable.
 
-    `database` has no default on purpose: tests must never touch the real bench.
+    `database` and `keystore` have no defaults on purpose: a test that forgot them
+    would otherwise write into the owner's real bench or credential store. A test
+    may pin `provider`; the real app always uses the default chosen in Chambers.
     """
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-        app.state.bench = await Bench.open(database)
+        db = await open_database(database)
+        app.state.bench = Bench(db)
+        await app.state.bench.sync()
+        app.state.chambers = Chambers(db, keystore, build)
+        await app.state.chambers.sync()
         try:
             yield
         finally:
@@ -64,7 +76,7 @@ def create_app(
             for task in hearings:
                 task.cancel()
             await asyncio.gather(*hearings, return_exceptions=True)
-            await app.state.bench.close()
+            await db.close()
 
     # No interactive API docs: this app serves pages, not a public API.
     app = FastAPI(
@@ -74,8 +86,9 @@ def create_app(
         redoc_url=None,
         openapi_url=None,
     )
-    app.state.provider = provider or DemoProvider()
-    app.state.provider_label = provider_label or PRESETS_BY_ID["demo"].label
+    app.state.provider_override = provider
+    app.state.provider_label_override = provider_label
+    app.state.find_program = find_program
     app.state.runs = runs or InMemoryRunStore()
     app.state.hearings = set()
 
@@ -87,42 +100,25 @@ def create_app(
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
     app.include_router(router)
     app.include_router(bench_router)
+    app.include_router(chambers_router)
     return app
 
 
 def serve(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="duck-council-web", description=__doc__.splitlines()[0])
-    parser.add_argument("--provider", default="demo", choices=list(PRESETS_BY_ID))
-    parser.add_argument("--model", help="model id, overriding the provider's default")
-    parser.add_argument("--base-url", help="endpoint, for OpenAI-compatible providers")
-    parser.add_argument(
-        "--effort", default="low", choices=["low", "medium", "high", "xhigh", "max"]
-    )
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument(
         "--data-dir",
         type=Path,
         default=default_data_dir(),
-        help="where the bench is kept (default: %(default)s)",
+        help="where settings and the bench are kept (default: %(default)s)",
     )
     args = parser.parse_args(argv)
 
-    config = ProviderConfig.from_preset(
-        args.provider,
-        model=args.model,
-        base_url=args.base_url,
-        api_key=os.environ.get(API_KEY_ENV),
-        effort=args.effort,
-    )
-    try:
-        provider = build_provider(config)
-    except ValueError as error:
-        parser.error(str(error))
-
     database = args.data_dir / "council.db"
-    app = create_app(provider, database=database, provider_label=PRESETS_BY_ID[args.provider].label)
+    app = create_app(database=database, keystore=OsKeyStore())
     print(f"The Duck Council is sitting at http://127.0.0.1:{args.port}")
-    print(f"The bench is kept in {database}")
+    print(f"Settings and the bench are kept in {database}")
     # 127.0.0.1 only, never 0.0.0.0: this server holds provider access (D12).
     uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
 
