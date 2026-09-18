@@ -279,7 +279,7 @@ def _seat(seat: Seat, portrait_path: Path | None) -> Block:
             band = band_label(seat.verdict.band)
         else:
             fill, number_colour = COIN["empty"]
-            number, band = "–", "Empty chair"  # an en dash
+            number, band = chr(0x2013), "Empty chair"  # an en dash
         draw.ellipse((cx - coin // 2, cy - coin // 2, cx + coin // 2, cy + coin // 2), fill=fill)
         draw.ellipse(
             (cx - coin // 2 + 5, cy - coin // 2 + 5, cx + coin // 2 - 5, cy + coin // 2 - 5),
