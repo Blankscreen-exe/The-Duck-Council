@@ -22,6 +22,9 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* `hidden` must always win. Without this, any rule that sets `display` (such as the
+   line-clamp on Bench descriptions) silently shows an element meant to stay hidden. */
+[hidden] { display: none !important; }
 html { color-scheme: light; }
 body { background: var(--cream); color: var(--ink); font-family: var(--sans); line-height: 1.55; }
 .wrap { max-width: 900px; margin: 0 auto; padding: 0 16px; }
