@@ -191,3 +191,12 @@ def test_the_page_needs_nothing_from_the_internet(client: TestClient) -> None:
         "/static/fonts/karla-400.woff2",
     ):
         assert client.get(asset).status_code == 200, asset
+
+
+def test_a_verdict_carries_what_it_needs_to_be_read_in_full(client: TestClient) -> None:
+    events = dict(read_events(client, file_case(client)))
+    notice = events["seat-doctor"]
+    # The button starts hidden; the page's script shows it only when text is clipped (D40).
+    assert "data-read-more hidden" in notice
+    assert 'class="noticed" data-reader-only hidden' in notice  # the duck's reasoning
+    assert '<dialog id="reader"' in client.get("/").text

@@ -157,3 +157,11 @@ def test_a_commissioned_duck_sits_on_the_next_hearing(client: TestClient) -> Non
     board = client.post("/council", data={"situation": "s", "action": "a"}, headers=HTMX).text
     assert f'sse-swap="seat-{duck_id}"' in board
     assert "TL" in board  # its monogram, since it has no portrait
+
+
+def test_a_bench_notice_keeps_its_voice_for_reading_in_full(client: TestClient) -> None:
+    page = client.get("/bench").text
+    assert "<dt data-reader-only hidden>Voice</dt>" in page
+    assert page.count("data-read-more hidden") == len(BUILTIN_DUCKS)
+    # Controls are left out of the lifted-off copy, so it cannot re-submit forms.
+    assert 'action="/bench/doctor/seat" data-reader-omit' in page

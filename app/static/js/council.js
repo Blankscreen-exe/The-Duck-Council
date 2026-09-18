@@ -87,6 +87,119 @@
     document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.textContent = initials || "?"; });
   });
 
+  // ── Reading a clipped notice in full (D40) ──────────────────────────────────
+  // Notices have a fixed height so the board never moves (D26); long text is clipped.
+  // "Read more" appears only where text really is clipped, and lifts a copy of the
+  // notice off the board into a dialog. The motion is FLIP: measure the notice on the
+  // board (First) and the copy in the middle of the screen (Last), transform the copy
+  // to sit on the original (Invert), then animate the transform away (Play).
+  const reader = document.getElementById("reader");
+  const CLIPPABLE = ".qt, .lens, .lens dd";
+  const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let lifted = null; // { card, copy, button } while a notice is off the board
+
+  function markClipped(root = document) {
+    root.querySelectorAll?.(".row").forEach((card) => {
+      const button = card.querySelector("[data-read-more]");
+      if (!button) return;
+      const clipped = [...card.querySelectorAll(CLIPPABLE)]
+        .some((part) => part.scrollHeight > part.clientHeight + 1);
+      button.hidden = !clipped;
+    });
+  }
+
+  // Text wraps differently once the fonts load and whenever the width changes.
+  markClipped();
+  document.fonts?.ready.then(() => markClipped());
+  let resizing = 0;
+  window.addEventListener("resize", () => {
+    window.clearTimeout(resizing);
+    resizing = window.setTimeout(() => markClipped(), 150);
+  });
+  new MutationObserver((changes) => {
+    if (changes.some((change) => change.addedNodes.length)) {
+      window.requestAnimationFrame(() => markClipped());
+    }
+  }).observe(document.body, { childList: true, subtree: true });
+
+  function travel(from, to) {
+    // The transform that makes a box at `to` look as if it were at `from`.
+    const dx = from.left - to.left;
+    const dy = from.top - to.top;
+    return `translate(${dx}px, ${dy}px) scale(${from.width / to.width}, ${from.height / to.height})`;
+  }
+
+  function copyOf(card) {
+    const copy = card.cloneNode(true);
+    copy.removeAttribute("id");
+    copy.querySelectorAll("[id]").forEach((part) => part.removeAttribute("id"));
+    // Not `stamped`: the copy must not slam in, or ring the stamp again.
+    copy.classList.remove("stamped", "pending");
+    copy.classList.add("reader-card");
+    delete copy.dataset.landed;
+    copy.querySelectorAll("[data-reader-omit], [data-read-more]").forEach((part) => part.remove());
+    copy.querySelectorAll("[data-reader-only]").forEach((part) => { part.hidden = false; });
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "act reader-close";
+    close.textContent = "Put it back";
+    close.addEventListener("click", putBack);
+    copy.append(close);
+    return copy;
+  }
+
+  function liftOff(card, button) {
+    if (!reader || lifted) return;
+    const first = card.getBoundingClientRect();
+    const copy = copyOf(card);
+    reader.replaceChildren(copy);
+    reader.showModal();
+    const last = copy.getBoundingClientRect();
+    card.classList.add("lifted"); // its spot stays empty while it is off the board
+    lifted = { card, copy, button };
+    if (!still()) {
+      copy.animate(
+        [{ transform: travel(first, last), opacity: 0.9 }, { transform: "none", opacity: 1 }],
+        { duration: 380, easing: "cubic-bezier(.2, .72, .24, 1)" },
+      );
+    }
+    copy.querySelector(".reader-close")?.focus();
+  }
+
+  async function putBack() {
+    if (!lifted || lifted.leaving) return;
+    lifted.leaving = true;
+    const { card, copy, button } = lifted;
+    reader.classList.add("closing");
+    if (!still()) {
+      const home = card.getBoundingClientRect(); // measured now: the page may have scrolled
+      const flight = copy.animate(
+        [{ transform: "none" }, { transform: travel(home, copy.getBoundingClientRect()) }],
+        { duration: 300, easing: "cubic-bezier(.4, 0, .6, 1)", fill: "forwards" },
+      );
+      await flight.finished.catch(() => {});
+    }
+    reader.close();
+    reader.classList.remove("closing");
+    reader.replaceChildren();
+    card.classList.remove("lifted");
+    lifted = null;
+    button?.focus();
+  }
+
+  document.addEventListener("click", (event) => {
+    const button = event.target.closest?.("[data-read-more]");
+    if (!button) return;
+    const card = button.closest(".row");
+    if (card) liftOff(card, button);
+  });
+  if (reader) {
+    // A click on the dimmed area around the notice lands on the dialog itself.
+    reader.addEventListener("click", (event) => { if (event.target === reader) putBack(); });
+    // Esc: animate back instead of vanishing.
+    reader.addEventListener("cancel", (event) => { event.preventDefault(); putBack(); });
+  }
+
   // Ctrl+Enter (Cmd+Enter on a Mac) files the case from either field.
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey)) return;

@@ -116,7 +116,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 
 /* Every seat is the same fixed height and the verdict is clamped, so a notice
    stamping in can never push its neighbours around (D26). */
-.row { --rot: -.5deg; position: relative; height: 384px; padding: 30px 22px 24px;
+.row { --rot: -.5deg; position: relative; height: 404px; padding: 30px 22px 24px;
   display: flex; flex-direction: column; transform: rotate(var(--rot));
   background:
     radial-gradient(ellipse at 18% 20%, rgba(150, 112, 52, .14), transparent 46%),
@@ -291,7 +291,7 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
   background: var(--felt); color: var(--brasslt); }
 .seat-toggle[aria-pressed="false"] { background: transparent; color: var(--felt); }
 .notice-error { font-size: 13px; color: #A33D0B; font-weight: 700; margin-top: 8px; }
-.own { margin-top: auto; padding-top: 10px; display: flex; gap: 18px; align-items: center; }
+.own { display: flex; gap: 18px; align-items: center; }
 .own a, .own button { font: 700 13px var(--sans); color: var(--felt); background: none; border: 0;
   padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--brass);
   text-underline-offset: 3px; }
@@ -366,3 +366,42 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
   border: 1px solid rgba(18, 59, 43, .3); background: #FFFDF6; }
 .preset-note { margin-top: 14px; }
 .sheet .help a { color: var(--felt); font-weight: 700; margin-left: 4px; }
+
+/* ── reading a clipped notice in full (D40) ───────────────────── */
+.card-foot { margin-top: auto; padding-top: 8px; display: flex; gap: 16px 18px;
+  align-items: center; flex-wrap: wrap; }
+.qt, .lens { flex: 0 1 auto; }
+.lens { min-height: 0; overflow: hidden; }
+.more { font: 700 11px var(--sans); letter-spacing: .14em; text-transform: uppercase;
+  color: var(--felt); background: none; border: 0; padding: 0; cursor: pointer;
+  text-decoration: underline; text-decoration-color: var(--brass); text-underline-offset: 3px; }
+.more[hidden] { display: none; }
+
+/* the notice's spot stays empty while it is off the board */
+.row.lifted { visibility: hidden; }
+
+.reader { border: 0; padding: 16px; margin: 0; background: transparent; color: inherit;
+  width: 100vw; height: 100vh; max-width: none; max-height: none; overflow: auto; }
+.reader[open] { display: grid; place-items: center; }
+.reader::backdrop { background: rgba(11, 22, 15, .64); animation: dim .3s ease; }
+.reader.closing::backdrop { animation: undim .3s ease forwards; }
+@keyframes dim { from { opacity: 0; } }
+@keyframes undim { to { opacity: 0; } }
+
+/* `.row.reader-card` so it outranks `.row.stood`: a stood-down duck lifts off straight. */
+.row.reader-card { --rot: 0deg; width: min(580px, 100%); height: auto; max-height: calc(100vh - 48px);
+  overflow: auto; transform: none; opacity: 1; transform-origin: top left; visibility: visible; padding: 34px 30px 26px;
+  filter: drop-shadow(0 18px 28px rgba(0, 0, 0, .55)); }
+.reader-card .qt, .reader-card .lens, .reader-card .lens dd { display: block; overflow: visible;
+  -webkit-line-clamp: unset; line-clamp: none; max-height: none; }
+.reader-card .qt { font-size: 17px; }
+.reader-card .lens { font-size: 15px; gap: 10px 14px; }
+.noticed { margin-top: 18px; padding-top: 12px; border-top: 1px solid rgba(20, 24, 15, .18);
+  font-size: 14.5px; color: #3A3F33; }
+.noticed-label { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--felt); margin-bottom: 4px; }
+.reader-close { align-self: flex-end; margin-top: 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reader::backdrop, .reader.closing::backdrop { animation: none; }
+}

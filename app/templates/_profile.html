@@ -5,7 +5,7 @@
 <article class="row profile{% if not entry.sitting %} stood{% endif %}" id="duck-{{ duck.id }}">
   <div class="rtop">
     {{ portrait(duck) }}
-    <form method="post" action="/bench/{{ duck.id }}/seat"
+    <form method="post" action="/bench/{{ duck.id }}/seat" data-reader-omit
           hx-post="/bench/{{ duck.id }}/seat" hx-target="#duck-{{ duck.id }}" hx-swap="outerHTML">
       <input type="hidden" name="sitting" value="{{ '0' if entry.sitting else '1' }}">
       <button class="seat-toggle" type="submit" aria-pressed="{{ 'true' if entry.sitting else 'false' }}"
@@ -17,12 +17,15 @@
   <h2 class="nm">{{ duck.name }}{% if duck.origin == "user" %} <span class="tag">Yours</span>{% endif %}</h2>
   <p class="rl">{{ duck.epithet }}</p>
   <dl class="lens">
-    <dt>Weighs</dt><dd title="{{ duck.weighs }}">{{ duck.weighs }}</dd>
-    <dt>Blind to</dt><dd title="{{ duck.blind_spot }}">{{ duck.blind_spot }}</dd>
+    <dt data-reader-only hidden>Voice</dt><dd data-reader-only hidden>{{ duck.voice }}</dd>
+    <dt>Weighs</dt><dd>{{ duck.weighs }}</dd>
+    <dt>Blind to</dt><dd>{{ duck.blind_spot }}</dd>
   </dl>
   {% if notice_error %}<p class="notice-error" role="alert">{{ notice_error }}</p>{% endif %}
+  <div class="card-foot">
+  <button class="more" type="button" data-read-more hidden aria-label="Read {{ duck.name }}'s notice in full">Read more</button>
   {% if duck.origin == "user" %}
-    <div class="own">
+    <div class="own" data-reader-omit>
       <a href="/bench/{{ duck.id }}/edit">Amend</a>
       <form method="post" action="/bench/{{ duck.id }}/delete"
             hx-post="/bench/{{ duck.id }}/delete" hx-target="#bench" hx-swap="outerHTML"
@@ -31,4 +34,5 @@
       </form>
     </div>
   {% endif %}
+  </div>
 </article>

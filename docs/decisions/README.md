@@ -536,6 +536,25 @@ Built to match, each covered by a test:
 - Changing the default takes effect on the next hearing, without a restart.
 - The providers table arrived as migration 2; migration 1 was left untouched.
 
+### D40 — Clipped text is read by lifting the notice off the board (owner's call)
+Notices have a fixed height so the board never moves (D26), which clips long
+verdicts. Growing the card to show more would push every row below it. Instead,
+"Read more" lifts a copy of the notice off the board: it grows and glides to the
+middle of the screen with the full text, and "Put it back", a click outside it, or
+Esc animates it back to its place. Its spot on the board stays empty meanwhile.
+
+- "Read more" appears only on notices whose text is actually clipped; the page
+  measures each one, again after fonts load and when the window is resized.
+- The lifted verdict also shows what the duck noticed before it scored (the model's
+  `read`). A lifted Bench notice adds the duck's voice, which the card omits.
+- Bench notices get the same treatment (owner's call).
+- The motion is FLIP: measure the notice (First) and its enlarged copy (Last),
+  transform the copy onto the original (Invert), animate the transform away (Play).
+  Only transforms move, so it stays smooth. Reduced-motion users get no travel.
+- It is a native `<dialog>`, so focus, Esc and screen readers work without extra code.
+  The copy drops its buttons and forms, so nothing can be submitted twice, and it is
+  never `stamped`, so lifting a verdict does not ring the stamp again.
+
 ---
 
 ## Next session starts here

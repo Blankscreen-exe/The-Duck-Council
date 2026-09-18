@@ -15,7 +15,13 @@
   <div class="rtop">{{ portrait(duck) }}{{ medallion(seat.verdict) }}</div>
   <h2 class="nm">{{ duck.name }}{% if duck.origin == "user" %} <span class="tag">Yours</span>{% endif %}</h2>
   <p class="rl">{{ duck.epithet }}</p>
-  <blockquote class="qt" title="{{ seat.verdict.line }}">{{ seat.verdict.line }}</blockquote>
+  <blockquote class="qt">{{ seat.verdict.line }}</blockquote>
+  {# Shown only in the lifted-off notice: what the duck noticed before it scored. #}
+  <div class="noticed" data-reader-only hidden>
+    <p class="noticed-label">What caught its eye</p>
+    <p>{{ seat.verdict.read }}</p>
+  </div>
+  <div class="card-foot"><button class="more" type="button" data-read-more hidden aria-label="Read {{ duck.name }}'s notice in full">Read more</button></div>
 </article>
 {% else %}
 <article class="row absent{% if live %} stamped{% endif %}" id="seat-{{ duck.id }}">
