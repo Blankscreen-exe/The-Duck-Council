@@ -620,7 +620,7 @@ clerk's answer field is `hear_as`, not `register`, which shadowed a Pydantic att
 ### D42 — A loading card while the ducks deliberate (owner's calls)
 Once the clerk has ruled and the board appears, the ducks can take a while (about 17s
 on Claude Code). A parchment card over the dimmed board shows a line that changes
-every second, like a game's loading screen.
+every 2.5 seconds (owner's call; it was one second), like a game's loading screen.
 
 - **It fades when the first notice lands** (owner's call), so every stamp after that
   is seen; the stamps are the app's signature moment. It stays up for at least one
@@ -633,7 +633,7 @@ every second, like a game's loading screen.
   D41's logic that an unknown case is treated with care. The ruling itself stays hidden.
 - **Dimmed board, message on a parchment card** (owner's call). The card never blocks
   clicks or scrolling. Screen readers hear "The council is deliberating" once rather
-  than a new line every second.
+  than a new line every few seconds.
 - The lines are chosen by the server and handed to the page in the markup, so the
   strict Content-Security-Policy still allows no inline script. They live in
   `app/web/loading.py`, as copy anyone can edit.

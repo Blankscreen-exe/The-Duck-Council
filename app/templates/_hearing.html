@@ -17,7 +17,7 @@
 
       {% if live and not run.seats %}
         {# While the ducks deliberate: a card of rotating lines over the dimmed board (D42).
-           council.js shuffles them, changes one a second, and fades the card when the
+           council.js shuffles them, changes one every 2.5s, and fades the card when the
            first notice lands. It never blocks clicks or scrolling. #}
         <div class="loader" data-loader data-lines='{{ loading_lines(run.roster, run.tone) | tojson }}'>
           <div class="loader-card" role="status">

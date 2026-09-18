@@ -105,9 +105,9 @@
 
   // ── The loading card while the ducks deliberate (D42) ────────────────────────
   // The server renders the card with every line it may show. We shuffle them, change
-  // one a second, and fade the card once the first notice lands, but never before it
+  // one every 2.5 seconds, and fade the card once the first notice lands, but never before it
   // has been up for a moment, or a fast provider would make it flicker.
-  const LINE_MS = 1000;
+  const LINE_MS = 2500; // owner's call
   const MIN_SHOWN_MS = 1000;
   let loader = null; // { el, timer, shownAt }
 
