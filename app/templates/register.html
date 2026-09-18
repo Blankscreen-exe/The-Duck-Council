@@ -2,6 +2,7 @@
 {% from "_components.html" import nav %}
 {% block title %}The Register · The Duck Council{% endblock %}
 {% block heading %}<i>The Register</i>{% endblock %}
+{% block nav %}{{ nav("register") }}{% endblock %}
 {% block content %}
 <div class="filing filing-note">
   <p>Every hearing the council has held, in the order it was heard. Open one to read its
@@ -9,6 +10,5 @@
 </div>
 <div class="wrap">
   {% include "_register_book.html" %}
-  {{ nav("register") }}
 </div>
 {% endblock %}

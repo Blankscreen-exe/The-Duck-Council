@@ -1,4 +1,4 @@
-{% from "_components.html" import roster_strip, nav %}
+{% from "_components.html" import roster_strip %}
 {# The Filing Desk. Posting swaps this whole section for the hearing, in place (D25),
    so the submit click is the gesture that lets the stamps make a sound. #}
 <section id="hearing" class="hearing">
@@ -29,6 +29,5 @@
 
   <div class="wrap">
     {{ roster_strip(roster) }}
-    {{ nav("desk") }}
   </div>
 </section>

@@ -2,6 +2,7 @@
 {% from "_components.html" import nav %}
 {% block title %}Chambers · The Duck Council{% endblock %}
 {% block heading %}<i>Chambers</i>{% endblock %}
+{% block nav %}{{ nav("chambers") }}{% endblock %}
 {% block content %}
 <div class="filing filing-note">
   <p>Choose the AI that gives the ducks their voices. Test a provider before making it the
@@ -10,6 +11,5 @@
 </div>
 <div class="wrap">
   {% include "_chambers_section.html" %}
-  {{ nav("chambers") }}
 </div>
 {% endblock %}

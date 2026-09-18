@@ -2,6 +2,7 @@
 {% from "_components.html" import nav %}
 {% block title %}Amend a provider · The Duck Council{% endblock %}
 {% block heading %}Amend <i>{{ editing.label }}</i>{% endblock %}
+{% block nav %}{{ nav("chambers") }}{% endblock %}
 {% block content %}
 <div class="filing filing-note">
   <p>Saving tests the provider again. Changing its settings means the old test result no
@@ -17,6 +18,5 @@
       <a class="quiet" href="/providers">Back to Chambers</a>
     </div>
   </form>
-  {{ nav("chambers") }}
 </div>
 {% endblock %}

@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% from "_components.html" import nav %}
 {% block title %}The Duck Council{% endblock %}
 {% block heading %}The Council <i>will not sit</i>{% endblock %}
+{% block nav %}{{ nav("") }}{% endblock %}
 {% block content %}{% include "_crisis.html" %}{% endblock %}

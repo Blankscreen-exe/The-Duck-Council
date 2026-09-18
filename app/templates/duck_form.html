@@ -2,6 +2,7 @@
 {% from "_components.html" import nav %}
 {% block title %}{{ "Amend a duck" if duck_id else "Commission a duck" }} · The Duck Council{% endblock %}
 {% block heading %}{% if duck_id %}Amend <i>{{ values.name }}</i>{% else %}Commission <i>a duck</i>{% endif %}{% endblock %}
+{% block nav %}{{ nav("bench") }}{% endblock %}
 {% block content %}
 <div class="filing filing-note">
   <p>A duck's <b>voice</b> is only how it talks. What it <b>weighs</b> and what it is
@@ -40,6 +41,5 @@
       <a class="quiet" href="/bench">Back to the bench</a>
     </div>
   </form>
-  {{ nav("bench") }}
 </div>
 {% endblock %}

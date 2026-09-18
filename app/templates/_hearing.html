@@ -1,4 +1,4 @@
-{% from "_components.html" import caption, nav %}
+{% from "_components.html" import caption %}
 {# A hearing. When `live`, the board is already at full size: one seat per sitting duck,
    each waiting for its own event, so notices stamp into place and nothing reflows (D26). #}
 <section id="hearing" class="hearing">
@@ -54,6 +54,5 @@
          hx-get="/council/{{ run.id }}/amend" hx-target="#hearing" hx-swap="outerHTML">Amend this case</a>
       <a class="quiet" href="/council/{{ run.id }}">Link to this hearing</a>
     </div>
-    {{ nav("hearing") }}
   </div>
 </section>
