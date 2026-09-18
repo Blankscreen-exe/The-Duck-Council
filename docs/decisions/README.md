@@ -319,6 +319,11 @@ The animation is an impact, not a fade: the notice drops in over-scale, lands
 just under 1.0, and settles, with a 2px jolt on the board itself at the moment
 of contact. Sound fires at impact (~230ms), not at animation start.
 
+*Amended (owner's call):* the sound and the jolt now come when the slam has
+finished, so each verdict is fully on the board, readable and opaque, as it is
+heard. The page listens for the end of that notice's own animation, with a timer
+as a backstop in case the animation never runs (a background tab).
+
 Sound uses 3-4 stamp variants chosen at random with a slight playback-rate
 detune per duck, so thirteen stamps do not sound mechanical; the council finding
 gets a single gavel. A brass mute toggle persists in `localStorage`, and
@@ -328,6 +333,10 @@ if playback fails, the verdict still lands.
 ### D27 — Navigation sits below the filing block; provider choice is its own page
 The two text fields are the product, so they lead and navigation follows them
 rather than competing from a masthead.
+
+*Amended (owner's call):* in use, links at the bottom of the page were easy to miss,
+so the navigation moved into the masthead, under the heading, as quiet brass text
+links. The base template draws it once; each page only says which link is current.
 
 Provider and model selection gets a dedicated page rather than a settings
 sub-section, because for this app it is a primary decision, not a preference:

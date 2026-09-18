@@ -182,13 +182,12 @@ one visual language, four jobs.
 ## Motion and sound (D26)
 
 ```
-  0%   opacity 0, scale 1.6, translateY -40px, rotate(--rot)
-  60%  opacity 1, scale 0.97, translateY 0        ← impact, sound fires
-  78%  scale 1.02                                  ← overshoot
-  100% scale 1                                     ← settle
+  0%   opacity 0, scale 1.3, rotate(--rot)
+  100% opacity 1, scale 1                          ← landed: sound fires, board jolts
 ```
 
-Board jolts 2px at impact. Total ~380ms.
+The slam takes 480ms. The sound and a 2px jolt of the board come when it ends,
+so each verdict is fully on the board as it is heard.
 
 - 3–4 stamp samples, chosen at random, `playbackRate` detuned ±4% per duck.
 - One gavel for the finding.

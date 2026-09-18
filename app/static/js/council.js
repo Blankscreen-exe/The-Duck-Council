@@ -12,7 +12,9 @@
     { code: "[45]..", swap: false, error: true },
   ];
 
-  const IMPACT_MS = 170; // when, inside the 480ms slam, the notice reads as landing
+  // A backstop for when no animation runs to its end (a background tab, say):
+  // a little longer than the slam (480ms) and the finding's fade (600ms).
+  const LANDED_MS = 800;
   const MUTE_KEY = "duck-council:muted";
   const stamp = new Audio("/static/sounds/stamp.mp3");
   stamp.preload = "auto";
@@ -48,11 +50,21 @@
     notice.dataset.landed = "1";
     stopLoader();
     const isFinding = notice.classList.contains("finding");
-    window.setTimeout(() => {
+    // The sound comes once the notice is fully on the board (owner's call), not
+    // part-way through the slam. Whichever comes first, the end of its own
+    // animation or the backstop, and never both.
+    let done = false;
+    const thud = () => {
+      if (done) return;
+      done = true;
       hit(isFinding ? 0.72 : undefined); // the finding sounds lower: the gavel
       const board = notice.closest(".bench");
       if (board && !isFinding) jolt(board);
-    }, IMPACT_MS);
+    };
+    notice.addEventListener("animationend", (event) => {
+      if (event.target === notice) thud();
+    });
+    window.setTimeout(thud, LANDED_MS);
   }
 
   // Notices arrive over the event stream and are swapped in by htmx. Watching the
