@@ -16,7 +16,9 @@ from pydantic import ValidationError
 
 from app.clerk import is_crisis, rule, tone_for
 from app.schema import Case, Duck
+from app.web import share_card
 from app.web.deps import (
+    PortraitsDep,
     ProviderDep,
     RegisterDep,
     RosterDep,
@@ -163,6 +165,31 @@ async def hearing_page(
     return templates.TemplateResponse(request, "council.html", context)
 
 
+@router.get("/council/{run_id}/card.png")
+async def share_image(
+    runs: RunsDep, register: RegisterDep, portraits: PortraitsDep, run_id: str
+) -> Response:
+    """The finished hearing as one image to post anywhere (D45)."""
+    run = await _any_run_or_404(runs, register, run_id)
+    if not run.done or run.finding is None:
+        raise HTTPException(status_code=409, detail="The council is still deliberating.")
+    seats = [s for duck in run.roster if (s := run.seat_for(duck.id)) is not None]
+    png = await asyncio.to_thread(  # drawing takes a moment; hearings keep streaming meanwhile
+        share_card.render,
+        case=run.case,
+        seats=seats,
+        finding=run.finding,
+        heard_by=run.heard_by,
+        portraits=partial(share_card.portrait_file, uploaded=portraits.path),
+    )
+    name = f"duck-council-{run.number:03d}.png" if run.number else "duck-council-hearing.png"
+    return Response(
+        png,
+        media_type="image/png",
+        headers={"content-disposition": f'attachment; filename="{name}"'},
+    )
+
+
 @router.get("/council/{run_id}/amend", response_class=HTMLResponse)
 async def amend(
     request: Request, runs: RunsDep, register: RegisterDep, roster: RosterDep, run_id: str
@@ -185,6 +212,7 @@ async def hearing_stream(runs: RunsDep, run_id: str) -> StreamingResponse:
     run = _run_or_404(runs, run_id)
     notice = templates.get_template("_notice.html")
     finding = templates.get_template("_finding.html")
+    after = templates.get_template("_after.html")
 
     async def events() -> AsyncIterator[str]:
         sent = 0
@@ -197,7 +225,8 @@ async def hearing_stream(runs: RunsDep, run_id: str) -> StreamingResponse:
                 yield sse_event(f"seat-{seat.duck.id}", html)
                 sent += 1
             if finished and sent == len(run.seats):
-                yield sse_event("finding", finding.render(run=run, live=True))
+                ended = finding.render(run=run, live=True) + after.render(run=run, oob=True)
+                yield sse_event("finding", ended)
                 yield sse_event("done", "")
                 return
 

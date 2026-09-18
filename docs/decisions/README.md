@@ -732,13 +732,55 @@ How it is built, and why:
 - The page's security policy now allows `blob:` images: that is how the browser
   shows a picked file that has not been uploaded. It still allows no outside images.
 
+### D45 — A finished hearing can be saved as an image to share (owner's calls)
+"Save as image" on a finished hearing downloads one PNG with the whole hearing on
+it, made to be posted on social media and read there.
+
+- **A card designed for sharing, drawn by the server** (owner's call), not a
+  screenshot of the page. Browser screenshot libraries get shadows, filters and
+  clipped text wrong, the board clips long verdicts on purpose, and the result
+  would depend on the viewer's screen. The card is drawn with Pillow, already
+  used for portraits (D44), in the Green Bench colours and the app's own bundled
+  fonts, so it looks the same on every machine and needs no JavaScript.
+- **1080 pixels wide, as tall as it needs to be** (owner's call). Every platform
+  accepts 1080 wide. The height grows so every verdict is printed in full at a size
+  that stays readable when a phone shrinks the image to its screen; nothing is cut.
+  A fixed shape would have meant trimming or shrinking text as ducks were added.
+- **Each duck: portrait, name, card line, score medallion and band, full verdict**
+  (owner's call). Empty chairs say why they are empty. The ducks' private
+  reasoning is left out: it would roughly double the length.
+- **Around them: the case, the finding, who heard it, and the app's name and link**
+  (owner's calls). The case is trimmed to five lines per half if it is very long.
+  The finding repeats the page's scale bar, with each duck's mark and the median.
+
+How it is built, and why:
+
+- **Measured, then drawn.** Each part of the card (masthead, finding, one per duck,
+  footer) first works out its own height from its wrapped text, the canvas is
+  made exactly that tall, and then each part paints itself. So the image never has
+  empty space at the bottom or text running off it.
+- **Text is wrapped by measuring it in the real font,** word by word; a single word
+  too long for a line (a pasted link) is broken by characters.
+- **Drawn off the main thread,** like portraits, so hearings keep streaming.
+- **The actions under a hearing now arrive with its finding.** They used to be drawn
+  once, when the hearing started, so "Hear it again" (D43) and "Save as image" only
+  appeared after a reload. The live finding now carries a fresh copy of that row,
+  which htmx swaps in by its id ("out of band"), so they appear the moment the
+  hearing ends.
+- Works for old hearings too, read back from the Register after a restart. An
+  unfinished hearing has no image yet (the server answers "still deliberating").
+- **Known limit:** the bundled fonts cover Latin script only, so emoji or other
+  scripts in a case print as empty boxes on the card. Bundling a wider font would
+  fix it at the cost of a much larger download.
+
 ---
 
 ## Next session starts here
 
 **State:** the app is feature-complete. Filing Desk, the clerk, the live board, the
 Bench, Chambers and the Register all work, on SQLite, with keys in the OS credential
-store. Your own ducks can wear uploaded portraits (D44). 215 tests pass; ruff and
+store. Your own ducks can wear uploaded portraits (D44), and a finished hearing
+can be saved as an image (D45). 225 tests pass; ruff and
 `mypy --strict` clean.
 
 Run it: `uv run --system-certs duck-council-web`, then choose the AI in Chambers.
