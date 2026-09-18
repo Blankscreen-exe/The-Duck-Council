@@ -643,4 +643,4 @@ adapters (no key used yet). Claude Code is tested for real, including the clerk.
 intercepts TLS here). While `duck-council-web` is running, also pass `--no-sync`:
 Windows locks the running program and uv cannot reinstall it. The uv-installed
 Python cannot do HTTPS downloads here (`OPENSSL_Applink`); Windows'
-`C:\\Windows\\System32\\curl.exe` can. Python 3.12 is pinned in `.python-version`.
+`C:\Windows\System32\curl.exe` can. Python 3.12 is pinned in `.python-version`.
