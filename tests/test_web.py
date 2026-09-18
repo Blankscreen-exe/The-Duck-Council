@@ -1,11 +1,12 @@
 """The web app, end to end through FastAPI's test client, with a scripted provider."""
 
 from collections.abc import Iterator
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
 
-from app.ducks import BUILTIN_DUCKS
+from app.ducks import BUILTIN_DUCKS, DEFAULT_ROSTER
 from app.providers import Refused
 from app.web.main import create_app
 from tests.fakes import Script, ScriptedProvider, verdict_scoring
@@ -23,7 +24,7 @@ def scripted() -> ScriptedProvider:
         duck.id: Script(verdict=verdict_scoring(10 + 6 * index))
         for index, duck in enumerate(BUILTIN_DUCKS)
     }
-    scripts["witch"] = Script(error=Refused())
+    scripts["rebel"] = Script(error=Refused())
     return ScriptedProvider(scripts)
 
 
@@ -33,8 +34,8 @@ def provider() -> ScriptedProvider:
 
 
 @pytest.fixture
-def client(provider: ScriptedProvider) -> Iterator[TestClient]:
-    app = create_app(provider, provider_label="Scripted")
+def client(provider: ScriptedProvider, tmp_path: Path) -> Iterator[TestClient]:
+    app = create_app(provider, database=tmp_path / "council.db", provider_label="Scripted")
     with TestClient(app, base_url=ORIGIN) as test_client:
         yield test_client
 
@@ -70,7 +71,7 @@ def read_events(client: TestClient, run_id: str) -> list[tuple[str, str]]:
 def test_the_desk_offers_both_fields_and_the_whole_roster(client: TestClient) -> None:
     page = client.get("/").text
     assert 'name="situation"' in page and 'name="action"' in page
-    assert f"{len(BUILTIN_DUCKS)} sitting" in page
+    assert f"{len(DEFAULT_ROSTER)} sitting" in page
     assert "Sitting today: <b>Scripted</b>" in page
 
 
@@ -99,8 +100,9 @@ def test_what_people_type_is_escaped(client: TestClient) -> None:
 def test_filing_returns_a_full_size_board_before_any_verdict(client: TestClient) -> None:
     response = client.post("/council", data=CASE, headers=FROM_PAGE)
     assert "<html" not in response.text  # a fragment for htmx, not a page
-    for duck in BUILTIN_DUCKS:
-        assert f'sse-swap="seat-{duck.id}"' in response.text
+    assert response.text.count('sse-swap="seat-') == len(DEFAULT_ROSTER)
+    for duck_id in DEFAULT_ROSTER:
+        assert f'sse-swap="seat-{duck_id}"' in response.text
     assert CASE["situation"] in response.text
 
 
@@ -108,11 +110,11 @@ def test_the_stream_sends_every_seat_then_the_finding_then_done(client: TestClie
     events = read_events(client, file_case(client))
     names = [name for name, _ in events]
 
-    assert sorted(names[:-2]) == sorted(f"seat-{duck.id}" for duck in BUILTIN_DUCKS)
+    assert sorted(names[:-2]) == sorted(f"seat-{duck_id}" for duck_id in DEFAULT_ROSTER)
     assert names[-2:] == ["finding", "done"]
     seats = dict(events)
-    assert "stamped" in seats["seat-king"]  # arriving live, so it slams in
-    assert "Empty chair" in seats["seat-witch"]  # refused (D8)
+    assert "stamped" in seats["seat-doctor"]  # arriving live, so it slams in
+    assert "Empty chair" in seats["seat-rebel"]  # refused (D8)
     assert "The finding of the bench" in seats["finding"]
 
 
@@ -124,7 +126,7 @@ def test_reconnecting_replays_without_hearing_the_case_again(
     calls = provider.calls
     again = read_events(client, run_id)  # what a browser does after a dropped connection
     assert again == first
-    assert provider.calls == calls == len(BUILTIN_DUCKS)
+    assert provider.calls == calls == len(DEFAULT_ROSTER)
 
 
 def test_a_finished_hearing_has_its_own_still_page(client: TestClient) -> None:

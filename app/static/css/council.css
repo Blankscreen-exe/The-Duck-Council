@@ -251,3 +251,78 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
   .dots::after { animation: none; }
   .hearing { transition: none; }
 }
+
+/* ── the Bench (D14, D23) ─────────────────────────────────────── */
+.filing-note { text-align: center; padding-top: 0; }
+.filing-note p { max-width: 620px; margin: 0 auto; font-size: 15px; opacity: .92; }
+.filing-note b { color: var(--brasslt); }
+
+.bench-head { display: flex; justify-content: center; align-items: baseline; gap: 18px;
+  flex-wrap: wrap; margin-top: 6px; font-size: 15px; }
+.count b { font: 400 24px var(--serif); color: var(--felt); }
+.error-line { color: #A33D0B; font-weight: 700; font-size: 14px; }
+
+.presets { text-align: center; margin-top: 18px; }
+.presets-label { font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: #6B6552;
+  margin-bottom: 10px; }
+.tabs { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.tabs li { display: flex; }
+.tab { font: 700 13px var(--sans); letter-spacing: .04em; padding: 9px 14px; cursor: pointer;
+  border: 1px solid var(--felt); background: transparent; color: var(--felt); border-radius: 2px; }
+.tab small { font-size: 12px; font-weight: 500; opacity: .7; margin-left: 6px; }
+.tab[aria-current="true"] { background: var(--felt); color: var(--brasslt); }
+.tabs li:has(.tab-x) .tab { border-radius: 2px 0 0 2px; }
+.tab-x { font-size: 17px; line-height: 1; padding: 0 11px; cursor: pointer; color: var(--felt);
+  border: 1px solid var(--felt); border-left: 0; background: transparent; border-radius: 0 2px 2px 0; }
+.save-preset { margin-top: 14px; display: flex; gap: 10px; justify-content: center;
+  align-items: center; flex-wrap: wrap; font-size: 14px; }
+.save-preset input { font: 14px var(--sans); padding: 8px 10px; min-width: 210px; margin-left: 6px;
+  border: 1px solid rgba(18, 59, 43, .35); border-radius: 2px; background: #FFFDF6; }
+.btn.small { padding: 9px 16px; font-size: 12px; box-shadow: 0 2px 0 #6F520F; }
+
+.lens { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; font-size: 13.5px;
+  color: #32372A; min-height: 0; overflow: hidden; }
+.lens dt { font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--felt); padding-top: 2px; }
+.lens dd { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; line-clamp: 3; }
+.seat-toggle { font: 700 11px var(--sans); letter-spacing: .14em; text-transform: uppercase;
+  padding: 8px 10px; border-radius: 2px; cursor: pointer; border: 1px solid var(--felt);
+  background: var(--felt); color: var(--brasslt); }
+.seat-toggle[aria-pressed="false"] { background: transparent; color: var(--felt); }
+.notice-error { font-size: 13px; color: #A33D0B; font-weight: 700; margin-top: 8px; }
+.own { margin-top: auto; padding-top: 10px; display: flex; gap: 18px; align-items: center; }
+.own a, .own button { font: 700 13px var(--sans); color: var(--felt); background: none; border: 0;
+  padding: 0; cursor: pointer; text-decoration: underline; text-decoration-color: var(--brass);
+  text-underline-offset: 3px; }
+
+/* stood down: unpinned, faded and slipped down the board, as though it fell */
+.row.stood { transform: rotate(calc(var(--rot) * 5)) translateY(10px); opacity: .8;
+  filter: grayscale(.85) drop-shadow(1px 3px 3px rgba(0, 0, 0, .4)); }
+.row.stood::before { display: none; }
+
+.row.commission { align-items: center; justify-content: center; text-align: center; gap: 8px;
+  text-decoration: none; color: var(--cream); background: rgba(247, 240, 222, .05);
+  box-shadow: inset 0 0 0 2px rgba(233, 197, 102, .45); filter: none; }
+.row.commission::before { display: none; }
+.row.commission:hover, .row.commission:focus-visible { box-shadow: inset 0 0 0 2px var(--brasslt); }
+.row.commission .plus { font: 400 64px/1 var(--serif); color: var(--brasslt); }
+.row.commission .nm { color: var(--cream); }
+.row.commission .rl { color: rgba(247, 240, 222, .72); }
+
+/* commissioning or amending a duck: one large notice */
+.sheet { max-width: 660px; margin: 34px auto 0; padding: 34px 32px 30px;
+  background:
+    radial-gradient(ellipse at 18% 12%, rgba(150, 112, 52, .12), transparent 40%),
+    radial-gradient(ellipse at 84% 80%, rgba(133, 98, 44, .10), transparent 44%),
+    linear-gradient(168deg, #FCF6E6, #F3E8CE 54%, #EADBB8);
+  box-shadow: inset 0 0 30px rgba(122, 88, 38, .18), 0 6px 18px rgba(0, 0, 0, .18); }
+.sheet-head { display: flex; gap: 16px; align-items: center; }
+.sheet label { display: block; margin-top: 20px; }
+.sheet .field-name { display: block; font-size: 12px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--felt); }
+.sheet .help { display: block; font-size: 13px; color: #5C5A50; margin: 3px 0 7px; }
+.sheet input, .sheet textarea { width: 100%; font: 15px/1.5 var(--sans); padding: 10px 12px;
+  border: 1px solid rgba(18, 59, 43, .3); border-radius: 2px; background: #FFFDF6; resize: vertical; }
+.field-error { display: block; color: #A33D0B; font-weight: 700; font-size: 13px; margin-top: 5px; }
+.sheet-actions { display: flex; gap: 20px; align-items: center; margin-top: 26px; }

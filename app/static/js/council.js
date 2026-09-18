@@ -79,6 +79,14 @@
     showSound(button);
   });
 
+  // Commissioning a duck: its monogram previews the initials as the name is typed.
+  document.addEventListener("input", (event) => {
+    if (!event.target.matches?.("[data-monogram-from]")) return;
+    const initials = event.target.value.split(/\s+/).filter((word) => /^[\p{L}\p{N}]/u.test(word))
+      .slice(0, 2).map((word) => word[0].toUpperCase()).join("");
+    document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.textContent = initials || "?"; });
+  });
+
   // Ctrl+Enter (Cmd+Enter on a Mac) files the case from either field.
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" || !(event.ctrlKey || event.metaKey)) return;

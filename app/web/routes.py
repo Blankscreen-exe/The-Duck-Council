@@ -1,4 +1,4 @@
-"""The pages and the event stream.
+"""The Filing Desk, hearings, and the event stream.
 
 Routes never build their collaborators. The provider, the hearing store and the
 roster arrive through FastAPI dependencies (D13), so tests hand in a scripted
@@ -8,56 +8,18 @@ provider and the app hands in whichever real one it was started with.
 import asyncio
 from collections.abc import AsyncIterator
 from functools import partial
-from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, Form, HTTPException, Request
+from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response, StreamingResponse
-from fastapi.templating import Jinja2Templates
 from pydantic import ValidationError
 
-from app.ducks import BUILTIN_DUCKS
-from app.providers import Provider
 from app.schema import Case, Duck
+from app.web.deps import ProviderDep, RosterDep, RunsDep, is_htmx, page_context, templates
 from app.web.runs import Run, RunStore, hold_hearing, new_run_id
-from app.web.view import TEMPLATE_GLOBALS, sse_event
-
-templates = Jinja2Templates(directory=Path(__file__).parent.parent / "templates")
-templates.env.globals.update(TEMPLATE_GLOBALS)
+from app.web.view import sse_event
 
 router = APIRouter()
-
-
-def get_provider(request: Request) -> Provider:
-    provider: Provider = request.app.state.provider
-    return provider
-
-
-def get_runs(request: Request) -> RunStore:
-    runs: RunStore = request.app.state.runs
-    return runs
-
-
-def get_roster() -> tuple[Duck, ...]:
-    # The Bench (step 4) replaces this with the roster the user has chosen.
-    return BUILTIN_DUCKS
-
-
-ProviderDep = Annotated[Provider, Depends(get_provider)]
-RunsDep = Annotated[RunStore, Depends(get_runs)]
-RosterDep = Annotated[tuple[Duck, ...], Depends(get_roster)]
-
-
-def _page(request: Request) -> dict[str, Any]:
-    """Context every full page needs for its footer."""
-    return {
-        "provider_label": request.app.state.provider_label,
-        "demo": request.app.state.provider.name == "demo",
-    }
-
-
-def _is_htmx(request: Request) -> bool:
-    return request.headers.get("hx-request") == "true"
 
 
 def _run_or_404(runs: RunStore, run_id: str) -> Run:
@@ -94,13 +56,13 @@ def _desk(
     status_code: int = 200,
 ) -> HTMLResponse:
     context = {
-        **_page(request),
+        **page_context(request),
         "roster": roster,
         "situation": situation,
         "action": action,
         "error": error,
     }
-    name = "_desk.html" if _is_htmx(request) else "desk.html"
+    name = "_desk.html" if is_htmx(request) else "desk.html"
     return templates.TemplateResponse(request, name, context, status_code=status_code)
 
 
@@ -147,7 +109,7 @@ async def file_case(
     hearings.add(task)
     task.add_done_callback(hearings.discard)
 
-    if not _is_htmx(request):
+    if not is_htmx(request):
         # Without JavaScript the form posts normally; send the browser to the hearing page.
         return RedirectResponse(f"/council/{run.id}", status_code=303)
     context = _hearing_context(run, live=True)
@@ -158,7 +120,7 @@ async def file_case(
 async def hearing_page(request: Request, runs: RunsDep, run_id: str) -> HTMLResponse:
     """A hearing on its own page. Finished hearings render still: no stamps, no sound (D25)."""
     run = _run_or_404(runs, run_id)
-    context = {**_page(request), **_hearing_context(run, live=not run.done)}
+    context = {**page_context(request), **_hearing_context(run, live=not run.done)}
     return templates.TemplateResponse(request, "council.html", context)
 
 

@@ -1,0 +1,31 @@
+{# Saved line-ups (D23). A tab is marked current when exactly its ducks are sitting. #}
+<div id="presets" class="presets"{% if oob %} hx-swap-oob="true"{% endif %}>
+  <p class="presets-label">Presets</p>
+  <ul class="tabs">
+    {% for preset in presets %}
+      <li>
+        <form method="post" action="/bench/presets/{{ preset.id }}/apply"
+              hx-post="/bench/presets/{{ preset.id }}/apply" hx-target="#bench" hx-swap="outerHTML">
+          <button class="tab" type="submit"{% if preset.duck_ids == sitting_ids %} aria-current="true"{% endif %}>
+            {{ preset.name }} <small>{{ preset.duck_ids | length }}</small>
+          </button>
+        </form>
+        {% if not preset.is_default %}
+          <form method="post" action="/bench/presets/{{ preset.id }}/delete"
+                hx-post="/bench/presets/{{ preset.id }}/delete" hx-target="#presets" hx-swap="outerHTML"
+                hx-confirm="Delete the preset “{{ preset.name }}”?">
+            <button class="tab-x" type="submit" aria-label="Delete the preset {{ preset.name }}">&times;</button>
+          </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  <form class="save-preset" method="post" action="/bench/presets"
+        hx-post="/bench/presets" hx-target="#presets" hx-swap="outerHTML">
+    <label>Save who is sitting as
+      <input name="name" maxlength="40" required placeholder="The Serious Five">
+    </label>
+    <button class="btn small" type="submit">Save preset</button>
+  </form>
+  {% if preset_error %}<p class="error-line" role="alert">{{ preset_error }}</p>{% endif %}
+</div>

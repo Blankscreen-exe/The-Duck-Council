@@ -178,7 +178,7 @@ The UI asks the store whether it is writable and hides the key form when it is
 not, instead of silently failing to save. Third case where an interface is
 earning its place rather than decorating the design.
 
-### D19 — One model default, optional per-duck override
+### D19 — ~~One model default, optional per-duck override~~ (dropped, see D38)
 A global provider+model setting covers the normal case; a duck may override it.
 Mixed councils (one duck on Claude, another on a local model) fall out for free
 because the ducks are independent, and it makes the provider abstraction
@@ -458,40 +458,89 @@ and every response carries a Content-Security-Policy allowing scripts only from 
 server, so text from a user or a model can never run even if escaping failed.
 Templates escape by default on top of that. All three are tested.
 
+Decisions from here on are marked **(owner's call)** where the owner chose between
+options, so the log shows who decided what.
+
+### D15 amendment — Real SQLite only, no repository interface (owner's call)
+D15 planned a repository interface with a SQLite version for the app and an
+in-memory version for tests. Built instead: one `Bench` class on SQLite, and the
+tests run it against a real database in a temporary file.
+
+Why: a fake store would have to re-implement every rule (the last-duck guard, the
+preset fallback) and could pass while the SQL is wrong; SQLite in a temp file is
+fast enough to test directly. An interface gets added when a second storage
+backend actually exists, not before. Routes still receive the bench through
+dependency injection (D13); that does not need an interface.
+
+### D23 amendment — The default preset is "The Quackorum" (owner's call)
+A fresh install seats five ducks, not thirteen: the lawyer, the doctor, Sir Bill
+Quackington, Quack the Ripper and Flare. Chosen to disagree: two cautious (liability,
+harm) and three bold (upside, escalation, freedom), each on a different axis. Five
+can never tie, and on Claude Code five ducks run in one wave (~17s) where thirteen
+took ~50s. The name puns on quorum, the minimum members needed to decide.
+
+The line-up is defined in `app/ducks.py` and synced into the database on start, like
+the ducks themselves; it cannot be deleted. There is deliberately no second
+"Full Council" preset: users save their own line-ups.
+
+### D37 — The database arrives with the Bench, not after it
+The Bench saves who sits, user ducks and presets, so SQLite (planned for step 5)
+came forward into step 4. Details accepted by the owner:
+
+- The bench lives in the user's app-data folder (`%LOCALAPPDATA%\duck-council\council.db`
+  on Windows), movable with `--data-dir` or `DUCK_COUNCIL_DATA`.
+- Built-in ducks are refreshed from the code on every start (their text cannot
+  drift), while the user's choice of who sits is kept.
+- A newly commissioned duck sits straight away.
+- Removing a user duck is permanent, after a confirmation.
+- The bench's rules are enforced inside single SQL statements, so two browser tabs
+  cannot both remove the last sitting duck.
+- The schema is versioned with `PRAGMA user_version` and an ordered migration list.
+- Work happens on the `v2` branch; merging to `main` is the owner's call.
+
+### D38 — Chambers keeps a saved list of providers; no per-duck override (owner's call)
+Following proposal_copilot: providers are set up once (Claude Code, an Anthropic
+key, Ollama...), each with its own connection check, and one is the default that
+hearings use. Switching is a click, not re-entering settings.
+
+Per-duck provider override (D19) is dropped: one provider for the whole council.
+Simpler to use and to explain, and it removes a picker from every duck.
+
 ---
 
 ## Next session starts here
 
-**State:** step 3 is built. `uv run --system-certs duck-council-web` serves the
-Filing Desk at http://127.0.0.1:8000 (`--provider claude-code` for real AI). Filing
-a case swaps the form for the caption and a full-size board; verdicts stream in over
-SSE and stamp into their seats with the sound; the finding lands last. Finished
-hearings have their own still page. 109 tests pass; ruff and `mypy --strict` clean.
-Verified over real HTTP against a running server. **Visual check in a browser is
-pending: the owner is testing it by hand.**
+**State:** step 4a is done: the Bench (seat and stand down ducks, commission your
+own, presets) on SQLite. 130 tests pass; ruff and `mypy --strict` clean. Step 4b,
+Chambers, is designed (D38) but not started: its remaining decisions get put to the
+owner before building.
+
+Run it: `uv run --system-certs duck-council-web` (`--provider claude-code` for real
+AI). **Visual check in a browser is pending: the owner tests by hand.**
 
 **Build order:**
 
 1. ~~Engine + CLI.~~ Done.
-2. Tune the bands. Deferred by the owner until after the UI. Known issues from the
-   first real hearings: verdict lines run 3-5 sentences (the board clamps them to 5
-   lines, so long ones are cut); every duck adds a safety caveat, which may pull the
-   chaos ducks toward the middle.
-3. ~~FastAPI + Jinja + HTMX/SSE.~~ Done, pending the owner's browser check.
-4. `/bench` (choose and create ducks, presets), `/providers` (Chambers), secret
-   storage. The nav shows these as "soon".
-5. SQLite history (the Register) and cache. Hearings are in memory until then and
-   vanish on restart.
+2. Tune the bands. Deferred until after the UI. Known: verdict lines run 3-5
+   sentences (clamped to 5 lines on the board); every duck adds a safety caveat,
+   which may pull the chaos ducks toward the middle.
+3. ~~Web app: Filing Desk and live board.~~ Done.
+4. ~~4a: the Bench on SQLite.~~ Done. **4b: Chambers** (saved provider list, one
+   default, keys in the OS keyring per D12/D18).
+5. The Register (history of hearings) and its cache. Hearings are still in memory.
 
-**Not yet built from the frozen decisions:** the safety gate (D20/D22). The page
-footer says so.
+**Not yet built from the frozen decisions:** the safety gate (D20/D22).
+
+**Open issue:** an intermittent pytest warning appeared in a few runs before the
+default roster shrank to five, and has not reproduced in 20+ runs since. Suspected:
+a test ending while a background hearing is still running. Not yet pinned down.
 
 **Untested against the live service:** the Anthropic API and OpenAI-compatible
 adapters (no key used yet). Claude Code is tested for real.
 
-**Environment gotcha:** on this machine uv's own certificate bundle rejects
-PyPI (`invalid peer certificate: UnknownIssuer`, something intercepts TLS). Pass
-`--system-certs` to every `uv` command. For downloads, the uv-installed Python's
-HTTPS also fails here (`OPENSSL_Applink`); Windows' own `C:\Windows\System32\curl.exe`
-works. Python 3.12 is pinned in `.python-version`.
+**Environment gotchas:** pass `--system-certs` to every `uv` command (something
+intercepts TLS here). While `duck-council-web` is running, also pass `--no-sync`:
+Windows locks the running program and uv cannot reinstall it. The uv-installed
+Python cannot do HTTPS downloads here (`OPENSSL_Applink`); Windows'
+`C:\Windows\System32\curl.exe` can. Python 3.12 is pinned in `.python-version`.
 

@@ -230,3 +230,11 @@ BUILTIN_DUCKS: tuple[Duck, ...] = (
 )
 
 DUCKS_BY_ID: dict[str, Duck] = {duck.id: duck for duck in BUILTIN_DUCKS}
+
+DEFAULT_PRESET = "The Quackorum"
+"""What a fresh install seats (D23): five ducks chosen to disagree. Two cautious
+(harm, liability) and three bold (freedom, upside, escalation), each on a different
+axis. Five also means the tally can never tie, and on Claude Code five ducks run in
+a single wave."""
+
+DEFAULT_ROSTER: tuple[str, ...] = ("lawyer", "doctor", "rich", "serial_killer", "rebel")

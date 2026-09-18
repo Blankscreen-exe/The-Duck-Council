@@ -35,14 +35,14 @@
     <ul class="faces">
       {% for duck in roster %}<li title="{{ duck.name }}">{{ portrait(duck, small=True) }}</li>{% endfor %}
     </ul>
-    <p><b>{{ roster | length }} sitting</b> <span class="soon" title="Choosing the ducks arrives with the Bench page">change the bench (soon)</span></p>
+    <p><b>{{ roster | length }} sitting</b> &middot; <a class="quiet" href="/bench">change the bench</a></p>
   </div>
 {%- endmacro %}
 
 {% macro nav(current="desk") -%}
   <nav class="nav" aria-label="The Duck Council">
     <a href="/"{% if current == "desk" %} aria-current="page"{% endif %}>The Filing Desk</a>
-    <span class="soon" title="Choose, add and remove ducks. Coming next.">The Bench</span>
+    <a href="/bench"{% if current == "bench" %} aria-current="page"{% endif %}>The Bench</a>
     <span class="soon" title="Past hearings. Coming soon.">The Register</span>
     <span class="soon" title="Choose the AI provider. Coming next.">Chambers</span>
   </nav>

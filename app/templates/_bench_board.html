@@ -1,0 +1,18 @@
+{# The whole bench: count, presets and the board. Re-rendered when a preset is applied. #}
+<section id="bench" class="bench-page">
+  <div class="bench-head">
+    {% include "_bench_count.html" %}
+    {% if error %}<p class="error-line" role="alert">{{ error }}</p>{% endif %}
+  </div>
+
+  {% include "_presets.html" %}
+
+  <div class="bench">
+    {% for entry in entries %}{% include "_profile.html" %}{% endfor %}
+    <a class="row commission" href="/bench/new">
+      <span class="plus" aria-hidden="true">+</span>
+      <span class="nm">Commission a duck</span>
+      <span class="rl">Write your own member of the council</span>
+    </a>
+  </div>
+</section>

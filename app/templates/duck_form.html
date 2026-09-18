@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% from "_components.html" import nav %}
+{% block title %}{{ "Amend a duck" if duck_id else "Commission a duck" }} · The Duck Council{% endblock %}
+{% block heading %}{% if duck_id %}Amend <i>{{ values.name }}</i>{% else %}Commission <i>a duck</i>{% endif %}{% endblock %}
+{% block content %}
+<div class="filing filing-note">
+  <p>A duck's <b>voice</b> is only how it talks. What it <b>weighs</b> and what it is
+     <b>blind to</b> decide its score, and they are why the council disagrees. A duck
+     that weighs everything fairly will agree with everyone.</p>
+</div>
+<div class="wrap">
+  <form class="sheet" method="post" action="{{ '/bench/' ~ duck_id ~ '/edit' if duck_id else '/bench/new' }}">
+    <div class="sheet-head">
+      <span class="port mg" data-monogram aria-hidden="true">{{ values.name[:1] | upper if values.name else "?" }}</span>
+      <p class="help">User ducks wear a monogram of their initials instead of a portrait.</p>
+    </div>
+
+    {% macro field(name, label, help, limit, long=False) %}
+      <label>
+        <span class="field-name">{{ label }}</span>
+        <span class="help">{{ help }}</span>
+        {% if long %}
+          <textarea name="{{ name }}" rows="3" maxlength="{{ limit }}" required>{{ values[name] or "" }}</textarea>
+        {% else %}
+          <input name="{{ name }}" maxlength="{{ limit }}" required value="{{ values[name] or '' }}"
+                 {% if name == "name" %}data-monogram-from{% endif %}>
+        {% endif %}
+        {% if errors[name] %}<span class="field-error" role="alert">{{ errors[name] }}</span>{% endif %}
+      </label>
+    {% endmacro %}
+
+    {{ field("name", "Name", "As it appears on the bench.", 40) }}
+    {{ field("epithet", "Card line", "Short, for its notice. For example: Weighs the deposit · blind to friendship", 48) }}
+    {{ field("voice", "Voice", "How it talks. Flavour only: this never moves the score.", 600, long=True) }}
+    {{ field("weighs", "Weighs", "What actually moves its score. Be specific.", 300, long=True) }}
+    {{ field("blind_spot", "Blind to", "What it deliberately ignores. This is what makes it disagree.", 300, long=True) }}
+
+    <div class="sheet-actions">
+      <button class="btn" type="submit">{{ "Amend" if duck_id else "Commission" }}</button>
+      <a class="quiet" href="/bench">Back to the bench</a>
+    </div>
+  </form>
+  {{ nav("bench") }}
+</div>
+{% endblock %}
