@@ -135,3 +135,8 @@ def test_a_page_past_the_end_shows_the_last_page(client: TestClient) -> None:
     hear(client)
     page = client.get("/register?page=9").text
     assert ">001</td>" in page
+
+
+def test_the_finding_names_who_heard_it_as_it_lands(client: TestClient) -> None:
+    events = dict(read_events(client, file_case(client)))
+    assert '<p class="by">Heard by Scripted</p>' in events["finding"]

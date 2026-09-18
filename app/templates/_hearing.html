@@ -4,9 +4,7 @@
 <section id="hearing" class="hearing">
   <div class="filing">
     {{ caption(run.case) }}
-    <p class="heard">
-      {% if run.number %}Entered as No. {{ docket(run.number) }} &middot; {% endif %}Heard by {{ run.heard_by }}
-    </p>
+    {% if run.number %}<p class="heard">Entered as No. {{ docket(run.number) }}</p>{% endif %}
   </div>
 
   <div class="wrap">

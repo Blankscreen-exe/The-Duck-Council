@@ -6,8 +6,10 @@
   {% if finding.median is none %}
     <p class="w">Every chair is empty</p>
     <p>No duck returned a verdict, so there is nothing to find. The provider may be unreachable.</p>
+    <p class="by">Heard by {{ run.heard_by }}</p>
   {% else %}
     <p class="n">{{ finding.median }}<sub>/100</sub></p>
+    <p class="by">Heard by {{ run.heard_by }}</p>
     <p class="w">{{ verdict_word(finding) }}</p>
     <p>{{ finding_summary(finding, run.seats) }}</p>
 

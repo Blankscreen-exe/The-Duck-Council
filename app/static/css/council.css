@@ -204,6 +204,8 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 .finding .kick { font-size: 11px; letter-spacing: .34em; text-transform: uppercase; color: var(--brasslt); }
 .finding .n { font: 400 clamp(72px, 16vw, 124px)/.9 var(--serif); color: var(--brasslt); margin: 10px 0 2px; }
 .finding .n sub { font-size: 20px; vertical-align: baseline; opacity: .55; }
+.finding .by { font-size: 12px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--brasslt); opacity: .9; margin: 6px 0 12px; }
 .finding .w { font: italic 400 clamp(22px, 5vw, 34px) var(--serif); }
 .finding .w + p { max-width: 500px; margin: 14px auto 0; font-size: 14px; opacity: .88; }
 
