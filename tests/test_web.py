@@ -1,5 +1,8 @@
 """The web app, end to end through FastAPI's test client, with a scripted provider."""
 
+import html
+import json
+import re
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -235,3 +238,36 @@ def test_when_the_clerk_fails_the_case_is_heard_cautiously(tmp_path: Path) -> No
     with clerked_client(tmp_path, RuntimeError("clerk unreachable")) as client:
         read_events(client, file_case(client))
         assert set(client.provider.tones) == {"cautious"}  # type: ignore[attr-defined]
+
+
+# --- the loading card (D42) ---------------------------------------------------------------
+
+
+def loader_lines(page: str) -> list[str]:
+    match = re.search(r"data-lines='([^']*)'", page)
+    assert match, "no loading card"
+    lines: list[str] = json.loads(html.unescape(match.group(1)))
+    return lines
+
+
+def test_a_joke_gets_fun_lines_about_the_ducks_actually_sitting(tmp_path: Path) -> None:
+    with clerked_client(tmp_path, Ruling(reason="Absurd.", hear_as=Register.PLAY)) as client:
+        board = client.post("/council", data=CASE, headers=FROM_PAGE).text
+        lines = loader_lines(board)
+        assert "Ruffling feathers…" in lines
+        assert any("Quack the Ripper" in line for line in lines)  # sitting
+        assert not any("Obscura" in line for line in lines)  # not sitting
+
+
+def test_a_serious_or_unruled_case_gets_gentle_lines(tmp_path: Path) -> None:
+    for ruling in (Ruling(reason="Sincere.", hear_as=Register.WEIGHTY), RuntimeError("down")):
+        with clerked_client(tmp_path / type(ruling).__name__, ruling) as client:
+            lines = loader_lines(client.post("/council", data=CASE, headers=FROM_PAGE).text)
+            assert "The council is weighing this carefully…" in lines
+            assert not any("Ripper is sharpening" in line for line in lines)
+
+
+def test_a_finished_hearing_has_no_loading_card(client: TestClient) -> None:
+    run_id = file_case(client)
+    read_events(client, run_id)
+    assert "data-loader" not in client.get(f"/council/{run_id}").text

@@ -4,6 +4,7 @@ import hashlib
 from collections.abc import Sequence
 
 from app.schema import Absence, Band, Duck, Finding, Seat
+from app.web.loading import loading_lines
 
 _COIN: dict[Band, str] = {
     Band.RECKLESS: "low",
@@ -97,6 +98,7 @@ TEMPLATE_GLOBALS = {
     "verdict_word": verdict_word,
     "finding_summary": finding_summary,
     "voted_seats": voted_seats,
+    "loading_lines": loading_lines,
     "monogram": monogram,
     "monogram_hue": monogram_hue,
 }

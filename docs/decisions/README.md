@@ -606,6 +606,26 @@ Implementation: each adapter now has one generic structured "ask" that both `jud
 (a duck) and `classify` (the clerk) use, rather than two copies of its plumbing. The
 clerk's answer field is `hear_as`, not `register`, which shadowed a Pydantic attribute.
 
+### D42 — A loading card while the ducks deliberate (owner's calls)
+Once the clerk has ruled and the board appears, the ducks can take a while (about 17s
+on Claude Code). A parchment card over the dimmed board shows a line that changes
+every second, like a game's loading screen.
+
+- **It fades when the first notice lands** (owner's call), so every stamp after that
+  is seen; the stamps are the app's signature moment. It stays up for at least one
+  second, so a fast provider does not make it flicker.
+- **General lines mixed with lines about the ducks actually sitting** (owner's call):
+  "Mallard Esquire III is citing a treaty that doesn't exist…". User ducks get
+  "<name> is thinking it over…".
+- **Gentler lines for a real decision** (owner's call): "The council is weighing this
+  carefully…". The same calm lines are used when the clerk could not rule, following
+  D41's logic that an unknown case is treated with care. The ruling itself stays hidden.
+- **Dimmed board, message on a parchment card** (owner's call). The card never blocks
+  clicks or scrolling. Screen readers hear "The council is deliberating" once rather
+  than a new line every second.
+- The lines are chosen by the server and handed to the page in the markup, so the
+  strict Content-Security-Policy still allows no inline script. They live in
+  `app/web/loading.py`, as copy anyone can edit.
 
 ---
 

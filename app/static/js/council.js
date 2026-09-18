@@ -46,6 +46,7 @@
   function land(notice) {
     if (notice.dataset.landed) return;
     notice.dataset.landed = "1";
+    stopLoader();
     const isFinding = notice.classList.contains("finding");
     window.setTimeout(() => {
       hit(isFinding ? 0.72 : undefined); // the finding sounds lower: the gavel
@@ -86,6 +87,63 @@
       .slice(0, 2).map((word) => word[0].toUpperCase()).join("");
     document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.textContent = initials || "?"; });
   });
+
+  // ── The loading card while the ducks deliberate (D42) ────────────────────────
+  // The server renders the card with every line it may show. We shuffle them, change
+  // one a second, and fade the card once the first notice lands, but never before it
+  // has been up for a moment, or a fast provider would make it flicker.
+  const LINE_MS = 1000;
+  const MIN_SHOWN_MS = 1000;
+  let loader = null; // { el, timer, shownAt }
+
+  function shuffled(lines) {
+    const copy = [...lines];
+    for (let i = copy.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }
+
+  function startLoader(el) {
+    if (loader?.el === el) return;
+    stopLoader();
+    let lines;
+    try { lines = shuffled(JSON.parse(el.dataset.lines || "[]")); } catch { lines = []; }
+    const shown = el.querySelector("[data-loader-line]");
+    let next = 0;
+    const timer = window.setInterval(() => {
+      if (!shown || lines.length < 2) return;
+      next = (next + 1) % lines.length;
+      shown.classList.add("swapping");
+      window.setTimeout(() => {
+        shown.textContent = lines[next];
+        shown.classList.remove("swapping");
+      }, 200);
+    }, LINE_MS);
+    if (shown && lines.length) shown.textContent = lines[0];
+    loader = { el, timer, shownAt: performance.now() };
+  }
+
+  function stopLoader() {
+    if (!loader) return;
+    const { el, timer, shownAt } = loader;
+    loader = null;
+    const wait = Math.max(0, MIN_SHOWN_MS - (performance.now() - shownAt));
+    window.setTimeout(() => {
+      window.clearInterval(timer);
+      el.classList.add("gone");
+      window.setTimeout(() => el.remove(), still() ? 0 : 450);
+    }, wait);
+  }
+
+  // A hearing's board arrives by htmx swap; its loading card comes with it.
+  new MutationObserver(() => {
+    const el = document.querySelector("[data-loader]:not(.gone)");
+    if (el && loader?.el !== el) startLoader(el);
+  }).observe(document.body, { childList: true, subtree: true });
+  const onLoad = document.querySelector("[data-loader]");
+  if (onLoad) startLoader(onLoad);
 
   // ── Picking a notice up off the board (D40) ─────────────────────────────────
   // Every notice can be picked up: a copy lifts off the board into a dialog, full
