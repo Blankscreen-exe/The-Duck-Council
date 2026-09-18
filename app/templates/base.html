@@ -14,6 +14,19 @@
 </head>
 <body>
   <header class="head">
+    {# Sound needs council.js, so the button stays hidden until the script shows it.
+       Pressed means muted; the two drawings swap on that state. #}
+    <button type="button" class="sound" data-sound-toggle aria-pressed="false"
+            aria-label="Mute the stamps" title="Mute the stamps" hidden>
+      <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 9h4l5-4v14l-5-4H4z"/>
+        <path class="wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>
+      </svg>
+      <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M4 9h4l5-4v14l-5-4H4z"/>
+        <path class="wave" d="M16 9l6 6M22 9l-6 6"/>
+      </svg>
+    </button>
     <div class="seal" aria-hidden="true"><span>&#9878;</span></div>
     <p class="kick">The Duck Council</p>
     <h1>{% block heading %}The Council will <i>hear your case</i>{% endblock %}</h1>
@@ -29,7 +42,6 @@
       Sitting today: <b>{{ provider_label }}</b> (<a class="quiet" href="/providers">change</a>).
       {% if demo %}Demo mode, so verdicts are scripted and no AI is consulted.{% endif %}
     </p>
-    <button type="button" class="sound" data-sound-toggle aria-pressed="false">Sound on</button>
   </footer>
 
   {# A notice lifted off the board to be read in full (D40). Filled by council.js. #}

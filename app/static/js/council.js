@@ -80,8 +80,11 @@
   }).observe(document.documentElement, { childList: true, subtree: true });
 
   function showSound(button) {
+    const label = muted ? "Turn the stamps' sound on" : "Mute the stamps";
     button.setAttribute("aria-pressed", String(muted));
-    button.textContent = muted ? "Sound off" : "Sound on";
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    button.hidden = false;
   }
   document.querySelectorAll("[data-sound-toggle]").forEach(showSound);
   document.addEventListener("click", (event) => {
