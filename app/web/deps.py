@@ -13,6 +13,7 @@ from fastapi.templating import Jinja2Templates
 from app.bench import Bench
 from app.chambers import Chambers
 from app.providers import Provider
+from app.register import Register
 from app.schema import Duck
 from app.web.runs import RunStore
 from app.web.view import TEMPLATE_GLOBALS
@@ -37,6 +38,11 @@ def get_runs(request: Request) -> RunStore:
     return runs
 
 
+def get_register(request: Request) -> Register:
+    register: Register = request.app.state.register
+    return register
+
+
 def get_bench(request: Request) -> Bench:
     bench: Bench = request.app.state.bench
     return bench
@@ -51,14 +57,20 @@ ProviderDep = Annotated[Provider, Depends(get_provider)]
 ChambersDep = Annotated[Chambers, Depends(get_chambers)]
 RunsDep = Annotated[RunStore, Depends(get_runs)]
 BenchDep = Annotated[Bench, Depends(get_bench)]
+RegisterDep = Annotated[Register, Depends(get_register)]
 RosterDep = Annotated[tuple[Duck, ...], Depends(get_roster)]
+
+
+def provider_label(request: Request) -> str:
+    """The name of the provider that will hear the next case."""
+    pinned_label: str | None = request.app.state.provider_label_override
+    return pinned_label or get_chambers(request).current.label
 
 
 def page_context(request: Request) -> dict[str, Any]:
     """What every full page needs for its footer."""
-    pinned_label: str | None = request.app.state.provider_label_override
     return {
-        "provider_label": pinned_label or get_chambers(request).current.label,
+        "provider_label": provider_label(request),
         "demo": get_provider(request).name == "demo",
     }
 

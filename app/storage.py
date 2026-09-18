@@ -54,6 +54,32 @@ MIGRATIONS: tuple[str, ...] = (
     -- At most one default provider, enforced by the database itself.
     CREATE UNIQUE INDEX one_default_provider ON providers (is_default) WHERE is_default = 1;
     """,
+    # 3: the Register (D21, D43). A crisis is never written here (owner's call).
+    """
+    CREATE TABLE hearings (
+        -- The docket number. AUTOINCREMENT means a number is never reused, even after
+        -- the hearing that had it is removed: like a real register.
+        number      INTEGER PRIMARY KEY AUTOINCREMENT,
+        id          TEXT    NOT NULL UNIQUE,
+        filed_at    TEXT    NOT NULL,
+        situation   TEXT    NOT NULL,
+        action      TEXT    NOT NULL,
+        tone        TEXT    NOT NULL,
+        heard_by    TEXT    NOT NULL,
+        finding     TEXT    NOT NULL,
+        interrupted INTEGER NOT NULL DEFAULT 0 CHECK (interrupted IN (0, 1))
+    );
+    -- Each duck is kept as it was on the day, so amending or removing a duck later
+    -- never rewrites what it said in an old hearing.
+    CREATE TABLE hearing_seats (
+        hearing_id TEXT    NOT NULL REFERENCES hearings (id) ON DELETE CASCADE,
+        position   INTEGER NOT NULL,
+        duck       TEXT    NOT NULL,
+        verdict    TEXT,
+        absence    TEXT,
+        PRIMARY KEY (hearing_id, position)
+    );
+    """,
 )
 
 

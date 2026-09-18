@@ -2,6 +2,7 @@
 
 import hashlib
 from collections.abc import Sequence
+from datetime import datetime
 
 from app.schema import Absence, Band, Duck, Finding, Seat
 from app.web.loading import loading_lines
@@ -24,6 +25,11 @@ _ABSENCE: dict[Absence, str] = {
 def coin_class(band: Band) -> str:
     """Orange at the reckless end, brass through the middle, sage at clearly right (D24)."""
     return _COIN[band]
+
+
+def score_class(score: int) -> str:
+    """The medallions' three colours, for a finding that is only a number."""
+    return "low" if score < 40 else "high" if score >= 60 else "mid"
 
 
 def band_label(band: Band) -> str:
@@ -85,6 +91,17 @@ def monogram_hue(duck: Duck) -> int:
     return int(hashlib.sha256(duck.id.encode("utf-8")).hexdigest()[:4], 16) % 360
 
 
+def docket(number: int) -> str:
+    """A Register number as it is written in the book: No. 007."""
+    return f"{number:03d}"
+
+
+def ledger_date(moment: datetime) -> str:
+    """The day a hearing was filed, in this computer's time zone: 18 Sep 2026."""
+    local = moment.astimezone()
+    return f"{local.day} {local:%b %Y}"
+
+
 def sse_event(event: str, data: str) -> str:
     """Frame one server-sent event. Each line of `data` needs its own `data:` prefix."""
     lines = data.splitlines() or [""]
@@ -93,6 +110,7 @@ def sse_event(event: str, data: str) -> str:
 
 TEMPLATE_GLOBALS = {
     "coin_class": coin_class,
+    "score_class": score_class,
     "band_label": band_label,
     "absence_text": absence_text,
     "verdict_word": verdict_word,
@@ -101,4 +119,6 @@ TEMPLATE_GLOBALS = {
     "loading_lines": loading_lines,
     "monogram": monogram,
     "monogram_hue": monogram_hue,
+    "docket": docket,
+    "ledger_date": ledger_date,
 }

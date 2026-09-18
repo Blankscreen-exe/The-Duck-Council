@@ -2,7 +2,12 @@
 {# A hearing. When `live`, the board is already at full size: one seat per sitting duck,
    each waiting for its own event, so notices stamp into place and nothing reflows (D26). #}
 <section id="hearing" class="hearing">
-  <div class="filing">{{ caption(run.case) }}</div>
+  <div class="filing">
+    {{ caption(run.case) }}
+    <p class="heard">
+      {% if run.number %}Entered as No. {{ docket(run.number) }} &middot; {% endif %}Heard by {{ run.heard_by }}
+    </p>
+  </div>
 
   <div class="wrap">
     <div class="court"{% if live %} hx-ext="sse" sse-connect="/council/{{ run.id }}/stream" sse-close="done"{% endif %}>
@@ -32,6 +37,18 @@
     </div>
 
     <div class="after">
+      {% if run.done %}
+        {# Always heard fresh (owner's call): the same case asked again gets new verdicts. #}
+        <form method="post" action="/council"
+              hx-post="/council" hx-target="#hearing" hx-swap="outerHTML"
+              hx-disabled-elt="find button">
+          <input type="hidden" name="situation" value="{{ run.case.situation }}">
+          <input type="hidden" name="action" value="{{ run.case.action }}">
+          <button class="quiet again" type="submit">
+            <span class="idle">Hear it again</span><span class="busy">The clerk is reading it&hellip;</span>
+          </button>
+        </form>
+      {% endif %}
       <a class="quiet" href="/">Bring a new case</a>
       <a class="quiet" href="/council/{{ run.id }}/amend"
          hx-get="/council/{{ run.id }}/amend" hx-target="#hearing" hx-swap="outerHTML">Amend this case</a>

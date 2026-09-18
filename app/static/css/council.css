@@ -12,12 +12,17 @@
   font-display: swap; src: url("../fonts/karla-500.woff2") format("woff2"); }
 @font-face { font-family: "Karla"; font-style: normal; font-weight: 700;
   font-display: swap; src: url("../fonts/karla-700.woff2") format("woff2"); }
+@font-face { font-family: "Caveat"; font-style: normal; font-weight: 400;
+  font-display: swap; src: url("../fonts/caveat-400.woff2") format("woff2"); }
+@font-face { font-family: "Caveat"; font-style: normal; font-weight: 700;
+  font-display: swap; src: url("../fonts/caveat-700.woff2") format("woff2"); }
 
 :root {
   --felt: #123B2B; --feltdk: #0B241A; --cream: #F7F0DE; --brass: #C79A2E;
   --brasslt: #E9C566; --ink: #14180F; --orange: #D9641E; --sage: #6E9B6A;
   --serif: "DM Serif Display", Georgia, "Times New Roman", serif;
   --sans: "Karla", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
   --rule: rgba(199, 154, 46, .45);
 }
 
@@ -223,6 +228,15 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 .after { display: flex; justify-content: center; gap: 12px 28px; flex-wrap: wrap; margin: 32px 0 6px; }
 .quiet { color: var(--felt); font-weight: 700; font-size: 14px; text-decoration: underline;
   text-decoration-color: var(--brass); text-underline-offset: 4px; }
+button.quiet { background: none; border: 0; padding: 0; font-family: var(--sans); cursor: pointer; }
+.after form { display: contents; }
+.again .busy { display: none; }
+.htmx-request .again .idle, .again.htmx-request .idle { display: none; }
+.htmx-request .again .busy, .again.htmx-request .busy { display: inline; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+  white-space: nowrap; }
+.filing .heard { text-align: center; margin-top: 14px; font-size: 13px; letter-spacing: .08em;
+  color: var(--brasslt); }
 
 /* ── footer ───────────────────────────────────────────────────── */
 .foot { max-width: 900px; margin: 44px auto 0; padding: 20px 16px 48px; text-align: center;
@@ -435,4 +449,83 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 .loader-line.swapping { opacity: 0; }
 @media (prefers-reduced-motion: reduce) {
   .loader, .loader-line { transition: none; }
+}
+
+/* ── the Register (D43): a court ledger, printed headings, entries in the clerk's hand ── */
+.book { position: relative; margin: 8px 0 12px; padding: 30px 28px 26px;
+  background: #FBF5E3; border-radius: 3px 6px 6px 3px; border-left: 14px solid var(--feltdk);
+  box-shadow: inset 10px 0 12px -8px rgba(11, 36, 26, .45), 0 1px 0 #E7DCC0,
+    0 3px 0 #EFE5CB, 0 5px 0 #E2D6B8, 0 12px 26px rgba(11, 36, 26, .22); }
+.book-head { text-align: center; padding-bottom: 14px; margin-bottom: 4px;
+  border-bottom: 3px double rgba(18, 59, 43, .55); }
+.book-title { font: 400 26px/1.1 var(--serif); color: var(--felt); letter-spacing: .02em; }
+.book-vol { margin-top: 6px; font-size: 11px; font-weight: 700; letter-spacing: .26em;
+  text-transform: uppercase; color: #6B6450; }
+
+.ledger { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.ledger th { font: 700 11px var(--sans); letter-spacing: .16em; text-transform: uppercase;
+  color: var(--felt); text-align: left; padding: 12px 8px 8px;
+  border-bottom: 2px solid rgba(18, 59, 43, .55); }
+.ledger td { padding: 7px 8px 5px; vertical-align: top;
+  border-bottom: 1px solid rgba(62, 104, 150, .32); }
+/* the red column rules of a ledger book; a double one is the margin */
+.ledger .c-date, .ledger .c-case, .ledger .c-sat, .ledger .c-find {
+  border-right: 1px solid rgba(192, 57, 43, .35); }
+.ledger .c-no { width: 58px; border-right: 3px double rgba(192, 57, 43, .7); }
+.ledger .c-date { width: 104px; }
+.ledger .c-sat { width: 50px; text-align: center; }
+.ledger .c-find { width: 78px; text-align: center; }
+.ledger .c-by { width: 150px; }
+.ledger .c-x { width: 38px; text-align: center; }
+
+.hand { font: 400 21px/1.2 var(--hand); color: #1F2F5C; }
+.ledger .c-no.hand { font-weight: 700; color: #7A2A1E; }
+.ledger .c-by.hand { overflow-wrap: anywhere; }
+.ledger .c-case a { display: block; color: inherit; text-decoration: none; }
+.ledger .c-case a:hover .sit, .ledger .c-case a:focus-visible .sit {
+  text-decoration: underline; text-decoration-color: var(--brass); text-underline-offset: 3px; }
+.ledger .sit, .ledger .act { display: -webkit-box; -webkit-box-orient: vertical; overflow: hidden;
+  overflow-wrap: anywhere; }
+.ledger .sit { -webkit-line-clamp: 2; line-clamp: 2; }
+.ledger .act { -webkit-line-clamp: 1; line-clamp: 1; font-size: 18px; color: #3C4A72; }
+.adjourned { display: inline-block; margin-top: 2px; font: 700 11px var(--sans); letter-spacing: .16em;
+  text-transform: uppercase; color: #9A3A1E; border: 1px solid currentColor; padding: 1px 6px;
+  transform: rotate(-2deg); }
+
+/* the finding, circled in ink like a mark in the margin */
+.tick { display: inline-grid; place-items: center; min-width: 42px; height: 38px; padding: 0 4px;
+  border: 2px solid currentColor; border-radius: 50% 46% 52% 48%; transform: rotate(-4deg);
+  font: 700 22px/1 var(--hand); color: #8A6A16; }
+.tick.low { color: #B04A12; }
+.tick.high { color: #3F6B3C; }
+.tick.empty { color: #8A8470; border-style: dashed; }
+.tick.split { border-style: double; border-width: 4px; }
+
+.strike { background: none; border: 0; cursor: pointer; font: 700 22px/1 var(--sans);
+  color: rgba(20, 24, 15, .35); padding: 2px 6px; border-radius: 2px; }
+.strike:hover, .strike:focus-visible { color: #B0301E; }
+
+.book-foot { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+  gap: 12px 24px; margin-top: 18px; }
+.book-foot form { margin-left: auto; }
+.leaves { display: flex; align-items: center; gap: 18px; font-size: 13px; color: #6B6450; }
+.blank { text-align: center; padding: 34px 0 6px; font-size: 26px; color: #6B6450; }
+.blank-note { text-align: center; font-size: 14px; padding-bottom: 12px; }
+
+@media (max-width: 640px) {
+  .book { padding: 22px 14px 20px; border-left-width: 8px; }
+  .ledger, .ledger tbody, .ledger td { display: block; width: auto; }
+  .ledger thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .ledger tr { display: grid; grid-template-columns: auto 1fr auto; gap: 0 10px;
+    padding: 10px 0 8px; border-bottom: 1px solid rgba(62, 104, 150, .32); }
+  .ledger td { border: 0 !important; padding: 0; text-align: left !important; width: auto !important; }
+  .ledger .c-no { grid-column: 1; grid-row: 1; }
+  .ledger .c-date { grid-column: 2; grid-row: 1; align-self: center; font-size: 18px; }
+  .ledger .c-x { grid-column: 3; grid-row: 1; }
+  .ledger .c-case { grid-column: 1 / -1; margin-top: 4px; }
+  .ledger .c-sat, .ledger .c-find, .ledger .c-by { grid-column: 1 / -1; display: flex;
+    align-items: center; gap: 10px; margin-top: 6px; font-size: 18px; }
+  .ledger .c-sat::before, .ledger .c-find::before, .ledger .c-by::before { content: attr(data-label);
+    font: 700 11px var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--felt);
+    min-width: 76px; }
 }

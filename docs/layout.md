@@ -19,7 +19,8 @@ Nothing below 11px.
 | `/bench` | GET | The Bench — roster, toggles, presets |
 | `/bench/new` · `/bench/{id}/edit` | GET/POST | Commission or amend a duck |
 | `/bench/active` | POST | Update the sitting roster |
-| `/history` | GET | The Register |
+| `/register` | GET | The Register, 20 to a page (`?page=N`) |
+| `/register/{id}/delete` · `/register/clear` | POST | Strike out one hearing, or all (D43) |
 | `/providers` | GET/POST | Provider and model choice, keys (D27) |
 
 Routes are named plainly for anyone reading the code. The theme lives in the
@@ -118,20 +119,32 @@ will build a duck that agrees with everyone.
 
 ---
 
-## 4. `/history` — The Register
+## 4. `/register` — The Register (D43)
 
-Not the board. A bound ledger: ruled rows on cream, brass rules.
+Not the board. A court ledger book: cream paper, a green leather spine, printed
+column headings, red column rules, entries in the clerk's hand (Caveat).
 
 ```
-  ── THE REGISTER ────────────────────────────────────
-   (55)  "quit my job to go full-time on the app"
-         9 sitting · split · 2 hours ago
-  ────────────────────────────────────────────────────
-   (81)  "tell my landlord about the leak"
-         5 sitting · agreed · yesterday
+            THE REGISTER OF HEARINGS
+              VOL. I · 12 ENTRIES
+  ═══════════════════════════════════════════════════════════════
+   NO. ║ DATE        │ THE CASE                │ SAT │ FINDING │ HEARD BY
+  ─────╫─────────────┼─────────────────────────┼─────┼─────────┼──────────────
+   012 ║ 18 Sep 2026 │ My flatmate eats my…    │  5  │  (41)   │ Claude Code  ×
+       ║             │ → Hide a ghost pepper…  │     │         │
 ```
 
-Score as a small brass medallion. Each row links to `/council/{id}`.
+- The case links to `/council/{id}`; `×` strikes the entry out, after a confirmation.
+- The finding is the median circled in ink: orange, brass or sage like the
+  medallions; a double ring when the bench split; a dashed ring when every chair
+  was empty.
+- A hearing cut short by closing the app carries an "adjourned" mark.
+- Newer / Older page links and "Clear the Register" sit under the book.
+- Empty: "Nothing entered yet." and a link back to the Filing Desk.
+- On a phone each row folds into a block, with the headings written beside the values.
+
+The hearing page shows "Entered as No. 012 · Heard by Claude Code" under the case,
+and, once finished, a "Hear it again" button that files the same case afresh.
 
 ---
 

@@ -231,6 +231,8 @@ repository layer real queries (filter, paginate, order) instead of a lone
 Identical `situation + action + roster + model` returns the stored run instead
 of re-calling, so history doubles as the cache.
 
+*Amended by D43:* no cache. Every filing is heard fresh, and the page is `/register`.
+
 ---
 
 ### D22 — The gate runs before the council, never alongside it
@@ -627,13 +629,60 @@ every second, like a game's loading screen.
   strict Content-Security-Policy still allows no inline script. They live in
   `app/web/loading.py`, as copy anyone can edit.
 
+### D43 — The Register: a court ledger of every hearing (owner's calls)
+`/register` lists every hearing held, newest first, 20 to a page. Opening one shows
+the whole hearing again, still (no stamps, no sound, as D25).
+
+- **Always heard fresh, never cached** (owner's call, replacing D21's cache). The
+  ducks are meant to be a little unpredictable; filing the same case twice and
+  getting the same page back would feel broken. A finished hearing has a "Hear it
+  again" button that files the same two fields as a new hearing.
+- **A crisis is never written down** (owner's call). Someone in distress should not
+  find their words sitting in a list later. The crisis path returns before a hearing
+  exists, so there is nothing to record; a test holds this.
+- **Strike out one entry, or clear the whole book** (owner's calls), each behind a
+  confirmation.
+- **Which AI heard it is recorded and shown** (owner's call), on the row and on the
+  hearing page ("Heard by Claude Code"). It is the provider's name at the moment the
+  case was filed, so switching providers later does not rewrite old entries.
+- **It looks like a court ledger** (owner's calls): cream paper, a leather spine,
+  printed column headings (No., Date, The case, Sat, Finding, Heard by), red column
+  rules, and entries in the clerk's handwriting (Caveat, bundled like the other
+  fonts). The finding is circled in ink, coloured like the medallions. On a phone,
+  each row folds into a small block.
+
+How it is built, and why:
+
+- **Written once, when the hearing ends, before "done" is announced.** So the list is
+  never a step behind the page that just finished. Seats are written in roster order
+  with the finding, in one go.
+- **Each seat keeps a copy of its duck as it was on the day.** If the owner later
+  renames a duck or removes it from the Bench, old hearings still show what that
+  duck was called and what it said. A real register is not rewritten afterwards.
+- **Docket numbers are never reused.** `AUTOINCREMENT` in SQLite means that striking
+  out No. 7 leaves a gap, like a torn-out page, instead of the next hearing quietly
+  becoming a second No. 7. That keeps a number a stable way to refer to a hearing.
+- **A hearing cut short is kept, marked "adjourned".** If the app is closed while the
+  ducks are deliberating, whatever arrived is saved and marked. The alternative,
+  dropping it silently, would lose verdicts the owner has already paid for. Shutdown
+  already waits for hearings before closing the database, so this write lands.
+- **Links survive a restart.** `/council/<id>` looks in memory first (a hearing still
+  running, which can be streamed) and then in the Register (a finished one, read
+  back as still). Only running hearings can be streamed, so an old hearing can
+  never be heard again by accident (D34).
+- **If writing to the Register fails, the hearing still finishes.** The error is
+  logged; the person still sees their verdicts.
+- Striking out uses the same guards as every other form: same-origin POST only (D36),
+  and htmx gets back just the redrawn book; without JavaScript the form posts and
+  returns to `/register`.
+
 ---
 
 ## Next session starts here
 
-**State:** the app is feature-complete apart from history. Filing Desk, the clerk,
-the live board, the Bench and Chambers all work, on SQLite, with keys in the OS
-credential store. 169 tests pass; ruff and `mypy --strict` clean.
+**State:** the app is feature-complete. Filing Desk, the clerk, the live board, the
+Bench, Chambers and the Register all work, on SQLite, with keys in the OS credential
+store. 191 tests pass; ruff and `mypy --strict` clean.
 
 Run it: `uv run --system-certs duck-council-web`, then choose the AI in Chambers.
 The owner tests the UI by hand in a browser.
@@ -647,7 +696,7 @@ The owner tests the UI by hand in a browser.
    jokes, sincere-heavy, genuinely worrying) would measure both, and the clerk.
 3. ~~Web app: Filing Desk and live board.~~ Done.
 4. ~~The Bench and Chambers.~~ Done.
-5. The Register (history of hearings). Hearings are still kept in memory only.
+5. ~~The Register.~~ Done (D43).
 
 **Not yet built from the frozen decisions:** Docker (D17, D18's env-var key store);
 CI (D17). The README still describes v1.

@@ -25,9 +25,11 @@ from app.bench import Bench
 from app.chambers import Builder, Chambers
 from app.keystore import KeyStore, OsKeyStore
 from app.providers import Provider, build_provider
+from app.register import Register
 from app.storage import open_database
 from app.web.bench_routes import router as bench_router
 from app.web.chambers_routes import router as chambers_router
+from app.web.register_routes import router as register_router
 from app.web.routes import router
 from app.web.runs import InMemoryRunStore, RunStore
 from app.web.security import LOCAL_HOSTS, SameOriginMiddleware, SecurityHeadersMiddleware
@@ -68,6 +70,7 @@ def create_app(
         await app.state.bench.sync()
         app.state.chambers = Chambers(db, keystore, build)
         await app.state.chambers.sync()
+        app.state.register = Register(db)
         try:
             yield
         finally:
@@ -101,6 +104,7 @@ def create_app(
     app.include_router(router)
     app.include_router(bench_router)
     app.include_router(chambers_router)
+    app.include_router(register_router)
     return app
 
 

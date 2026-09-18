@@ -16,17 +16,38 @@ from pydantic import ValidationError
 
 from app.clerk import is_crisis, rule, tone_for
 from app.schema import Case, Duck
-from app.web.deps import ProviderDep, RosterDep, RunsDep, is_htmx, page_context, templates
-from app.web.runs import Run, RunStore, hold_hearing, new_run_id
+from app.web.deps import (
+    ProviderDep,
+    RegisterDep,
+    RosterDep,
+    RunsDep,
+    is_htmx,
+    page_context,
+    provider_label,
+    templates,
+)
+from app.web.runs import Run, RunStore, hold_hearing, new_run_id, run_from_register
 from app.web.view import sse_event
 
 router = APIRouter()
 
 
 def _run_or_404(runs: RunStore, run_id: str) -> Run:
+    """A hearing still in memory: the only kind that can be streamed."""
     run = runs.get(run_id)
     if run is None:
         raise HTTPException(status_code=404, detail="No such hearing.")
+    return run
+
+
+async def _any_run_or_404(runs: RunStore, register: RegisterDep, run_id: str) -> Run:
+    """A hearing in memory, or else one from the Register: links survive a restart."""
+    run = runs.get(run_id)
+    if run is None:
+        stored = await register.get(run_id)
+        if stored is None:
+            raise HTTPException(status_code=404, detail="No such hearing.")
+        run = run_from_register(stored)
     return run
 
 
@@ -85,6 +106,7 @@ async def file_case(
     request: Request,
     provider: ProviderDep,
     runs: RunsDep,
+    register: RegisterDep,
     roster: RosterDep,
     situation: Annotated[str, Form()] = "",
     action: Annotated[str, Form()] = "",
@@ -108,12 +130,19 @@ async def file_case(
         name = "_crisis.html" if is_htmx(request) else "crisis.html"
         return templates.TemplateResponse(request, name, page_context(request))
 
-    run = Run(id=new_run_id(), case=case, roster=roster, tone=tone_for(ruling), ruling=ruling)
+    run = Run(
+        id=new_run_id(),
+        case=case,
+        roster=roster,
+        tone=tone_for(ruling),
+        ruling=ruling,
+        heard_by=provider_label(request),
+    )
     runs.add(run)
     # asyncio keeps only a weak reference to tasks: without this set, a hearing
     # could be garbage-collected halfway through.
     hearings: set[asyncio.Task[None]] = request.app.state.hearings
-    task = asyncio.create_task(hold_hearing(run, provider))
+    task = asyncio.create_task(hold_hearing(run, provider, register))
     hearings.add(task)
     task.add_done_callback(hearings.discard)
 
@@ -125,16 +154,20 @@ async def file_case(
 
 
 @router.get("/council/{run_id}", response_class=HTMLResponse)
-async def hearing_page(request: Request, runs: RunsDep, run_id: str) -> HTMLResponse:
+async def hearing_page(
+    request: Request, runs: RunsDep, register: RegisterDep, run_id: str
+) -> HTMLResponse:
     """A hearing on its own page. Finished hearings render still: no stamps, no sound (D25)."""
-    run = _run_or_404(runs, run_id)
+    run = await _any_run_or_404(runs, register, run_id)
     context = {**page_context(request), **_hearing_context(run, live=not run.done)}
     return templates.TemplateResponse(request, "council.html", context)
 
 
 @router.get("/council/{run_id}/amend", response_class=HTMLResponse)
-async def amend(request: Request, runs: RunsDep, roster: RosterDep, run_id: str) -> HTMLResponse:
-    run = _run_or_404(runs, run_id)
+async def amend(
+    request: Request, runs: RunsDep, register: RegisterDep, roster: RosterDep, run_id: str
+) -> HTMLResponse:
+    run = await _any_run_or_404(runs, register, run_id)
     return _desk(request, roster, situation=run.case.situation, action=run.case.action)
 
 

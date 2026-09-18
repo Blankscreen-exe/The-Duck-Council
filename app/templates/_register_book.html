@@ -1,0 +1,75 @@
+{# The Register as a court ledger (D43): printed headings, entries in the clerk's hand. #}
+<section id="book" class="book" aria-label="The Register of Hearings">
+  <header class="book-head">
+    <p class="book-title">The Register of Hearings</p>
+    <p class="book-vol">Vol. I &middot; {{ total }} {{ "entry" if total == 1 else "entries" }}</p>
+  </header>
+
+  {% if entries %}
+    <table class="ledger">
+      <thead>
+        <tr>
+          <th scope="col" class="c-no">No.</th>
+          <th scope="col" class="c-date">Date</th>
+          <th scope="col" class="c-case">The case</th>
+          <th scope="col" class="c-sat">Sat</th>
+          <th scope="col" class="c-find">Finding</th>
+          <th scope="col" class="c-by">Heard by</th>
+          <th scope="col" class="c-x"><span class="sr">Strike out</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in entries %}
+          <tr>
+            <td class="c-no hand">{{ docket(entry.number) }}</td>
+            <td class="c-date hand"><time datetime="{{ entry.filed_at.isoformat() }}">{{ ledger_date(entry.filed_at) }}</time></td>
+            <td class="c-case hand">
+              <a href="/council/{{ entry.id }}">
+                <span class="sit">{{ entry.case.situation }}</span>
+                <span class="act">&rarr; {{ entry.case.action }}</span>
+              </a>
+              {% if entry.interrupted %}<span class="adjourned">adjourned</span>{% endif %}
+            </td>
+            <td class="c-sat hand" data-label="Sat">{{ entry.finding.sitting }}</td>
+            <td class="c-find" data-label="Finding">
+              {% if entry.finding.median is none %}
+                <span class="tick empty" title="Every chair was empty">&ndash;</span>
+              {% else %}
+                <span class="tick {{ score_class(entry.finding.median) }}{{ ' split' if entry.finding.split else '' }}"
+                      title="{{ verdict_word(entry.finding) }}">{{ entry.finding.median }}</span>
+              {% endif %}
+            </td>
+            <td class="c-by hand" data-label="Heard by">{{ entry.heard_by }}</td>
+            <td class="c-x">
+              <form method="post" action="/register/{{ entry.id }}/delete"
+                    hx-post="/register/{{ entry.id }}/delete" hx-target="#book" hx-swap="outerHTML"
+                    hx-confirm="Strike out No. {{ docket(entry.number) }}? It cannot be brought back.">
+                <input type="hidden" name="page" value="{{ page }}">
+                <button class="strike" type="submit" title="Strike out No. {{ docket(entry.number) }}"
+                        aria-label="Strike out No. {{ docket(entry.number) }}">&times;</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <footer class="book-foot">
+      {% if pages > 1 %}
+        <nav class="leaves" aria-label="Pages of the Register">
+          {% if page > 1 %}<a class="quiet" href="/register?page={{ page - 1 }}">&larr; Newer</a>{% endif %}
+          <span>Page {{ page }} of {{ pages }}</span>
+          {% if page < pages %}<a class="quiet" href="/register?page={{ page + 1 }}">Older &rarr;</a>{% endif %}
+        </nav>
+      {% endif %}
+      <form method="post" action="/register/clear"
+            hx-post="/register/clear" hx-target="#book" hx-swap="outerHTML"
+            hx-confirm="Clear the whole Register? Every hearing in it is removed for good.">
+        <button class="quiet link" type="submit">Clear the Register</button>
+      </form>
+    </footer>
+  {% else %}
+    <p class="blank hand">Nothing entered yet.</p>
+    <p class="blank-note"><a class="quiet" href="/">Bring the council a case</a> and it will be written here.</p>
+  {% endif %}
+</section>
