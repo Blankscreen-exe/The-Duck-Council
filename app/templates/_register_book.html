@@ -25,8 +25,8 @@
             <td class="c-date hand"><time datetime="{{ entry.filed_at.isoformat() }}">{{ ledger_date(entry.filed_at) }}</time></td>
             <td class="c-case hand">
               <a href="/council/{{ entry.id }}">
-                <span class="sit">{{ entry.case.situation }}</span>
-                <span class="act">&rarr; {{ entry.case.action }}</span>
+                <span class="line-sit">{{ entry.case.situation | truncate(160, end="…") }}</span>
+                <span class="line-act">&rarr; {{ entry.case.action | truncate(110, end="…") }}</span>
               </a>
               {% if entry.interrupted %}<span class="adjourned">adjourned</span>{% endif %}
             </td>

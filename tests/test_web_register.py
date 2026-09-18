@@ -140,3 +140,13 @@ def test_a_page_past_the_end_shows_the_last_page(client: TestClient) -> None:
 def test_the_finding_names_who_heard_it_as_it_lands(client: TestClient) -> None:
     events = dict(read_events(client, file_case(client)))
     assert '<p class="by">Heard by Scripted</p>' in events["finding"]
+
+
+def test_a_long_case_is_trimmed_in_the_register_but_kept_whole(client: TestClient) -> None:
+    situation, action = "word " * 300, "deed " * 300
+    run_id = file_case(client, situation=situation, action=action)
+    read_events(client, run_id)
+    book = client.get("/register").text
+    assert situation.strip() not in book and action.strip() not in book
+    assert book.count("…") >= 2
+    assert situation.strip() in client.get(f"/council/{run_id}").text  # the hearing has it all
