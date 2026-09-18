@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}The Duck Council{% endblock %}</title>
+  <meta name="description" content="A council of opinionated ducks judges what you are about to do.">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/css/council.css">
+  <script src="/static/vendor/htmx-2.0.10.min.js" defer></script>
+  <script src="/static/vendor/htmx-ext-sse-2.2.4.js" defer></script>
+  <script src="/static/js/council.js" defer></script>
+</head>
+<body>
+  <header class="head">
+    <div class="seal" aria-hidden="true"><span>&#9878;</span></div>
+    <p class="kick">The Duck Council</p>
+    <h1>{% block heading %}The Council will <i>hear your case</i>{% endblock %}</h1>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="foot">
+    <p>
+      Sitting today: <b>{{ provider_label }}</b>.
+      {% if demo %}Demo mode, so verdicts are scripted and no AI is consulted.{% endif %}
+    </p>
+    <p class="foot-note">
+      Not yet built: the check that routes genuinely serious situations away from the council.
+    </p>
+    <button type="button" class="sound" data-sound-toggle aria-pressed="false">Sound on</button>
+  </footer>
+</body>
+</html>

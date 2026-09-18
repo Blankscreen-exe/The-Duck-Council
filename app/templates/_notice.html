@@ -1,0 +1,29 @@
+{% from "_components.html" import portrait, medallion %}
+{# One seat on the board. Rendered on the page and, for each verdict, sent down the event
+   stream on its own. `stamped` marks a notice that has just arrived live: it is what makes
+   the notice slam in and the sound play (D26). A still page never carries it. #}
+{% if seat is none %}
+<article class="row pending" id="seat-{{ duck.id }}" aria-busy="true"
+         {% if live %}sse-swap="seat-{{ duck.id }}" hx-swap="outerHTML"{% endif %}>
+  <div class="rtop">{{ portrait(duck) }}</div>
+  <h2 class="nm">{{ duck.name }}</h2>
+  <p class="rl">{{ duck.epithet }}</p>
+  <p class="waiting">Deliberating<span class="dots" aria-hidden="true"></span></p>
+</article>
+{% elif seat.verdict %}
+<article class="row{% if live %} stamped{% endif %}" id="seat-{{ duck.id }}">
+  <div class="rtop">{{ portrait(duck) }}{{ medallion(seat.verdict) }}</div>
+  <h2 class="nm">{{ duck.name }}{% if duck.origin == "user" %} <span class="tag">Yours</span>{% endif %}</h2>
+  <p class="rl">{{ duck.epithet }}</p>
+  <blockquote class="qt" title="{{ seat.verdict.line }}">{{ seat.verdict.line }}</blockquote>
+</article>
+{% else %}
+<article class="row absent{% if live %} stamped{% endif %}" id="seat-{{ duck.id }}">
+  <div class="rtop">{{ portrait(duck) }}
+    <div class="med"><div class="coin empty"><b>&ndash;</b></div><div class="mb">Empty chair</div></div>
+  </div>
+  <h2 class="nm">{{ duck.name }}</h2>
+  <p class="rl">{{ duck.epithet }}</p>
+  <p class="qt">{{ absence_text(seat.absence) }}</p>
+</article>
+{% endif %}

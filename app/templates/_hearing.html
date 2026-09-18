@@ -1,0 +1,30 @@
+{% from "_components.html" import caption, nav %}
+{# A hearing. When `live`, the board is already at full size: one seat per sitting duck,
+   each waiting for its own event, so notices stamp into place and nothing reflows (D26). #}
+<section id="hearing" class="hearing">
+  <div class="filing">{{ caption(run.case) }}</div>
+
+  <div class="wrap">
+    <div class="court"{% if live %} hx-ext="sse" sse-connect="/council/{{ run.id }}/stream" sse-close="done"{% endif %}>
+      <div class="bench" aria-live="polite">
+        {% for duck in run.roster %}
+          {% with seat = seats.get(duck.id) %}{% include "_notice.html" %}{% endwith %}
+        {% endfor %}
+      </div>
+
+      {% if run.done %}
+        {% include "_finding.html" %}
+      {% else %}
+        <div id="finding" class="finding-slot" sse-swap="finding" hx-swap="outerHTML"></div>
+      {% endif %}
+    </div>
+
+    <div class="after">
+      <a class="quiet" href="/">Bring a new case</a>
+      <a class="quiet" href="/council/{{ run.id }}/amend"
+         hx-get="/council/{{ run.id }}/amend" hx-target="#hearing" hx-swap="outerHTML">Amend this case</a>
+      <a class="quiet" href="/council/{{ run.id }}">Link to this hearing</a>
+    </div>
+    {{ nav("hearing") }}
+  </div>
+</section>
