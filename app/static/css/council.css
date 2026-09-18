@@ -351,7 +351,21 @@ button.quiet { background: none; border: 0; padding: 0; font-family: var(--sans)
     radial-gradient(ellipse at 84% 80%, rgba(133, 98, 44, .10), transparent 44%),
     linear-gradient(168deg, #FCF6E6, #F3E8CE 54%, #EADBB8);
   box-shadow: inset 0 0 30px rgba(122, 88, 38, .18), 0 6px 18px rgba(0, 0, 0, .18); }
-.sheet-head { display: flex; gap: 16px; align-items: center; }
+/* the portrait (D44): two previews, card and roster, beside the picker and its guideline */
+.portrait-field { border: 0; padding: 0; }
+.portrait-field .optional { font-weight: 400; letter-spacing: .04em; text-transform: none; }
+.portrait-row { display: flex; gap: 22px; align-items: flex-start; margin-top: 10px; }
+.previews { display: flex; gap: 16px; align-items: flex-end; flex: none; }
+.previews figure { display: grid; justify-items: center; gap: 6px; }
+.previews figcaption { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: #5C5A50; }
+.previews .port { box-shadow: 0 2px 6px rgba(20, 24, 15, .25); }
+.previews .port.mg.small { font-size: 17px; }
+.sheet .portrait-pick { margin-top: 0; flex: 1; min-width: 0; }
+.sheet input[type="file"] { padding: 8px; background: #FCF6E6; cursor: pointer; font-size: 14px; }
+.sheet .guideline { margin-top: 8px; }
+.sheet .check { display: flex; gap: 10px; align-items: center; margin-top: 14px; font-size: 14px; }
+.sheet .check input { width: auto; }
+@media (max-width: 640px) { .portrait-row { flex-direction: column; } }
 .sheet label { display: block; margin-top: 20px; }
 .sheet .field-name { display: block; font-size: 12px; font-weight: 700; letter-spacing: .16em;
   text-transform: uppercase; color: var(--felt); }

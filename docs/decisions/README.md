@@ -685,13 +685,61 @@ How it is built, and why:
   and htmx gets back just the redrawn book; without JavaScript the form posts and
   returns to `/register`.
 
+### D44 — Portraits for your own ducks (owner's calls)
+When you commission a duck you can upload a portrait. When you amend one, you can
+replace it or remove it and go back to the monogram.
+
+- **Your own ducks only** (owner's call). The 13 built-ins keep their original art,
+  in line with D14: built-ins are not editable.
+- **Every upload is re-made, never kept as sent** (owner's call). The image is opened,
+  turned upright, cropped to a centred square, shrunk to 512×512 and saved as a new
+  JPEG. That buys three things. Every portrait matches the built-ins in shape and
+  size, so the board looks consistent. Files stay around 50KB rather than a phone's
+  several megabytes. And nothing hidden rides along: a phone photo can carry the
+  GPS position where it was taken, and the new file has none of that. It is also a
+  safety check, because only something that really decodes as an image survives.
+  The cost is one dependency, Pillow, the standard Python imaging library.
+- **Kept in the app's data folder** (owner's call), in a `portraits` folder beside the
+  database (`%LOCALAPPDATA%\duck-council\portraits`). Uploads are the owner's data,
+  not the app's code: they never show up in git, and updating or reinstalling the
+  app leaves them alone. The app serves them itself at `/portraits/<name>`.
+- **A guideline and a live preview** (owner's call). The form says what works (square,
+  face in the middle, at least 256×256, JPEG/PNG/WebP, up to 5MB). Picking a file
+  shows it straight away, cropped as it will appear on the card and in the roster
+  circle, before anything is uploaded.
+
+How it is built, and why:
+
+- **File names are random, never the uploaded name.** A request for a portrait is
+  only looked up if its name has exactly the shape the app itself makes (32 hex
+  characters and `.jpg`). So no name can point outside the portraits folder, such
+  as `../council.db`.
+- **Limits are checked on the server, whatever the page did.** The 5MB limit, the
+  minimum size and the accepted formats are all enforced when the image arrives;
+  the page only warns early. A file that claims to be enormous (a small file can
+  describe a gigantic image and use up memory when opened) is refused before it is
+  decoded.
+- **The image work runs off the main thread,** so resizing a big photo never pauses
+  a hearing that is streaming at the same time.
+- **A portrait is deleted only when nothing uses it.** Old hearings in the Register
+  keep a copy of each duck as it was (D43), including its portrait. So replacing a
+  portrait or removing a duck deletes the old file only if no hearing still shows
+  it. Files left over by struck-out hearings are cleared the next time the app starts.
+- **A form sent back with an error cannot keep the chosen file.** Browsers do not let
+  a page put a file back into a file field. Rather than letting it vanish silently,
+  the form says "choose the image again". Nothing is saved until every field is
+  valid, so a failed form never leaves a stray file behind.
+- The page's security policy now allows `blob:` images: that is how the browser
+  shows a picked file that has not been uploaded. It still allows no outside images.
+
 ---
 
 ## Next session starts here
 
 **State:** the app is feature-complete. Filing Desk, the clerk, the live board, the
 Bench, Chambers and the Register all work, on SQLite, with keys in the OS credential
-store. 191 tests pass; ruff and `mypy --strict` clean.
+store. Your own ducks can wear uploaded portraits (D44). 215 tests pass; ruff and
+`mypy --strict` clean.
 
 Run it: `uv run --system-certs duck-council-web`, then choose the AI in Chambers.
 The owner tests the UI by hand in a browser.

@@ -112,7 +112,13 @@ A single large parchment notice, centred on the board.
 | Weighs | What actually moves its score |
 | Blind spot | What it under-weights on purpose |
 
-Live monogram preview beside the fields (initials + deterministic colour, D14).
+A portrait field first (D44): a file picker with its guideline (square, face in the
+middle, at least 256×256, JPEG/PNG/WebP, up to 5MB) and two previews, *On its card*
+and *In the roster*. They show the saved portrait or the monogram, and a picked file
+straight away. Amending a duck that has a portrait adds "Remove the portrait and
+wear a monogram instead".
+
+Without a portrait: live monogram preview (initials + deterministic colour, D14).
 Helper text explains that *voice* is flavour and *weighs* is the judgement —
 that split is the whole reason scores diverge (D5), and a user who misses it
 will build a duck that agrees with everyone.

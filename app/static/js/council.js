@@ -103,6 +103,50 @@
     document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.textContent = initials || "?"; });
   });
 
+  // Commissioning a duck: a picked portrait is previewed, cropped as it will be shown,
+  // before anything is uploaded (D44). The server still checks everything again.
+  let previewUrl = null;
+  function showPortrait(src) {
+    document.querySelectorAll("[data-preview-img]").forEach((img) => {
+      if (src) img.src = src;
+      img.hidden = !src;
+    });
+    document.querySelectorAll("[data-monogram]").forEach((mark) => { mark.hidden = Boolean(src); });
+  }
+  function portraitNote(text) {
+    const note = document.querySelector("[data-portrait-note]");
+    if (!note) return;
+    note.textContent = text;
+    note.hidden = !text;
+  }
+  function originalPortrait() {
+    const img = document.querySelector("[data-preview-img]");
+    const remove = document.querySelector("[data-portrait-remove]");
+    return remove?.checked ? "" : (img?.dataset.original ?? "");
+  }
+  document.addEventListener("change", (event) => {
+    const input = event.target;
+    if (input.matches?.("[data-portrait-remove]")) {
+      const picked = document.querySelector("[data-portrait-input]")?.files?.length;
+      if (!picked) showPortrait(originalPortrait());
+      return;
+    }
+    if (!input.matches?.("[data-portrait-input]")) return;
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+    portraitNote("");
+    const file = input.files?.[0];
+    if (!file) { showPortrait(originalPortrait()); return; }
+    if (file.size > Number(input.dataset.maxBytes)) {
+      input.value = "";
+      portraitNote("That image is over 5 MB. Choose a smaller one.");
+      showPortrait(originalPortrait());
+      return;
+    }
+    previewUrl = URL.createObjectURL(file);
+    showPortrait(previewUrl);
+  });
+
   // ── The loading card while the ducks deliberate (D42) ────────────────────────
   // The server renders the card with every line it may show. We shuffle them, change
   // one every 2.5 seconds, and fade the card once the first notice lands, but never before it

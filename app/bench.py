@@ -72,6 +72,11 @@ class Bench:
     def __init__(self, db: aiosqlite.Connection) -> None:
         self._db = db
 
+    @property
+    def db(self) -> aiosqlite.Connection:
+        """The shared connection, for checks that span the Bench and the Register."""
+        return self._db
+
     @classmethod
     async def open(cls, path: Path) -> Self:
         """Open a bench on its own connection (used by tests). `close()` closes it."""
@@ -236,17 +241,19 @@ class Bench:
 
     # ── user ducks (D14): full create, edit and delete ───────────────────────
 
-    async def add_duck(self, draft: DuckDraft) -> Duck:
+    async def add_duck(self, draft: DuckDraft, portrait: str | None = None) -> Duck:
         # "u" and random hex: always a valid duck id, never a built-in's.
         duck_id = f"u{secrets.token_hex(5)}"
         await self._db.execute(
             """
-            INSERT INTO ducks (id, name, epithet, voice, weighs, blind_spot, origin, position)
-            VALUES (?, ?, ?, ?, ?, ?, 'user',
+            INSERT INTO ducks (id, name, epithet, voice, weighs, blind_spot, portrait, origin,
+                               position)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 'user',
                     (SELECT COALESCE(MAX(position), 0) + 1 FROM ducks WHERE origin = 'user'))
             """,
-            (duck_id, draft.name, draft.epithet, draft.voice, draft.weighs, draft.blind_spot),
-        )
+            (duck_id, draft.name, draft.epithet, draft.voice, draft.weighs, draft.blind_spot,
+             portrait),
+        )  # fmt: skip
         await self._db.commit()
         entry = await self.entry(duck_id)
         assert entry is not None
@@ -264,6 +271,17 @@ class Bench:
         entry = await self.entry(duck_id)
         assert entry is not None
         return entry.duck
+
+    async def set_portrait(self, duck_id: str, portrait: str | None) -> str | None:
+        """Give one of your ducks a new portrait, or none. Returns the one it had before."""
+        entry = await self.entry(duck_id)
+        if entry is None or entry.duck.origin is not Origin.USER:
+            raise BenchError("Only ducks you commissioned can have their portrait changed.")
+        await self._db.execute(
+            "UPDATE ducks SET portrait = ? WHERE id = ? AND origin = 'user'", (portrait, duck_id)
+        )
+        await self._db.commit()
+        return entry.duck.portrait
 
     async def remove_duck(self, duck_id: str) -> None:
         cursor = await self._db.execute(

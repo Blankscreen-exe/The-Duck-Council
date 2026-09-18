@@ -10,11 +10,49 @@
      that weighs everything fairly will agree with everyone.</p>
 </div>
 <div class="wrap">
-  <form class="sheet" method="post" action="{{ '/bench/' ~ duck_id ~ '/edit' if duck_id else '/bench/new' }}">
-    <div class="sheet-head">
-      <span class="port mg" data-monogram aria-hidden="true">{{ values.name[:1] | upper if values.name else "?" }}</span>
-      <p class="help">User ducks wear a monogram of their initials instead of a portrait.</p>
-    </div>
+  <form class="sheet" method="post" enctype="multipart/form-data"
+        action="{{ '/bench/' ~ duck_id ~ '/edit' if duck_id else '/bench/new' }}">
+    {# The portrait (D44). Both previews show the saved portrait, or the monogram; council.js
+       swaps in a picked file before it is sent, so the crop is seen before saving. #}
+    {% set initial = values.name[:1] | upper if values.name else "?" %}
+    {% set src = "/portraits/" ~ portrait if portrait else "" %}
+    <fieldset class="portrait-field">
+      <legend class="field-name">Portrait <span class="optional">(optional)</span></legend>
+      <div class="portrait-row">
+        <div class="previews" aria-hidden="true">
+          <figure>
+            <img class="port" data-preview-img data-original="{{ src }}" src="{{ src }}" alt=""
+                 width="68" height="84"{% if not portrait %} hidden{% endif %}>
+            <span class="port mg" data-monogram{% if portrait %} hidden{% endif %}>{{ initial }}</span>
+            <figcaption>On its card</figcaption>
+          </figure>
+          <figure>
+            <img class="port small" data-preview-img data-original="{{ src }}" src="{{ src }}" alt=""
+                 width="48" height="48"{% if not portrait %} hidden{% endif %}>
+            <span class="port mg small" data-monogram{% if portrait %} hidden{% endif %}>{{ initial }}</span>
+            <figcaption>In the roster</figcaption>
+          </figure>
+        </div>
+        <label class="portrait-pick">
+          <span class="sr">Choose a portrait</span>
+          <input type="file" name="portrait" accept="{{ accept }}" data-portrait-input
+                 data-max-bytes="{{ max_bytes }}">
+          <span class="help guideline">
+            Square works best, with the duck's face in the middle: it is cropped to a
+            square and shown small. At least 256&times;256 pixels. JPEG, PNG or WebP,
+            up to 5&nbsp;MB. Without one, the duck wears a monogram of its initials.
+          </span>
+          <span class="field-error" role="alert" data-portrait-note
+                {% if not errors.portrait %}hidden{% endif %}>{{ errors.portrait }}</span>
+        </label>
+      </div>
+      {% if portrait %}
+        <label class="check">
+          <input type="checkbox" name="remove_portrait" value="1" data-portrait-remove>
+          Remove the portrait and wear a monogram instead
+        </label>
+      {% endif %}
+    </fieldset>
 
     {% macro field(name, label, help, limit, long=False) %}
       <label>

@@ -4,7 +4,7 @@ import hashlib
 from collections.abc import Sequence
 from datetime import datetime
 
-from app.schema import Absence, Band, Duck, Finding, Seat
+from app.schema import Absence, Band, Duck, Finding, Origin, Seat
 from app.web.loading import loading_lines
 
 _COIN: dict[Band, str] = {
@@ -80,6 +80,13 @@ def voted_seats(roster: Sequence[Duck], seats: Sequence[Seat]) -> list[Seat]:
     return [seat for duck in roster if (seat := by_id.get(duck.id)) and seat.verdict is not None]
 
 
+def portrait_url(duck: Duck) -> str:
+    """Built-in portraits ship with the app; yours live in the data folder (D44)."""
+    if duck.origin is Origin.USER:
+        return f"/portraits/{duck.portrait}"
+    return f"/static/images/{duck.portrait}"
+
+
 def monogram(duck: Duck) -> str:
     """Initials for a duck with no portrait (D14)."""
     words = [word for word in duck.name.split() if word[:1].isalnum()]
@@ -117,6 +124,7 @@ TEMPLATE_GLOBALS = {
     "finding_summary": finding_summary,
     "voted_seats": voted_seats,
     "loading_lines": loading_lines,
+    "portrait_url": portrait_url,
     "monogram": monogram,
     "monogram_hue": monogram_hue,
     "docket": docket,

@@ -12,6 +12,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.bench import Bench
 from app.chambers import Chambers
+from app.portraits import PortraitStore
 from app.providers import Provider
 from app.register import Register
 from app.schema import Duck
@@ -43,6 +44,11 @@ def get_register(request: Request) -> Register:
     return register
 
 
+def get_portraits(request: Request) -> PortraitStore:
+    portraits: PortraitStore = request.app.state.portraits
+    return portraits
+
+
 def get_bench(request: Request) -> Bench:
     bench: Bench = request.app.state.bench
     return bench
@@ -58,6 +64,7 @@ ChambersDep = Annotated[Chambers, Depends(get_chambers)]
 RunsDep = Annotated[RunStore, Depends(get_runs)]
 BenchDep = Annotated[Bench, Depends(get_bench)]
 RegisterDep = Annotated[Register, Depends(get_register)]
+PortraitsDep = Annotated[PortraitStore, Depends(get_portraits)]
 RosterDep = Annotated[tuple[Duck, ...], Depends(get_roster)]
 
 

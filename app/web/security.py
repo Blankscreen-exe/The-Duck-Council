@@ -26,7 +26,7 @@ _SECURITY_HEADERS = {
     # inline scripts are not, and nothing loads from anywhere but this server.
     "content-security-policy": (
         "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; "
-        "img-src 'self' data:; media-src 'self'; connect-src 'self'; "
+        "img-src 'self' data: blob:; media-src 'self'; connect-src 'self'; "
         "base-uri 'none'; form-action 'self'; frame-ancestors 'none'"
     ),
     "x-content-type-options": "nosniff",

@@ -2,7 +2,7 @@
 
 {% macro portrait(duck, small=False) -%}
   {%- if duck.portrait -%}
-    <img class="port{% if small %} small{% endif %}" src="/static/images/{{ duck.portrait }}"
+    <img class="port{% if small %} small{% endif %}" src="{{ portrait_url(duck) }}"
          alt="" width="68" height="84" loading="lazy">
   {%- else -%}
     <span class="port mg{% if small %} small{% endif %}"

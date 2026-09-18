@@ -24,11 +24,13 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 from app.bench import Bench
 from app.chambers import Builder, Chambers
 from app.keystore import KeyStore, OsKeyStore
+from app.portraits import PortraitStore, tidy
 from app.providers import Provider, build_provider
 from app.register import Register
 from app.storage import open_database
 from app.web.bench_routes import router as bench_router
 from app.web.chambers_routes import router as chambers_router
+from app.web.portrait_routes import router as portrait_router
 from app.web.register_routes import router as register_router
 from app.web.routes import router
 from app.web.runs import InMemoryRunStore, RunStore
@@ -71,6 +73,7 @@ def create_app(
         app.state.chambers = Chambers(db, keystore, build)
         await app.state.chambers.sync()
         app.state.register = Register(db)
+        await tidy(app.state.portraits, db)
         try:
             yield
         finally:
@@ -92,6 +95,8 @@ def create_app(
     app.state.provider_override = provider
     app.state.provider_label_override = provider_label
     app.state.find_program = find_program
+    # Your data, not the app's code: it lives beside the database (D44).
+    app.state.portraits = PortraitStore(database.parent / "portraits")
     app.state.runs = runs or InMemoryRunStore()
     app.state.hearings = set()
 
@@ -105,6 +110,7 @@ def create_app(
     app.include_router(bench_router)
     app.include_router(chambers_router)
     app.include_router(register_router)
+    app.include_router(portrait_router)
     return app
 
 
