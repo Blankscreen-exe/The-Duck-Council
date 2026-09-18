@@ -10,18 +10,18 @@ import logging
 from collections.abc import AsyncGenerator, Sequence
 
 from app.providers.base import Provider, Refused
-from app.schema import Absence, Case, Duck, Finding, Seat
+from app.schema import Absence, Case, Duck, Finding, Seat, Tone
 from app.tally import tally
 
 log = logging.getLogger(__name__)
 
 
-async def _hear_one(duck: Duck, case: Case, provider: Provider, timeout: float) -> Seat:
+async def _hear_one(duck: Duck, case: Case, provider: Provider, timeout: float, tone: Tone) -> Seat:
     try:
         # The clock starts once the duck is actually being asked, not while it waits
         # for a concurrency slot, so a busy provider does not time out the queue.
         async with asyncio.timeout(timeout):
-            verdict = await provider.judge(duck, case)
+            verdict = await provider.judge(duck, case, tone)
     except Refused:
         return Seat(duck=duck, absence=Absence.REFUSED)
     except TimeoutError:
@@ -38,6 +38,7 @@ async def convene(
     case: Case,
     provider: Provider,
     *,
+    tone: Tone = "cautious",
     timeout: float | None = None,
 ) -> AsyncGenerator[Seat]:
     """Yield each duck's seat as soon as it is ready, fastest first.
@@ -59,7 +60,7 @@ async def convene(
 
     async def limited(duck: Duck) -> Seat:
         async with slots:
-            return await _hear_one(duck, case, provider, limit)
+            return await _hear_one(duck, case, provider, limit, tone)
 
     tasks = [asyncio.create_task(limited(duck)) for duck in ducks]
     try:
@@ -77,11 +78,13 @@ async def hear(
     case: Case,
     provider: Provider,
     *,
+    tone: Tone = "cautious",
     timeout: float | None = None,
 ) -> tuple[list[Seat], Finding]:
     """Wait for the whole council. Seats come back in roster order, not finish order."""
     finished = {
-        seat.duck.id: seat async for seat in convene(ducks, case, provider, timeout=timeout)
+        seat.duck.id: seat
+        async for seat in convene(ducks, case, provider, tone=tone, timeout=timeout)
     }
     seats = [finished[duck.id] for duck in ducks]
     return seats, tally(seats)

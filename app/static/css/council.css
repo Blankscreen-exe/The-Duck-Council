@@ -407,3 +407,10 @@ body { background: var(--cream); color: var(--ink); font-family: var(--sans); li
 @media (prefers-reduced-motion: reduce) {
   .reader::backdrop, .reader.closing::backdrop { animation: none; }
 }
+
+/* ── a case the clerk ruled a crisis (D20): calm, plain, no theatre ── */
+.sheet.crisis { max-width: 620px; margin-top: 40px; font-size: 16px; line-height: 1.65; }
+.sheet.crisis p + p { margin-top: 14px; }
+.sheet.crisis a { color: var(--felt); font-weight: 700; }
+.crisis-aside { font-size: 14px; color: #5C5A50; border-top: 1px solid rgba(20, 24, 15, .15);
+  padding-top: 14px; margin-top: 22px !important; }

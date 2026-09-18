@@ -10,7 +10,7 @@ a preset row; nothing above this layer moves.
 from dataclasses import dataclass
 from typing import Literal, Protocol
 
-from app.schema import Case, Duck, Verdict
+from app.schema import Case, Duck, Ruling, Tone, Verdict
 
 Effort = Literal["low", "medium", "high", "xhigh", "max"]
 """How hard a model thinks before answering. Lower is faster and cheaper."""
@@ -41,8 +41,12 @@ class Provider(Protocol):
     timeout: float
     """Seconds one duck may take. Claude Code needs far longer than an HTTP API."""
 
-    async def judge(self, duck: Duck, case: Case) -> Verdict:
+    async def judge(self, duck: Duck, case: Case, tone: Tone = "cautious") -> Verdict:
         """Return this duck's verdict, or raise `Refused`. Any other exception is a failure."""
+        ...
+
+    async def classify(self, case: Case) -> Ruling:
+        """The clerk's ruling on how to hear `case` (D20), from the fastest model available."""
         ...
 
     async def check_connection(self) -> ConnectionCheck:

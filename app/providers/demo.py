@@ -14,7 +14,7 @@ import hashlib
 from typing import Literal
 
 from app.providers.base import ConnectionCheck
-from app.schema import NUDGE_LIMIT, Band, Case, Duck, Verdict
+from app.schema import NUDGE_LIMIT, Band, Case, Duck, Register, Ruling, Tone, Verdict
 
 Stance = Literal["against", "middling", "for"]
 
@@ -117,6 +117,15 @@ _GENERIC: dict[Stance, str] = {
 
 DEMO_READ = "Demo mode: no model was consulted."
 
+# Demo mode has no model to ask the clerk's question (D20). A plain word check stands
+# in: it fails toward play, since the verdicts are scripted anyway, but keeps the
+# crisis path reachable, because a person in distress can still be at the keyboard.
+_CRISIS_SIGNS = (
+    "kill myself", "end my life", "take my own life", "suicide", "suicidal",
+    "want to die", "don't want to live", "dont want to live", "no reason to live",
+    "better off without me", "hurt myself", "harm myself", "self harm", "self-harm",
+)  # fmt: skip
+
 
 def _digest(duck: Duck, case: Case) -> bytes:
     # sha256 rather than Python's hash(): hash() is salted per process for strings,
@@ -149,7 +158,7 @@ class DemoProvider:
         self.max_concurrency = max_concurrency
         self.timeout = 30.0
 
-    async def judge(self, duck: Duck, case: Case) -> Verdict:
+    async def judge(self, duck: Duck, case: Case, tone: Tone = "cautious") -> Verdict:
         digest = _digest(duck, case)
 
         # Simulated thinking time, so streaming behaves as it will with a real model.
@@ -164,6 +173,13 @@ class DemoProvider:
         nudge = digest[2] % (2 * NUDGE_LIMIT + 1) - NUDGE_LIMIT
         line = _LINES.get(duck.id, _GENERIC)[_stance(band)]
         return Verdict(read=DEMO_READ, band=band, nudge=nudge, line=line)
+
+    async def classify(self, case: Case) -> Ruling:
+        text = f"{case.situation} {case.action}".lower()
+        if any(sign in text for sign in _CRISIS_SIGNS):
+            return Ruling(reason="Demo mode: a word check found signs of real distress.",
+                          hear_as=Register.CRISIS)  # fmt: skip
+        return Ruling(reason="Demo mode: a simple word check, not a model.", hear_as=Register.PLAY)
 
     async def check_connection(self) -> ConnectionCheck:
         return ConnectionCheck(ok=True, message="The demo needs no connection.")

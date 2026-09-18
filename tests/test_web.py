@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 from app.ducks import BUILTIN_DUCKS, DEFAULT_ROSTER
 from app.keystore import MemoryKeyStore
 from app.providers import Refused
+from app.schema import Register, Ruling
 from app.web.main import create_app
 from tests.fakes import Script, ScriptedProvider, verdict_scoring
 
@@ -200,3 +201,37 @@ def test_a_verdict_carries_what_it_needs_to_be_read_in_full(client: TestClient) 
     assert ">Pick it up</button>" in events["seat-rebel"]  # empty chairs too
     assert 'class="noticed" data-reader-only hidden' in notice  # the duck's reasoning
     assert '<dialog id="reader"' in client.get("/").text
+
+
+# --- the clerk (D20, D22, D41) ----------------------------------------------------------
+
+
+def clerked_client(tmp_path: Path, ruling: object) -> TestClient:
+    provider = scripted()
+    provider.ruling = ruling  # type: ignore[assignment]
+    app = create_app(provider, database=tmp_path / "council.db", keystore=MemoryKeyStore(),
+                     provider_label="Scripted")  # fmt: skip
+    client = TestClient(app, base_url=ORIGIN)
+    client.provider = provider  # type: ignore[attr-defined]
+    return client
+
+
+def test_a_crisis_never_reaches_a_single_duck(tmp_path: Path) -> None:
+    with clerked_client(tmp_path, Ruling(reason="Sincere.", hear_as=Register.CRISIS)) as client:
+        response = client.post("/council", data=CASE, headers=FROM_PAGE)
+        assert "The council won't sit for this one" in response.text
+        assert "findahelpline.com" in response.text
+        assert "sse-connect" not in response.text and "row pending" not in response.text
+        assert client.provider.calls == 0  # type: ignore[attr-defined]
+
+
+def test_a_joke_is_heard_in_full_character(tmp_path: Path) -> None:
+    with clerked_client(tmp_path, Ruling(reason="Absurd.", hear_as=Register.PLAY)) as client:
+        read_events(client, file_case(client))
+        assert set(client.provider.tones) == {"play"}  # type: ignore[attr-defined]
+
+
+def test_when_the_clerk_fails_the_case_is_heard_cautiously(tmp_path: Path) -> None:
+    with clerked_client(tmp_path, RuntimeError("clerk unreachable")) as client:
+        read_events(client, file_case(client))
+        assert set(client.provider.tones) == {"cautious"}  # type: ignore[attr-defined]

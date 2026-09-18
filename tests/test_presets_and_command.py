@@ -5,10 +5,10 @@ import pytest
 
 from app.ducks import DUCKS_BY_ID
 from app.providers import PRESETS, ProviderConfig, ProviderError, build_provider
-from app.providers._text import verdict_from_text
+from app.providers._text import parse_reply
 from app.providers.command import CommandProvider
 from app.providers.presets import Preset, ProviderKind
-from app.schema import Case
+from app.schema import Case, Verdict
 
 PYTHON = getattr(sys, "_base_executable", sys.executable)
 CASE = Case(situation="s", action="a")
@@ -60,7 +60,7 @@ def test_the_key_never_shows_in_a_printed_config() -> None:
 
 def test_a_verdict_is_found_after_other_braces_and_prose() -> None:
     text = 'Thinking {not json}. {"read":"r","band":"sound","nudge":1,"line":"Yes."} Done.'
-    assert verdict_from_text(text).score == 71
+    assert parse_reply(text, Verdict).score == 71
 
 
 @pytest.mark.parametrize(
@@ -73,7 +73,7 @@ def test_a_verdict_is_found_after_other_braces_and_prose() -> None:
 )
 def test_text_without_a_valid_verdict_is_rejected(text: str) -> None:
     with pytest.raises(ProviderError):
-        verdict_from_text(text)
+        parse_reply(text, Verdict)
 
 
 # --- custom command -------------------------------------------------------------------

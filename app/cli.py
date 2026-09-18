@@ -23,6 +23,7 @@ import time
 
 from pydantic import ValidationError
 
+from app.clerk import CRISIS_MESSAGE, is_crisis, rule, tone_for
 from app.council import convene
 from app.ducks import BUILTIN_DUCKS, DUCKS_BY_ID
 from app.prompts import system_prompt
@@ -114,9 +115,20 @@ async def _hear(ducks: list[Duck], case: Case, provider: Provider) -> None:
     print(textwrap.fill(case.action, WIDTH, initial_indent="  II. ", subsequent_indent="      "))
     print("-" * WIDTH)
 
+    ruling = await rule(case, provider)
+    if is_crisis(ruling):
+        print(textwrap.fill(CRISIS_MESSAGE, WIDTH, initial_indent="  ", subsequent_indent="  "))
+        return
+    if ruling is None:
+        print("  THE CLERK could not rule, so the case is heard cautiously.")
+    else:
+        print(f"  THE CLERK RULES: {ruling.hear_as}. {ruling.reason}")
+    print("-" * WIDTH)
+
     started = time.perf_counter()
     by_id: dict[str, Seat] = {}
-    async for seat in convene(ducks, case, provider):  # printed in the order they finish
+    tone = tone_for(ruling)
+    async for seat in convene(ducks, case, provider, tone=tone):  # in the order they finish
         _print_seat(seat, time.perf_counter() - started)
         by_id[seat.duck.id] = seat
 

@@ -1,11 +1,13 @@
 """The Anthropic API, with a key, as a provider.
 
 Kept separate from the OpenAI-compatible adapter rather than routed through a
-gateway, because schema-validated output (`messages.parse` against our
-`Verdict` model) and effort control are only reachable on the native API.
+gateway, because schema-validated output (`messages.parse` against our models)
+and effort control are only reachable on the native API.
 
 Effort defaults to "low": each duck gives a one-line judgement, which does not
-repay deep reasoning, and thirteen of them run per hearing.
+repay deep reasoning, and thirteen of them run per hearing. The clerk's
+joke-or-serious question goes to Haiku, the fastest model (D41), which does not
+take an effort setting.
 
 Refusals are not retried on another model. The API offers that, but D8 decided
 a refusal should show as an empty chair, so the user sees that it happened.
@@ -13,12 +15,14 @@ a refusal should show as an empty chair, so the user sees that it happened.
 
 import anthropic
 import httpx2
+from pydantic import BaseModel
 
-from app.prompts import system_prompt, user_message
+from app.prompts import CLERK_PROMPT, system_prompt, user_message
 from app.providers.base import ConnectionCheck, Effort, ProviderError, Refused
-from app.schema import Case, Duck, Verdict
+from app.schema import Case, Duck, Ruling, Tone, Verdict
 
 DEFAULT_MODEL = "claude-opus-5"
+CLERK_MODEL = "claude-haiku-4-5"
 
 
 def describe_error(error: anthropic.APIError) -> str:
@@ -50,6 +54,7 @@ class AnthropicProvider:
         api_key: str | None = None,
         base_url: str | None = None,
         effort: Effort | None = "low",
+        clerk_model: str = CLERK_MODEL,
         max_concurrency: int = 8,
         timeout: float = 90.0,
         http_client: httpx2.AsyncClient | None = None,
@@ -61,23 +66,40 @@ class AnthropicProvider:
         )
         self._model = model
         self._effort = effort
+        self._clerk_model = clerk_model
         self.max_concurrency = max_concurrency
         self.timeout = timeout
 
-    async def judge(self, duck: Duck, case: Case) -> Verdict:
+    async def _ask[T: BaseModel](
+        self, system: str, user: str, schema: type[T], *, model: str, effort: Effort | None
+    ) -> T:
         response = await self._client.messages.parse(
-            model=self._model,
+            model=model,
             max_tokens=16_000,  # thinking counts against this; a tight cap starves the answer
-            system=system_prompt(duck),
-            messages=[{"role": "user", "content": user_message(case)}],
-            output_format=Verdict,
-            output_config={"effort": self._effort} if self._effort else anthropic.omit,
+            system=system,
+            messages=[{"role": "user", "content": user}],
+            output_format=schema,
+            output_config={"effort": effort} if effort else anthropic.omit,
         )
         if response.stop_reason == "refusal":
             raise Refused()
         if response.parsed_output is None:
-            raise ProviderError(f"no verdict returned (stop reason: {response.stop_reason})")
+            raise ProviderError(f"no answer returned (stop reason: {response.stop_reason})")
         return response.parsed_output
+
+    async def judge(self, duck: Duck, case: Case, tone: Tone = "cautious") -> Verdict:
+        return await self._ask(
+            system_prompt(duck, tone),
+            user_message(case),
+            Verdict,
+            model=self._model,
+            effort=self._effort,
+        )
+
+    async def classify(self, case: Case) -> Ruling:
+        return await self._ask(
+            CLERK_PROMPT, user_message(case), Ruling, model=self._clerk_model, effort=None
+        )
 
     async def check_connection(self) -> ConnectionCheck:
         try:

@@ -1,11 +1,8 @@
 """ClaudeCodeProvider against a stand-in program that records what it was sent."""
 
 import asyncio
-import json
-import sys
 import time
 from pathlib import Path
-from typing import Any
 
 import pytest
 
@@ -14,31 +11,13 @@ from app.prompts import user_message
 from app.providers import ProviderError, Refused
 from app.providers.claude_code import ClaudeCodeProvider
 from app.schema import Case, Duck, Origin
+from tests.fakes import fake_claude_code, recorded
 
-FAKE = Path(__file__).with_name("fake_claude.py")
-# The base interpreter rather than a virtualenv launcher: killing a launcher can
-# leave the real interpreter running, which would make the kill test meaningless.
-PYTHON = getattr(sys, "_base_executable", sys.executable)
 REPO = Path(__file__).resolve().parent.parent
 
 DUCK = DUCKS_BY_ID["doctor"]
 CASE = Case(situation="SITUATION-MARKER leftovers", action="ACTION-MARKER curry")
-
-
-def provider(**kwargs: Any) -> ClaudeCodeProvider:
-    return ClaudeCodeProvider(executable=(PYTHON, str(FAKE)), **kwargs)
-
-
-@pytest.fixture
-def record(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
-    path = tmp_path / "record.json"
-    monkeypatch.setenv("FAKE_CLAUDE_RECORD", str(path))
-    return path
-
-
-def recorded(path: Path) -> dict[str, Any]:
-    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
-    return data
+provider = fake_claude_code
 
 
 def test_a_structured_verdict_comes_back(record: Path) -> None:
@@ -122,7 +101,7 @@ def test_model_and_effort_are_passed_only_when_chosen(record: Path) -> None:
     [
         ("error", ProviderError, "Not logged in"),
         ("refusal", Refused, None),
-        ("no_structured", ProviderError, "no structured verdict"),
+        ("no_structured", ProviderError, "no structured answer"),
         ("garbage", ProviderError, "did not return JSON"),
     ],
 )

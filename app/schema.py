@@ -4,7 +4,7 @@ Validation lives here so every layer above can trust what it receives.
 """
 
 from enum import StrEnum
-from typing import Self
+from typing import Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -87,6 +87,29 @@ class Verdict(BaseModel):
     def score(self) -> int:
         """0-100. Computed by us, never emitted by the model (D3)."""
         return BAND_CENTRE[self.band] + self.nudge
+
+
+class Register(StrEnum):
+    """How a case should be heard, decided once by the clerk before any duck sees it (D20)."""
+
+    PLAY = "play"
+    WEIGHTY = "weighty"
+    CRISIS = "crisis"
+
+
+class Ruling(BaseModel):
+    """What the clerk returns. Reason first, for the same reason as verdicts (D4)."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    reason: str = Field(
+        description="One sentence on how the case is written and why that decides it."
+    )
+    hear_as: Register = Field(description="How the council should hear this case.")
+
+
+Tone = Literal["play", "weighty", "cautious"]
+"""How the ducks are told to speak. `cautious` is used when the clerk could not rule (D41)."""
 
 
 class Absence(StrEnum):

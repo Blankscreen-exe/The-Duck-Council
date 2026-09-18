@@ -6,19 +6,19 @@ LM Studio differ only by base URL and model id, which is why they live in
 
 Not all of them support schema-constrained output. We ask for it first; a vendor
 that rejects the request gets the format described in words instead. Either way
-the reply is validated against `Verdict` before it counts.
+the reply is validated before it counts. These vendors have no model we can name
+as reliably fastest, so the clerk uses the same model as the ducks.
 """
 
 import httpx2
 import openai
-from openai.types.chat import ChatCompletion, ChatCompletionMessageParam
+from openai.types.chat import ChatCompletionMessageParam
+from pydantic import BaseModel
 
-from app.prompts import schema_instructions, system_prompt, user_message
-from app.providers._text import verdict_from_text
+from app.prompts import CLERK_PROMPT, format_instructions, system_prompt, user_message
+from app.providers._text import parse_reply
 from app.providers.base import ConnectionCheck, ProviderError, Refused
-from app.schema import Case, Duck, Verdict
-
-_VERDICT_SCHEMA = Verdict.model_json_schema()
+from app.schema import Case, Duck, Ruling, Tone, Verdict
 
 
 def describe_error(error: openai.APIError) -> str:
@@ -61,34 +61,40 @@ class OpenAICompatibleProvider:
         self.max_concurrency = max_concurrency
         self.timeout = timeout
 
-    async def _complete(self, duck: Duck, case: Case) -> ChatCompletion:
-        user: ChatCompletionMessageParam = {"role": "user", "content": user_message(case)}
+    async def _ask[T: BaseModel](self, system: str, user: str, schema: type[T]) -> T:
+        question: ChatCompletionMessageParam = {"role": "user", "content": user}
         try:
-            return await self._client.chat.completions.create(
+            completion = await self._client.chat.completions.create(
                 model=self._model,
-                messages=[{"role": "system", "content": system_prompt(duck)}, user],
+                messages=[{"role": "system", "content": system}, question],
                 response_format={
                     "type": "json_schema",
-                    "json_schema": {"name": "verdict", "schema": _VERDICT_SCHEMA},
+                    "json_schema": {
+                        "name": schema.__name__.lower(),
+                        "schema": schema.model_json_schema(),
+                    },
                 },
             )
         except openai.BadRequestError:
             # Most likely this vendor does not support schema-constrained output.
             # If the request was bad for another reason, this retry fails the same way.
-            described = f"{system_prompt(duck)}\n\n{schema_instructions()}"
-            return await self._client.chat.completions.create(
+            described = f"{system}\n\n{format_instructions(schema)}"
+            completion = await self._client.chat.completions.create(
                 model=self._model,
-                messages=[{"role": "system", "content": described}, user],
+                messages=[{"role": "system", "content": described}, question],
             )
-
-    async def judge(self, duck: Duck, case: Case) -> Verdict:
-        completion = await self._complete(duck, case)
         if not completion.choices:
             raise ProviderError("the provider returned no answer")
         choice = completion.choices[0]
         if choice.finish_reason == "content_filter" or choice.message.refusal:
             raise Refused()
-        return verdict_from_text(choice.message.content or "")
+        return parse_reply(choice.message.content or "", schema)
+
+    async def judge(self, duck: Duck, case: Case, tone: Tone = "cautious") -> Verdict:
+        return await self._ask(system_prompt(duck, tone), user_message(case), Verdict)
+
+    async def classify(self, case: Case) -> Ruling:
+        return await self._ask(CLERK_PROMPT, user_message(case), Ruling)
 
     async def check_connection(self) -> ConnectionCheck:
         try:

@@ -14,6 +14,7 @@ from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import ValidationError
 
+from app.clerk import is_crisis, rule, tone_for
 from app.schema import Case, Duck
 from app.web.deps import ProviderDep, RosterDep, RunsDep, is_htmx, page_context, templates
 from app.web.runs import Run, RunStore, hold_hearing, new_run_id
@@ -100,7 +101,14 @@ async def file_case(
             status_code=422,
         )
 
-    run = Run(id=new_run_id(), case=case, roster=roster)
+    # The clerk rules first, and nothing of the council is rendered until it has (D22):
+    # a person in real distress must never see ducks "deliberating" on their words.
+    ruling = await rule(case, provider)
+    if is_crisis(ruling):
+        name = "_crisis.html" if is_htmx(request) else "crisis.html"
+        return templates.TemplateResponse(request, name, page_context(request))
+
+    run = Run(id=new_run_id(), case=case, roster=roster, tone=tone_for(ruling), ruling=ruling)
     runs.add(run)
     # asyncio keeps only a weak reference to tasks: without this set, a hearing
     # could be garbage-collected halfway through.

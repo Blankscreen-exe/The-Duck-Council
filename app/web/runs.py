@@ -15,7 +15,7 @@ from typing import Protocol
 
 from app.council import convene
 from app.providers import Provider
-from app.schema import Case, Duck, Finding, Seat
+from app.schema import Case, Duck, Finding, Ruling, Seat, Tone
 from app.tally import tally
 
 
@@ -29,6 +29,9 @@ class Run:
     id: str
     case: Case
     roster: tuple[Duck, ...]
+    tone: Tone = "cautious"
+    ruling: Ruling | None = None
+    """The clerk's ruling (D20); None when it could not rule. Not shown on the page."""
     seats: list[Seat] = field(default_factory=list)
     """In the order the ducks finished, which is the order they are streamed."""
     finding: Finding | None = None
@@ -65,7 +68,7 @@ class InMemoryRunStore:
 async def hold_hearing(run: Run, provider: Provider) -> None:
     """Convene the council for `run`, recording each seat as it lands."""
     try:
-        async with aclosing(convene(run.roster, run.case, provider)) as arriving:
+        async with aclosing(convene(run.roster, run.case, provider, tone=run.tone)) as arriving:
             async for seat in arriving:
                 async with run.changed:
                     run.seats.append(seat)

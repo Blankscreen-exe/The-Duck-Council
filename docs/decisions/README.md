@@ -556,41 +556,91 @@ Esc animates it back to its place. Its spot on the board stays empty meanwhile.
   The copy drops its buttons and forms, so nothing can be submitted twice, and it is
   never `stamped`, so lifting a verdict does not ring the stamp again.
 
+### D41 — The clerk is built, and tells the ducks how to speak (owner's calls)
+Trigger: Quack the Ripper, given "I have a fat helpless cat / I'm gonna brew him in the
+coffee cauldron", broke character into a welfare lecture ending in a shelter
+recommendation. Cause: with no central judgement of joke versus sincerity, every duck
+hedged on its own. The fix is D20's clerk, plus example verdicts for the wild ducks.
+
+How it works:
+
+- The clerk reads each case before any duck (D22) and rules it `play`, `weighty` or
+  `crisis`. The submit button reads "The clerk is reading your case…" meanwhile; no
+  board is rendered until the ruling exists.
+- `play`: each duck is told the case is a joke and to commit to its character, with no
+  disclaimers, welfare advice or "if you actually" asides. `weighty`: stay in
+  character, take it seriously, aim humour at the situation, never the person.
+  `crisis`: no council at all, a plain page pointing to findahelpline.com (an
+  international directory, since the user's country is unknown) and local emergency
+  services.
+- The clerk's own prompt teaches register with pairs of cases on the same topic that
+  differ only in how they are written. A test forbids the cat case from appearing in
+  any prompt: a failing case copied in as an example could never prove a fix.
+- The four wild ducks (Quack the Ripper, Obscura, Lil Waddle, Quackramentum) carry two
+  example verdicts each, dark through implication and never method.
+
+Owner's calls:
+
+- **If the clerk fails** (error, timeout, refusal), the case is heard cautiously: the
+  ducks behave exactly as before the clerk existed. Never worse than the old app.
+- **The ruling is not shown** on the page. (The command-line tool prints it, since
+  that is where tuning happens.)
+- **The clerk uses the fastest model:** Haiku on Claude Code and the Anthropic API; the
+  ducks' own model on other vendors, where no model is reliably fastest.
+- **Examples for the four wild ducks**, not all thirteen.
+- The extra wait was accepted: on Claude Code the clerk adds ~15s (mostly start-up)
+  before the first stamp. The cat case took 43s end to end with three ducks.
+
+Measured on real Claude Code:
+
+- The cat case was ruled play ("absurd, impossible methods... comic exaggeration").
+  The welfare lecture is gone from every duck; Obscura and the doctor stayed fully in
+  character. Quack is theatrical and delighted again, but still will not endorse
+  harming the cat: she sidesteps ("he's a familiar"). Harm to a helpless animal is a
+  line the model's own safety training holds; prompting moved her from lecture to
+  gleeful sidestep, and is unlikely to move her further.
+- A sincere case with indirect warning signs (sleeplessness, giving belongings away,
+  withdrawing from family) was ruled crisis. No duck was called.
+
+Implementation: each adapter now has one generic structured "ask" that both `judge`
+(a duck) and `classify` (the clerk) use, rather than two copies of its plumbing. The
+clerk's answer field is `hear_as`, not `register`, which shadowed a Pydantic attribute.
+
+
 ---
 
 ## Next session starts here
 
-**State:** step 4 is done. The Filing Desk, the Bench and Chambers all work, on
-SQLite, with keys in the OS credential store. 150 tests pass; ruff and
-`mypy --strict` clean. Verified against a real server: first run offers Claude
-Code, one click tests it (13s) and makes it the default.
+**State:** the app is feature-complete apart from history. Filing Desk, the clerk,
+the live board, the Bench and Chambers all work, on SQLite, with keys in the OS
+credential store. 169 tests pass; ruff and `mypy --strict` clean.
 
 Run it: `uv run --system-certs duck-council-web`, then choose the AI in Chambers.
-**Visual check in a browser is pending: the owner tests by hand.**
+The owner tests the UI by hand in a browser.
 
 **Build order:**
 
 1. ~~Engine + CLI.~~ Done.
-2. Tune the bands. Deferred until after the UI. Known: verdict lines run 3-5
-   sentences (clamped to 5 lines on the board); every duck adds a safety caveat,
-   which may pull the chaos ducks toward the middle.
+2. Tune the bands and voices. Known: verdict lines run 3-5 sentences (clamped on the
+   board, readable in full via "Pick it up"); ducks may still soften on some topics
+   (animals, children) whatever the prompt says. A fixed set of test cases (dark
+   jokes, sincere-heavy, genuinely worrying) would measure both, and the clerk.
 3. ~~Web app: Filing Desk and live board.~~ Done.
 4. ~~The Bench and Chambers.~~ Done.
 5. The Register (history of hearings). Hearings are still kept in memory only.
 
-**Not yet built from the frozen decisions:** the safety gate (D20/D22); Docker
-(D17, D18's env-var key store); CI (D17).
+**Not yet built from the frozen decisions:** Docker (D17, D18's env-var key store);
+CI (D17). The README still describes v1.
 
 **Open issue:** an intermittent pytest warning seen in a few early runs; not
 reproduced in 30+ runs since. Suspected: a test ending while a background hearing
 is still running.
 
 **Untested against the live service:** the Anthropic API and OpenAI-compatible
-adapters (no key used yet). Claude Code is tested for real, including from Chambers.
+adapters (no key used yet). Claude Code is tested for real, including the clerk.
 
 **Environment gotchas:** pass `--system-certs` to every `uv` command (something
 intercepts TLS here). While `duck-council-web` is running, also pass `--no-sync`:
 Windows locks the running program and uv cannot reinstall it. The uv-installed
 Python cannot do HTTPS downloads here (`OPENSSL_Applink`); Windows'
-`C:\Windows\System32\curl.exe` can. Python 3.12 is pinned in `.python-version`.
-
+`C:\\Windows\\System32\\curl.exe` can. Python 3.12 is pinned in `.python-version`.

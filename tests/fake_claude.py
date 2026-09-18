@@ -50,12 +50,19 @@ envelope: dict[str, object] = {
     "result": "OK",
 }
 if "--json-schema" in argv:
-    envelope["structured_output"] = {
-        "read": "Noted.",
-        "band": "sound",
-        "nudge": 2,
-        "line": "Fine by me.",
-    }
+    schema = json.loads(argv[argv.index("--json-schema") + 1])
+    if schema.get("title") == "Ruling":  # the clerk's question
+        envelope["structured_output"] = {
+            "reason": "Written as a joke.",
+            "hear_as": os.environ.get("FAKE_CLAUDE_REGISTER", "play"),
+        }
+    else:
+        envelope["structured_output"] = {
+            "read": "Noted.",
+            "band": "sound",
+            "nudge": 2,
+            "line": "Fine by me.",
+        }
 if mode == "error":
     envelope.update(subtype="error", is_error=True, result="Not logged in. Please run /login")
 elif mode == "refusal":
